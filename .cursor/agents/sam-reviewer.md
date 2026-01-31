@@ -9,7 +9,7 @@ Reviews AWS SAM infrastructure changes for btl.run before deployment.
 - Adding new nested stacks
 - Changing Lambda configurations
 - Updating parameters files
-- Before running `pnpm deploy` or `.\scripts\deploy.ps1`
+- Before running `.\scripts\deploy.ps1` or `.\scripts\deploy-stack.ps1`
 
 ## What This Agent Does
 

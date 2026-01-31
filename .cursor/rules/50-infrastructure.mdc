@@ -125,4 +125,16 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 ```
 
 ## Testing Changes
-Always run `pnpm diff` before `pnpm deploy` to review changes.
+
+Before deploying:
+```powershell
+# Validate templates
+sam validate --template infrastructure/template.yaml --lint
+
+# Build to check for errors
+sam build --use-container
+
+# Deploy with changeset review
+.\scripts\deploy.ps1 -Environment dev
+# SAM will show changeset for approval
+```

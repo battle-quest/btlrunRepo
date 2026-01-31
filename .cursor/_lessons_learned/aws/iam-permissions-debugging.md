@@ -124,7 +124,8 @@ table.grantReadData(pdfHandler); // Read match logs
 - [ ] Pass resource names via environment variables
 - [ ] Check CloudWatch Logs immediately after Access Denied
 - [ ] Test with SAM local before deploying (uses your AWS credentials)
-- [ ] Run `pnpm diff` to see IAM policy changes before deploy
+- [ ] Run `sam validate --lint` to check IAM policy syntax
+- [ ] Review CloudFormation changeset before confirming deployment
 - [ ] For GSI access, explicitly add index ARNs to policy
 
 ## References
