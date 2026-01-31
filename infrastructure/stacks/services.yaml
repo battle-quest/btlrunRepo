@@ -22,6 +22,7 @@ Parameters:
 Conditions:
   CreateNewSecret: !Equals [!Ref OpenAiApiKeySecretArn, ""]
   UseExistingSecret: !Not [!Equals [!Ref OpenAiApiKeySecretArn, ""]]
+  IsProd: !Equals [!Ref Environment, "prod"]
 
 Globals:
   Function:
@@ -32,7 +33,7 @@ Globals:
     MemorySize: 256
     Environment:
       Variables:
-        NODE_ENV: !If [!Equals [!Ref Environment, "prod"], "production", "development"]
+        NODE_ENV: !If [IsProd, "production", "development"]
         ALLOWED_ORIGINS: "*"
 
 Resources:
