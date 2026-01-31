@@ -2,7 +2,9 @@
   "Parameters": {
     "Environment": "dev",
     "DomainName": "",
-    "HostedZoneId": ""
+    "HostedZoneId": "",
+    "OpenAiApiKeySecretArn": "",
+    "DefaultAiModel": "gpt-5-nano"
   },
   "Tags": {
     "Project": "btl-run",

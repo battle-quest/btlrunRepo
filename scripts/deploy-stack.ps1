@@ -21,7 +21,7 @@
 
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet("api", "storage", "cdn")]
+    [ValidateSet("api", "storage", "cdn", "services")]
     [string]$Stack,
 
     [Parameter(Mandatory = $false)]
@@ -43,17 +43,25 @@ $stackTemplates = @{
     "api" = "stacks/api.yaml"
     "storage" = "stacks/storage.yaml"
     "cdn" = "stacks/cdn.yaml"
+    "services" = "stacks/services.yaml"
 }
 
 $templateFile = $stackTemplates[$Stack]
 $nestedStackName = "btl-run-$Stack-$Environment"
 
-# For API stack, we need to build the Lambda first
+# Build dependencies based on stack
 if ($Stack -eq "api") {
-    Write-Host "`n[1/2] Building backend..." -ForegroundColor Yellow
+    Write-Host "`n[1/2] Building Rust backend..." -ForegroundColor Yellow
     & "$PSScriptRoot\build-backend.ps1"
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Backend build failed"
+        exit 1
+    }
+} elseif ($Stack -eq "services") {
+    Write-Host "`n[1/2] Building TypeScript services..." -ForegroundColor Yellow
+    & "$PSScriptRoot\build-services.ps1"
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "Services build failed"
         exit 1
     }
 }
@@ -62,8 +70,8 @@ Write-Host "`n[2/2] Deploying $Stack stack..." -ForegroundColor Yellow
 Push-Location "$ProjectRoot\infrastructure"
 
 try {
-    # For API stack with SAM
-    if ($Stack -eq "api") {
+    # For Lambda stacks with SAM
+    if ($Stack -eq "api" -or $Stack -eq "services") {
         Write-Host "Building SAM application..." -ForegroundColor Gray
         sam build --use-container --beta-features --template $templateFile
 

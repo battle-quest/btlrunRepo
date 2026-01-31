@@ -40,25 +40,32 @@ Write-Host "========================================" -ForegroundColor Cyan
 
 # Build steps
 if (-not $SkipBuild) {
-    Write-Host "`n[1/4] Building frontend..." -ForegroundColor Yellow
+    Write-Host "`n[1/5] Building frontend..." -ForegroundColor Yellow
     & "$PSScriptRoot\build-frontend.ps1"
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Frontend build failed"
         exit 1
     }
 
-    Write-Host "`n[2/4] Building backend..." -ForegroundColor Yellow
+    Write-Host "`n[2/5] Building TypeScript services..." -ForegroundColor Yellow
+    & "$PSScriptRoot\build-services.ps1"
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "Services build failed"
+        exit 1
+    }
+
+    Write-Host "`n[3/5] Building Rust backend..." -ForegroundColor Yellow
     & "$PSScriptRoot\build-backend.ps1"
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Backend build failed"
         exit 1
     }
 } else {
-    Write-Host "`n[1-2/4] Skipping builds..." -ForegroundColor DarkGray
+    Write-Host "`n[1-3/5] Skipping builds..." -ForegroundColor DarkGray
 }
 
 # SAM deployment
-Write-Host "`n[3/4] Deploying infrastructure via SAM..." -ForegroundColor Yellow
+Write-Host "`n[4/5] Deploying infrastructure via SAM..." -ForegroundColor Yellow
 Push-Location "$ProjectRoot\infrastructure"
 
 try {
@@ -90,7 +97,7 @@ try {
 
 # Upload frontend to S3
 if (-not $SkipFrontendUpload) {
-    Write-Host "`n[4/4] Uploading frontend to S3..." -ForegroundColor Yellow
+    Write-Host "`n[5/5] Uploading frontend to S3..." -ForegroundColor Yellow
     
     # Get bucket name from stack outputs
     $stackName = "btl-run-$Environment"
@@ -133,7 +140,7 @@ if (-not $SkipFrontendUpload) {
             --paths "/*" | Out-Null
     }
 } else {
-    Write-Host "`n[4/4] Skipping frontend upload..." -ForegroundColor DarkGray
+    Write-Host "`n[5/5] Skipping frontend upload..." -ForegroundColor DarkGray
 }
 
 # Print outputs

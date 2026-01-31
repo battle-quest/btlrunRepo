@@ -9,8 +9,10 @@ alwaysApply: true
 ## Project Overview
 
 btl.run is a hyper-efficient PWA game built with:
-- **Frontend**: Preact + Vite (in `frontend/`)
-- **Backend**: Rust Lambda functions (in `backend/`)
+- **Frontend**: Preact + Vite PWA (in `frontend/`)
+- **Game API**: Rust Lambda functions (in `backend/`)
+- **AI Service**: Node.js Lambda + OpenAI (in `AskAi_KVS/services/askai/`)
+- **KVS Service**: Node.js Lambda + DynamoDB (in `AskAi_KVS/services/kvs/`)
 - **Infrastructure**: AWS SAM with nested CloudFormation stacks (in `infrastructure/`)
 
 ## Directory Structure
@@ -40,12 +42,19 @@ btlrunRepo/
 - Keep components small and composable
 - Use CSS modules or inline styles for scoping
 - Optimize for bundle size - avoid large dependencies
+- Call services via environment variables (VITE_*_ENDPOINT)
 
 ### Backend (Rust)
 - Use `cargo-lambda` for building and testing
 - Shared code goes in `backend/shared/`
 - Each Lambda function is a separate crate in `backend/functions/`
 - Use `lambda_http` for API Gateway integration
+
+### Services (TypeScript/Node.js)
+- AskAI and KVS services in `AskAi_KVS/services/`
+- Use esbuild for fast bundling
+- Shared utilities in `AskAi_KVS/shared/`
+- Never hardcode API keys - use Secrets Manager
 
 ### Infrastructure
 - Use SAM nested stacks for modularity
@@ -55,17 +64,19 @@ btlrunRepo/
 ## Deployment Commands
 
 ```powershell
-# Build frontend
+# Build components
 .\scripts\build-frontend.ps1
-
-# Build backend
+.\scripts\build-services.ps1
 .\scripts\build-backend.ps1
 
 # Deploy everything
 .\scripts\deploy.ps1 -Environment dev
 
-# Deploy single stack
-.\scripts\deploy-stack.ps1 -Stack api -Environment dev
+# Deploy individual stacks
+.\scripts\deploy-stack.ps1 -Stack services -Environment dev  # AskAI + KVS
+.\scripts\deploy-stack.ps1 -Stack api -Environment dev       # Rust game API
+.\scripts\deploy-stack.ps1 -Stack storage -Environment dev   # S3 + DynamoDB
+.\scripts\deploy-stack.ps1 -Stack cdn -Environment dev       # CloudFront
 ```
 
 ## File Naming

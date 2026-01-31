@@ -22,11 +22,13 @@ A hyper-efficient PWA game built with Preact, Rust Lambda, and AWS infrastructur
 | Component      | Technology                          |
 |----------------|-------------------------------------|
 | Frontend       | Preact + Vite (PWA)                 |
-| Backend        | Rust + Lambda (ARM64)               |
+| Game API       | Rust + Lambda (ARM64)               |
+| AI Service     | Node.js Lambda + OpenAI             |
+| KVS Service    | Node.js Lambda + DynamoDB           |
 | Infrastructure | AWS SAM (CloudFormation)            |
 | CDN            | CloudFront                          |
 | DNS            | Route 53                            |
-| Storage        | S3                                  |
+| Storage        | S3 + DynamoDB                       |
 
 ## Prerequisites
 
@@ -69,16 +71,41 @@ btlrunRepo/
 │   ├── public/          # Static assets
 │   └── dist/            # Build output
 ├── backend/             # Rust Lambda workspace
-│   ├── functions/api/   # API Lambda handler
+│   ├── functions/api/   # Game API Lambda handler
 │   └── shared/          # Shared library
+├── AskAi_KVS/           # TypeScript Lambda services
+│   ├── services/askai/  # OpenAI wrapper service
+│   ├── services/kvs/    # Key-value storage service
+│   └── shared/          # Shared utilities & clients
 ├── infrastructure/      # AWS SAM templates
 │   ├── template.yaml    # Root template
 │   ├── stacks/          # Nested stacks
+│   │   ├── api.yaml     # Rust game API
+│   │   ├── services.yaml # AskAI + KVS
+│   │   ├── storage.yaml # S3 buckets
+│   │   └── cdn.yaml     # CloudFront
 │   └── parameters/      # Environment configs
 └── scripts/             # Deployment scripts
 ```
 
 ## Quick Start
+
+### Setup OpenAI API Key
+
+Before deploying, you need to configure the OpenAI API key:
+
+**Option 1: Use existing secret (recommended for prod):**
+The existing secret ARN is already configured in `infrastructure/parameters/prod.json`.
+
+**Option 2: Create new secret for dev:**
+```powershell
+# Create the secret
+aws secretsmanager create-secret `
+    --name "btl-run/dev/openai-api-key" `
+    --secret-string "YOUR_OPENAI_API_KEY"
+
+# Update infrastructure/parameters/dev.json with the ARN
+```
 
 ### Local Development
 
@@ -89,7 +116,19 @@ pnpm install
 pnpm dev
 ```
 
-**Backend (local Lambda):**
+**TypeScript Services (local):**
+```powershell
+cd AskAi_KVS
+pnpm install
+
+# Terminal 1: KVS Mock Server
+npx tsx mocks/kvs-server.ts
+
+# Terminal 2: AskAI Mock Server  
+npx tsx mocks/askai-server.ts
+```
+
+**Rust API (local Lambda):**
 ```powershell
 cd backend
 cargo lambda watch
@@ -134,7 +173,8 @@ For faster iteration, deploy individual stacks:
 
 | Command | What it does |
 |---------|--------------|
-| `deploy-stack.ps1 -Stack api` | Updates Lambda function code |
+| `deploy-stack.ps1 -Stack services` | Updates AskAI & KVS Lambda functions |
+| `deploy-stack.ps1 -Stack api` | Updates Rust game API Lambda |
 | `deploy-stack.ps1 -Stack storage` | Updates S3 bucket configuration |
 | `deploy-stack.ps1 -Stack cdn` | Updates CloudFront settings |
 
@@ -162,13 +202,38 @@ To use a custom domain:
 }
 ```
 
-## API Endpoints
+## Service Endpoints
 
+### Game API (Rust Lambda)
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/health` | GET | Health check |
 | `/api/health` | GET | API health check |
-| `/api/*` | ANY | API routes |
+| `/api/*` | ANY | Game API routes |
+
+### AskAI Service (OpenAI Wrapper)
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | POST | Send prompt to OpenAI |
+
+**Request:**
+```json
+{
+  "systemPrompt": "You are a game narrator.",
+  "input": "Describe a mysterious cave.",
+  "maxTokens": 500,
+  "model": "gpt-5-nano"
+}
+```
+
+### KVS Service (Key-Value Storage)
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/{key}` | GET | Get value |
+| `/{key}` | PUT | Set value (create/replace) |
+| `/{key}` | POST | Create only (fail if exists) |
+| `/{key}` | PATCH | Partial update (merge) |
+| `/{key}` | DELETE | Delete key |
 
 ## Cursor Cloud Agents
 

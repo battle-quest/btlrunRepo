@@ -1,0 +1,207 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  btl.run Services Stack
+  AskAI (OpenAI wrapper) and KVS (Key-Value Storage) Lambda functions
+
+Parameters:
+  Environment:
+    Type: String
+    Description: Deployment environment
+
+  OpenAiApiKeySecretArn:
+    Type: String
+    Default: ""
+    Description: ARN of existing Secrets Manager secret with OpenAI API key (leave empty to create new)
+
+  DefaultAiModel:
+    Type: String
+    Default: "gpt-5-nano"
+    Description: Default OpenAI model
+
+Conditions:
+  CreateNewSecret: !Equals [!Ref OpenAiApiKeySecretArn, ""]
+  UseExistingSecret: !Not [!Equals [!Ref OpenAiApiKeySecretArn, ""]]
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Architectures:
+      - arm64
+    Timeout: 30
+    MemorySize: 256
+    Environment:
+      Variables:
+        NODE_ENV: !If [!Equals [!Ref Environment, "prod"], "production", "development"]
+        ALLOWED_ORIGINS: "*"
+
+Resources:
+  # DynamoDB table for KVS
+  KVSTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      TableName: !Sub "btl-run-kvs-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      Tags:
+        - Key: Project
+          Value: btl-run
+        - Key: Environment
+          Value: !Ref Environment
+
+  # OpenAI API Key Secret (if not provided)
+  OpenAiApiKeySecret:
+    Type: AWS::SecretsManager::Secret
+    Condition: CreateNewSecret
+    Properties:
+      Name: !Sub "btl-run/${Environment}/openai-api-key"
+      Description: OpenAI API key for AskAI service
+      SecretString: '{"apiKey":"PLACEHOLDER-UPDATE-AFTER-DEPLOYMENT"}'
+      Tags:
+        - Key: Project
+          Value: btl-run
+        - Key: Environment
+          Value: !Ref Environment
+
+  # AskAI Lambda - OpenAI wrapper
+  AskAiFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        EntryPoints:
+          - src/index.ts
+        External:
+          - '@aws-sdk/*'
+        Target: node20
+        Format: esm
+    Properties:
+      FunctionName: !Sub "btl-run-askai-${Environment}"
+      Description: OpenAI API wrapper with retry logic
+      CodeUri: ../../AskAi_KVS/services/askai
+      Handler: index.handler
+      Environment:
+        Variables:
+          DEFAULT_MODEL: !Ref DefaultAiModel
+          OPENAI_API_KEY_SECRET_ARN: !If
+            - UseExistingSecret
+            - !Ref OpenAiApiKeySecretArn
+            - !Ref OpenAiApiKeySecret
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !If
+                - UseExistingSecret
+                - !Ref OpenAiApiKeySecretArn
+                - !Ref OpenAiApiKeySecret
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowHeaders:
+            - "*"
+          AllowMethods:
+            - POST
+            - OPTIONS
+          AllowOrigins:
+            - "*"
+      Tags:
+        Project: btl-run
+        Environment: !Ref Environment
+
+  # KVS Lambda - Key-Value Storage
+  KVSFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        EntryPoints:
+          - src/index.ts
+        External:
+          - '@aws-sdk/*'
+        Target: node20
+        Format: esm
+    Properties:
+      FunctionName: !Sub "btl-run-kvs-${Environment}"
+      Description: DynamoDB-backed key-value storage
+      CodeUri: ../../AskAi_KVS/services/kvs
+      Handler: index.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref KVSTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref KVSTable
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowHeaders:
+            - "*"
+          AllowMethods:
+            - GET
+            - POST
+            - PUT
+            - PATCH
+            - DELETE
+            - OPTIONS
+          AllowOrigins:
+            - "*"
+      Tags:
+        Project: btl-run
+        Environment: !Ref Environment
+
+  # CloudWatch Log Groups
+  AskAiFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${AskAiFunction}"
+      RetentionInDays: 14
+
+  KVSFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${KVSFunction}"
+      RetentionInDays: 14
+
+Outputs:
+  AskAiFunctionUrl:
+    Description: AskAI Function URL endpoint
+    Value: !GetAtt AskAiFunctionUrl.FunctionUrl
+    Export:
+      Name: !Sub "${AWS::StackName}-AskAiUrl"
+
+  KVSFunctionUrl:
+    Description: KVS Function URL endpoint
+    Value: !GetAtt KVSFunctionUrl.FunctionUrl
+    Export:
+      Name: !Sub "${AWS::StackName}-KvsUrl"
+
+  KVSTableName:
+    Description: DynamoDB table name for KVS
+    Value: !Ref KVSTable
+
+  OpenAiSecretArn:
+    Description: OpenAI API Key Secret ARN
+    Value: !If
+      - UseExistingSecret
+      - !Ref OpenAiApiKeySecretArn
+      - !Ref OpenAiApiKeySecret

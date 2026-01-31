@@ -2,7 +2,9 @@
   "Parameters": {
     "Environment": "prod",
     "DomainName": "",
-    "HostedZoneId": ""
+    "HostedZoneId": "",
+    "OpenAiApiKeySecretArn": "arn:aws:secretsmanager:us-east-1:615821144597:secret:battle-quest/prod/openai-api-key-LdzRqt",
+    "DefaultAiModel": "gpt-5-nano"
   },
   "Tags": {
     "Project": "btl-run",

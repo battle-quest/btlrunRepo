@@ -24,6 +24,16 @@ Parameters:
     Default: ""
     Description: Route 53 Hosted Zone ID (required if DomainName is set)
 
+  OpenAiApiKeySecretArn:
+    Type: String
+    Default: ""
+    Description: Existing OpenAI API key secret ARN (leave empty to create new)
+
+  DefaultAiModel:
+    Type: String
+    Default: "gpt-5-nano"
+    Description: Default OpenAI model for AskAI service
+
 Conditions:
   HasCustomDomain: !Not [!Equals [!Ref DomainName, ""]]
 
@@ -47,6 +57,21 @@ Resources:
       TemplateURL: stacks/storage.yaml
       Parameters:
         Environment: !Ref Environment
+      Tags:
+        - Key: Project
+          Value: btl-run
+        - Key: Environment
+          Value: !Ref Environment
+
+  # Services Stack - AskAI and KVS Node.js Lambda functions
+  ServicesStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: stacks/services.yaml
+      Parameters:
+        Environment: !Ref Environment
+        OpenAiApiKeySecretArn: !Ref OpenAiApiKeySecretArn
+        DefaultAiModel: !Ref DefaultAiModel
       Tags:
         - Key: Project
           Value: btl-run
@@ -111,3 +136,15 @@ Outputs:
       - HasCustomDomain
       - !Sub "https://${DomainName}"
       - !Sub "https://${CdnStack.Outputs.CloudFrontDomain}"
+
+  AskAiFunctionUrl:
+    Description: AskAI service endpoint
+    Value: !GetAtt ServicesStack.Outputs.AskAiFunctionUrl
+
+  KVSFunctionUrl:
+    Description: KVS service endpoint
+    Value: !GetAtt ServicesStack.Outputs.KVSFunctionUrl
+
+  KVSTableName:
+    Description: DynamoDB table for KVS
+    Value: !GetAtt ServicesStack.Outputs.KVSTableName

@@ -3,7 +3,7 @@
 # =============================================================================
 
 # -----------------------------------------------------------------------------
-# Node.js / Frontend
+# Node.js / Frontend / TypeScript Services
 # -----------------------------------------------------------------------------
 node_modules/
 dist/
@@ -14,6 +14,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .pnpm-store/
+pnpm-lock.yaml
+package-lock.json
+AskAi_KVS/services/*/dist/
+AskAi_KVS/shared/dist/
 
 # -----------------------------------------------------------------------------
 # Rust / Backend
