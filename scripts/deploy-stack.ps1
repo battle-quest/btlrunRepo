@@ -82,7 +82,8 @@ try {
             --capabilities CAPABILITY_IAM `
             --parameter-overrides "Environment=$Environment" `
             --no-confirm-changeset `
-            --no-fail-on-empty-changeset
+            --no-fail-on-empty-changeset `
+            --resolve-s3
 
     } else {
         # For non-Lambda stacks, use standard CloudFormation
