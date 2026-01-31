@@ -643,7 +643,7 @@ color: color-mix(in oklab, var(--accent) 75%, white);
 After creating the page:
 ```powershell
 # Sync to S3
-aws s3 sync apps/pwa/public/uiux s3://battle-quest-web-prod-615821144597/uiux --delete
+aws s3 sync apps/pwa/public/uiux s3://btl-run-web-prod-615821144597/uiux --delete
 
 # Invalidate CloudFront cache
 aws cloudfront create-invalidation --distribution-id E18WMI8W5MVMR1 --paths "/uiux/*"

@@ -8,12 +8,12 @@ You have existing Lambda functions deployed:
 
 | Function | Name | Endpoint |
 |----------|------|----------|
-| AskAI | `battle-quest-prod-askai` | https://5qxowokttms7px4cmtza4cugku0ovubz.lambda-url.us-east-1.on.aws/ |
-| KVS | `battle-quest-prod-kvs` | https://ajeqoveqydsyhxofa5kwb3bx6a0ptbcw.lambda-url.us-east-1.on.aws/ |
+| AskAI | `btl-run-prod-askai` | https://5qxowokttms7px4cmtza4cugku0ovubz.lambda-url.us-east-1.on.aws/ |
+| KVS | `btl-run-prod-kvs` | https://ajeqoveqydsyhxofa5kwb3bx6a0ptbcw.lambda-url.us-east-1.on.aws/ |
 
 **Resources:**
-- DynamoDB Table: `battle-quest-kvs-prod`
-- OpenAI Secret: `arn:aws:secretsmanager:us-east-1:615821144597:secret:battle-quest/prod/openai-api-key-LdzRqt`
+- DynamoDB Table: `btl-run-kvs-prod`
+- OpenAI Secret: `arn:aws:secretsmanager:us-east-1:615821144597:secret:btl-run/prod/openai-api-key-LdzRqt`
 
 ## Integration Approach
 
@@ -22,10 +22,10 @@ You have existing Lambda functions deployed:
 The btl.run infrastructure creates **new** resources alongside your existing ones:
 
 ```
-Existing (battle-quest):          New (btl-run):
-├── battle-quest-prod-askai  →   ├── btl-run-askai-{env}
-├── battle-quest-prod-kvs    →   ├── btl-run-kvs-{env}
-├── battle-quest-kvs-prod    →   ├── btl-run-kvs-{env} (DynamoDB)
+Existing (btl-run):          New (btl-run):
+├── btl-run-prod-askai  →   ├── btl-run-askai-{env}
+├── btl-run-prod-kvs    →   ├── btl-run-kvs-{env}
+├── btl-run-kvs-prod    →   ├── btl-run-kvs-{env} (DynamoDB)
 └── openai-api-key secret    →   └── (reuses existing secret)
 ```
 
@@ -77,12 +77,12 @@ Instead, we:
    Creates:
    - `btl-run-askai-prod` (new function, uses existing secret)
    - `btl-run-kvs-prod` (new function)
-   - `btl-run-kvs-prod` (new DynamoDB table, separate from battle-quest-kvs-prod)
+   - `btl-run-kvs-prod` (new DynamoDB table, separate from btl-run-kvs-prod)
 
 2. **Optionally migrate data:**
    ```powershell
    # Export from old table
-   aws dynamodb scan --table-name battle-quest-kvs-prod > backup.json
+   aws dynamodb scan --table-name btl-run-kvs-prod > backup.json
    
    # Import to new table (write script or use AWS DMS)
    ```

@@ -143,9 +143,13 @@ btlrunRepo/
 │   └── setup-openai-secret.ps1    # Create/update OpenAI secret
 │
 ├── assets/                        # Game UI assets
-│   ├── bq-ui-panel-frame.png      # UI frame graphics
-│   ├── bq-icons-set.png           # Game icons
-│   └── bq-background-grid-map.png # Map background
+│   ├── bq-background-grid-map.png # Seamless tileable background (2048×2048 px)
+│   ├── bq-icons-set.png           # Icon sprite sheet (4×3 grid, 12 icons)
+│   ├── bq-ui-gear-icon.svg        # Settings/gear icon (vector, teal neon glow)
+│   ├── bq-ui-panel-frame.png      # Horizontal UI panel frame
+│   ├── bq-ui-panel-frame-vertical.png # Vertical HUD/panel frame (1344×2531 px)
+│   ├── bq-ui-wide-button-states.png   # Button sprite (3 states: default/hover/pressed)
+│   └── README.md                  # Asset documentation & usage details
 │
 ├── uiux_mockups/                  # HTML/CSS/JS prototypes
 │   ├── 00-start-screen/           # Landing page mockup
@@ -304,7 +308,7 @@ cargo lambda build --release --arm64
 ### Secrets Management
 
 - **OpenAI API Key**: Stored in AWS Secrets Manager
-  - Prod: Uses existing `arn:aws:secretsmanager:us-east-1:615821144597:secret:battle-quest/prod/openai-api-key-LdzRqt`
+  - Prod: Uses existing `arn:aws:secretsmanager:us-east-1:615821144597:secret:btl-run/prod/openai-api-key-LdzRqt`
   - Dev: Create new with `setup-openai-secret.ps1`
   - Never in environment variables in deployed Lambdas
   - Lambda reads via `@aws-sdk/client-secrets-manager`
@@ -345,30 +349,6 @@ CloudFront caching:
 - **index.html**: No cache (always fresh)
 - **/api/**: No cache (dynamic)
 - **Service Workers**: Workbox runtime caching
-
-## Cost Estimate
-
-### Development Environment (low traffic)
-
-| Service | Monthly Cost |
-|---------|--------------|
-| Lambda (1M invocations) | ~$5 |
-| DynamoDB (on-demand) | $1-5 |
-| S3 (static hosting) | < $1 |
-| CloudFront | $5-10 |
-| Secrets Manager | $0.40 |
-| **Total** | **$12-21/month** |
-
-### Production Environment (moderate traffic)
-
-| Service | Monthly Cost |
-|---------|--------------|
-| Lambda (10M invocations) | $20-50 |
-| DynamoDB | $10-30 |
-| S3 | $1-5 |
-| CloudFront | $20-50 |
-| OpenAI API (gpt-5-nano) | $10-100 (usage-based) |
-| **Total** | **$61-235/month** |
 
 ## Monitoring
 

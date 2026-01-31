@@ -7,7 +7,7 @@ description: Optimize React + Vite apps for minimal bundle size, fast loading, c
 
 ## Bundle Size Target
 
-**Battle Quest goal: <200KB compressed (JS + CSS)**
+**btl.run goal: <200KB compressed (JS + CSS)**
 
 Breakdown:
 - React + ReactDOM: ~45KB gzipped
@@ -20,9 +20,9 @@ Breakdown:
 ## Vite Configuration
 
 ```typescript
-// apps/web/vite.config.ts
+// frontend/vite.config.ts
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import preact from '@preact/preset-vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
@@ -352,7 +352,7 @@ function EventLog({ events }: { events: Event[] }) {
 <!-- Use WebP with fallback -->
 <picture>
   <source srcset="banner.webp" type="image/webp" />
-  <img src="banner.png" alt="Battle Quest" loading="lazy" />
+  <img src="banner.png" alt="btl.run" loading="lazy" />
 </picture>
 ```
 
@@ -364,7 +364,7 @@ function EventLog({ events }: { events: Event[] }) {
 // src/sw.ts (if implementing PWA)
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open('battlequest-v1').then(cache => {
+    caches.open('btlrun-v1').then(cache => {
       return cache.addAll([
         '/',
         '/index.html',

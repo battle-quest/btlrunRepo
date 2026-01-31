@@ -197,10 +197,10 @@ aws cloudformation describe-stacks `
 - **Region:** us-east-1
 - **Account ID:** 615821144597
 - **Existing Resources:**
-  - OpenAI Secret: `arn:aws:secretsmanager:us-east-1:615821144597:secret:battle-quest/prod/openai-api-key-LdzRqt`
-  - Existing Lambda: `battle-quest-prod-askai`
-  - Existing Lambda: `battle-quest-prod-kvs`
-  - Existing DynamoDB: `battle-quest-kvs-prod`
+  - OpenAI Secret: `arn:aws:secretsmanager:us-east-1:615821144597:secret:btl-run/prod/openai-api-key-LdzRqt`
+  - Existing Lambda: `btl-run-prod-askai`
+  - Existing Lambda: `btl-run-prod-kvs`
+  - Existing DynamoDB: `btl-run-kvs-prod`
 
 ### Adding Resources
 Edit nested stack templates in `infrastructure/stacks/*.yaml` or add new nested stacks.

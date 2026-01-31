@@ -1,13 +1,13 @@
 ---
 name: openai-endpoint-test
-description: Tests live OpenAI calls through the Battle Quest AskAI endpoint and the API devtools AskAI route. Use when verifying real OpenAI traffic, reproducing DevTools AskAI behavior, or diagnosing endpoint request/response issues before or after deployment.
+description: Tests live OpenAI calls through the btl.run AskAI endpoint and the API devtools AskAI route. Use when verifying real OpenAI traffic, reproducing DevTools AskAI behavior, or diagnosing endpoint request/response issues before or after deployment.
 ---
 
 # OpenAI Endpoint Test
 
 ## Scope
 
-- Validate real OpenAI requests **through Battle Quest endpoints**, not directly to OpenAI.
+- Validate real OpenAI requests **through btl.run endpoints**, not directly to OpenAI.
 - Match **DevTools** behavior in local dev.
 - Validate **live AskAI Lambda** behavior after deployment.
 
@@ -26,7 +26,7 @@ description: Tests live OpenAI calls through the Battle Quest AskAI endpoint and
 2. Ensure the client base URL matches your API:
    - `VITE_API_BASE_URL=http://localhost:8787`
 3. Send a DevTools-equivalent request:
-   - `curl -v -X POST "http://localhost:8787/v1/dev/askai" -H "Content-Type: application/json" -d "{\"question\":\"What is Battle Quest?\",\"maxTokens\":200,\"temperature\":0.7}"`
+   - `curl -v -X POST "http://localhost:8787/v1/dev/askai" -H "Content-Type: application/json" -d "{\"question\":\"What is btl.run?\",\"maxTokens\":200,\"temperature\":0.7}"`
 4. Expect response fields:
    - `answer`, `rawOutput`, `attempts`, `usedFallback`
 
@@ -35,7 +35,7 @@ description: Tests live OpenAI calls through the Battle Quest AskAI endpoint and
 1. Set the real endpoint:
    - `ASKAI_ENDPOINT=https://<your-askai-lambda>.lambda-url.us-east-1.on.aws`
 2. Send a direct AskAI request (same structure the API uses):
-   - `curl -v -X POST "$ASKAI_ENDPOINT" -H "Content-Type: application/json" -d "{\"systemPrompt\":\"You are a helpful assistant. Output JSON only: { \\\"answer\\\": \\\"text\\\" }\",\"input\":\"Question: What is Battle Quest?\\n\\nAnswer:\",\"maxTokens\":200,\"temperature\":0.7}"`
+   - `curl -v -X POST "$ASKAI_ENDPOINT" -H "Content-Type: application/json" -d "{\"systemPrompt\":\"You are a helpful assistant. Output JSON only: { \\\"answer\\\": \\\"text\\\" }\",\"input\":\"Question: What is btl.run?\\n\\nAnswer:\",\"maxTokens\":200,\"temperature\":0.7}"`
 3. Expect response fields:
    - `output`, `tokensUsed`, `model`
 

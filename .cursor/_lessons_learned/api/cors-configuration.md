@@ -43,7 +43,7 @@ import * as apigatewayv2 from 'aws-cdk-lib/aws-apigatewayv2';
 
 const httpApi = new apigatewayv2.HttpApi(this, 'GameApi', {
   corsPreflight: {
-    allowOrigins: ['http://localhost:5173', 'https://battlequest.example.com'],
+    allowOrigins: ['http://localhost:5173', 'https://btlrun.example.com'],
     allowMethods: [
       apigatewayv2.CorsHttpMethod.GET,
       apigatewayv2.CorsHttpMethod.POST,
@@ -98,7 +98,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 const getAllowedOrigin = (requestOrigin: string | undefined): string => {
   const allowedOrigins = [
     'http://localhost:5173',
-    'https://battlequest.example.com',
+    'https://btlrun.example.com',
   ];
   if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
     return requestOrigin;

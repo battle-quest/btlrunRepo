@@ -93,7 +93,7 @@ function addItem(items: Item[], newItem: Omit<Item, 'id'>): Item[] {
 ))}
 ```
 
-**4. For Battle Quest log entries:**
+**4. For btl.run log entries:**
 
 ```tsx
 // Event log with sequence numbers

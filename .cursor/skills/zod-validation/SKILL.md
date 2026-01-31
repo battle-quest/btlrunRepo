@@ -3,7 +3,7 @@ name: zod-validation
 description: Validate data with zod schemas for type-safe runtime validation across API inputs, AI outputs, and state transitions. Use when parsing unknown data, validating AI responses, or implementing API request validation.
 ---
 
-# Zod Schema Validation for Battle Quest
+# Zod Schema Validation for btl.run
 
 ## Core Principle
 
@@ -119,9 +119,9 @@ export type MatchState = z.infer<typeof MatchStateSchema>;
 ## API Request Schemas
 
 ```typescript
-// packages/shared/src/schemas/api.ts
+// AskAi_KVS/shared/schemas/index.ts
 
-export const CreateMatchRequestSchema = z.object({
+export const CreateGameRequestSchema = z.object({
   mode: z.enum(['quick', 'standard', 'long']),
   theme: z.object({
     tone: z.enum(['classic', 'comedy', 'dark']),
@@ -156,7 +156,7 @@ export type SubmitActionRequest = z.infer<typeof SubmitActionRequestSchema>;
 ## AI Output Schemas
 
 ```typescript
-// packages/shared/src/schemas/ai.ts
+// AskAi_KVS/shared/schemas/index.ts
 
 export const EventOutputSchema = z.object({
   narration: z.string().min(10).max(2000),
@@ -422,8 +422,8 @@ export * from './match';
 export * from './api';
 export * from './ai';
 
-// services/api/src/handlers.ts - import and use
-import { CreateMatchRequestSchema, MatchStateSchema } from '@battlequest/shared';
+// backend/functions/api/src/main.rs - import schemas if using TypeScript validation
+// Or use serde for Rust-side validation
 
 async function createMatch(body: unknown): Promise<string> {
   const validated = CreateMatchRequestSchema.parse(body);
@@ -433,9 +433,9 @@ async function createMatch(body: unknown): Promise<string> {
 
 ## Checklist
 
-- [ ] All API inputs validated with zod
+- [ ] All API inputs validated (Zod for TypeScript, serde for Rust)
 - [ ] All AI outputs validated with retry logic
-- [ ] Schemas defined in packages/shared
+- [ ] Schemas defined in AskAi_KVS/shared/schemas/ (TypeScript)
 - [ ] TypeScript types inferred from schemas
 - [ ] Error messages formatted for API responses
 - [ ] Default values set where appropriate

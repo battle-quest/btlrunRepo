@@ -24,7 +24,7 @@ Use a structured documentation system with clear separation between living guide
 ## Documentation Structure
 
 ```
-BattleQuestRepo/
+btlrunRepo/
 ├── README.md                    # Main project overview (KEEP)
 ├── CHANGELOG.md                 # Version history and milestones (KEEP)
 ├── Claude.md                    # Agent context (KEEP)

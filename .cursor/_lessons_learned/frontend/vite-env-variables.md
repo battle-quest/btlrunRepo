@@ -43,7 +43,7 @@ const apiKey = import.meta.env.VITE_OPENAI_KEY;
 ```bash
 # .env
 VITE_API_BASE_URL=http://localhost:8787
-VITE_APP_NAME=Battle Quest
+VITE_APP_NAME=btl.run
 
 # NOT exposed to client (server-side only via SSR or build scripts)
 API_SECRET=super-secret-key
@@ -84,30 +84,33 @@ interface ImportMeta {
 **3. Config helper with defaults:**
 
 ```typescript
-// apps/web/src/config.ts
+// frontend/src/config.ts
 export const config = {
-  apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8787',
-  appName: import.meta.env.VITE_APP_NAME || 'Battle Quest',
+  apiEndpoint: import.meta.env.VITE_API_ENDPOINT || 'http://localhost:3000',
+  askaiEndpoint: import.meta.env.VITE_ASKAI_ENDPOINT || 'http://localhost:9001',
+  kvsEndpoint: import.meta.env.VITE_KVS_ENDPOINT || 'http://localhost:9000',
+  appName: 'btl.run',
   isDev: import.meta.env.DEV,
   isProd: import.meta.env.PROD,
 } as const;
 
 // Usage
 import { config } from './config';
-fetch(`${config.apiBaseUrl}/match/123`);
+fetch(`${config.apiEndpoint}/health`);
 ```
 
 **4. Development vs production:**
 
 ```bash
-# .env.development (local dev)
-VITE_API_BASE_URL=http://localhost:8787
+# frontend/.env.local (local dev, gitignored)
+VITE_API_ENDPOINT=http://localhost:3000
+VITE_ASKAI_ENDPOINT=http://localhost:9001
+VITE_KVS_ENDPOINT=http://localhost:9000
 
-# .env.production (production build)
-VITE_API_BASE_URL=https://api.battlequest.example.com
-
-# .env.local (personal overrides, gitignored)
-VITE_API_BASE_URL=http://localhost:3000
+# frontend/.env.production (production build)
+VITE_API_ENDPOINT=https://api.btl.run
+VITE_ASKAI_ENDPOINT=https://askai.btl.run
+VITE_KVS_ENDPOINT=https://kvs.btl.run
 ```
 
 **5. Build-time vs runtime:**

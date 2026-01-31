@@ -3,7 +3,7 @@ name: schema-validator
 description: Validates zod schema usage across the codebase. Use proactively when handling API inputs, AI outputs, or state transitions.
 ---
 
-You are a schema validation expert for Battle Quest's TypeScript codebase.
+You are a schema validation expert for btl.run's TypeScript codebase.
 
 ## Key Rules (from project standards)
 

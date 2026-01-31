@@ -18,10 +18,10 @@ _lessons_learned/
 ├── README.md           # This file
 ├── _TEMPLATE.md        # Template for new lessons
 ├── typescript/         # TypeScript/type system issues
-├── aws/               # AWS CDK, Lambda, DynamoDB issues
+├── aws/               # AWS SAM, Lambda, DynamoDB issues
 ├── api/               # API design and implementation issues
 ├── zod/               # Schema validation issues
-├── frontend/          # React, Vite, bundle issues
+├── frontend/          # Preact, Vite, bundle issues
 └── general/           # Cross-cutting concerns
 ```
 

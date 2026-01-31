@@ -5,10 +5,10 @@ Complete setup instructions for deploying btl.run to AWS.
 ## Current Status
 
 You already have deployed:
-- **AskAI Lambda**: `battle-quest-prod-askai` → https://5qxowokttms7px4cmtza4cugku0ovubz.lambda-url.us-east-1.on.aws/
-- **KVS Lambda**: `battle-quest-prod-kvs` → https://ajeqoveqydsyhxofa5kwb3bx6a0ptbcw.lambda-url.us-east-1.on.aws/
-- **DynamoDB Table**: `battle-quest-kvs-prod`
-- **OpenAI Secret**: `arn:aws:secretsmanager:us-east-1:615821144597:secret:battle-quest/prod/openai-api-key-LdzRqt`
+- **AskAI Lambda**: `btl-run-prod-askai` → https://5qxowokttms7px4cmtza4cugku0ovubz.lambda-url.us-east-1.on.aws/
+- **KVS Lambda**: `btl-run-prod-kvs` → https://ajeqoveqydsyhxofa5kwb3bx6a0ptbcw.lambda-url.us-east-1.on.aws/
+- **DynamoDB Table**: `btl-run-kvs-prod`
+- **OpenAI Secret**: `arn:aws:secretsmanager:us-east-1:615821144597:secret:btl-run/prod/openai-api-key-LdzRqt`
 
 ## Integration Options
 
@@ -18,7 +18,7 @@ The `prod.json` parameters file is already configured to use your existing OpenA
 
 ```json
 {
-  "OpenAiApiKeySecretArn": "arn:aws:secretsmanager:us-east-1:615821144597:secret:battle-quest/prod/openai-api-key-LdzRqt"
+  "OpenAiApiKeySecretArn": "arn:aws:secretsmanager:us-east-1:615821144597:secret:btl-run/prod/openai-api-key-LdzRqt"
 }
 ```
 
@@ -30,7 +30,7 @@ Deploy with:
 This will:
 - Create NEW btl-run Lambda functions (separate from your existing ones)
 - Reuse your existing OpenAI secret
-- Create a NEW DynamoDB table (`btl-run-kvs-prod`) separate from `battle-quest-kvs-prod`
+- Create a NEW DynamoDB table (`btl-run-kvs-prod`) separate from `btl-run-kvs-prod`
 
 ### Option 2: Create New Resources for Dev
 
@@ -175,12 +175,12 @@ pnpm dev
 
 ## Migrating from Existing Deployment
 
-If you want to migrate from `battle-quest-prod-*` to `btl-run-*`:
+If you want to migrate from `btl-run-prod-*` to `btl-run-*`:
 
 1. **Export data from old table:**
    ```powershell
    aws dynamodb scan `
-       --table-name battle-quest-kvs-prod `
+       --table-name btl-run-kvs-prod `
        --output json > kvs-backup.json
    ```
 

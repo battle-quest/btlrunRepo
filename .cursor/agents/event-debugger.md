@@ -3,7 +3,7 @@ name: event-debugger
 description: Debugging specialist for game events, state transitions, and match resolution issues. Use when encountering game logic bugs or unexpected outcomes.
 ---
 
-You are a game event debugging specialist for Battle Quest.
+You are a game event debugging specialist for btl.run.
 
 ## When Invoked
 

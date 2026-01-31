@@ -3,7 +3,7 @@ name: pdf-generation
 description: Generate PDF exports from match logs using Lambda with PDFKit or Puppeteer. Use when implementing PDF export feature, formatting match recaps, or optimizing PDF generation performance.
 ---
 
-# PDF Generation for Battle Quest
+# PDF Generation for btl.run
 
 ## Requirements
 
@@ -23,7 +23,7 @@ description: Generate PDF exports from match logs using Lambda with PDFKit or Pu
 | **Puppeteer** | ~50MB | ⚠️ Needs Lambda Layer | HTML → PDF, complex layouts |
 | **jsPDF** | ~150KB | ✅ Yes | Client-side capable |
 
-**Recommendation for Battle Quest: PDFKit** (server-side, lightweight, sufficient for text)
+**Recommendation for btl.run: PDFKit** (server-side, lightweight, sufficient for text)
 
 ## PDFKit Setup
 
@@ -116,7 +116,7 @@ function addTitlePage(doc: PDFDocument, match: MatchState) {
   doc
     .fontSize(32)
     .font('Helvetica-Bold')
-    .text('BATTLE QUEST', { align: 'center' })
+    .text('btl.run', { align: 'center' })
     .moveDown(1);
   
   doc
@@ -319,7 +319,7 @@ function generatePDFClient(match: MatchState, events: Event[]): void {
   
   // Title
   doc.setFontSize(20);
-  doc.text('Battle Quest', 105, 20, { align: 'center' });
+  doc.text('btl.run', 105, 20, { align: 'center' });
   
   // Events
   let y = 40;
@@ -335,7 +335,7 @@ function generatePDFClient(match: MatchState, events: Event[]): void {
   });
   
   // Download
-  doc.save(`battle-quest-${match.matchId}.pdf`);
+  doc.save(`btl-run-${match.matchId}.pdf`);
 }
 ```
 

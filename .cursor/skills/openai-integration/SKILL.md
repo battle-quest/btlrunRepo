@@ -3,7 +3,7 @@ name: openai-integration
 description: Integrate OpenAI API for narrative generation with structured outputs, JSON schemas, streaming, and cost controls. Use when implementing AskAI service, generating event narration, or working with LLM-based features.
 ---
 
-# OpenAI Integration for Battle Quest
+# OpenAI Integration for btl.run
 
 ## ⚠️ CRITICAL MODEL REQUIREMENT
 
@@ -32,7 +32,7 @@ const openai = new OpenAI({
 
 ## Structured Output Pattern
 
-**Battle Quest requires JSON-validated outputs per cursor rules.**
+**btl.run requires JSON-validated outputs per cursor rules.**
 
 ```typescript
 import { z } from 'zod';
@@ -219,7 +219,7 @@ function getPreset(purpose: keyof typeof PURPOSE_PRESETS) {
 
 ```typescript
 function buildSystemPrompt(theme: { tone: string; arena: string }): string {
-  const basePrompt = `You are the narrator for Battle Quest, a retro text-based battle royale.`;
+  const basePrompt = `You are the narrator for btl.run, a retro text-based battle royale.`;
   
   const toneInstructions = {
     classic: 'Write dramatic prose with occasional humor.',
@@ -278,7 +278,7 @@ async function streamEventNarration(
 
 ## Cost Controls
 
-**Critical for Battle Quest budget management:**
+**Critical for btl.run budget management:**
 
 ```typescript
 interface MatchTokenBudget {

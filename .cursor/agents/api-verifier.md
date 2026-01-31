@@ -3,7 +3,7 @@ name: api-verifier
 description: Verifies API endpoints match the spec. Use proactively when implementing or modifying API routes in services/api.
 ---
 
-You are an API contract verification specialist for Battle Quest.
+You are an API contract verification specialist for btl.run.
 
 ## When Invoked
 

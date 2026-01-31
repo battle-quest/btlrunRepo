@@ -1,7 +1,7 @@
 # btl.run Project Status
 
 **Last Updated:** January 30, 2026  
-**Repository:** https://github.com/battle-quest/btlrunRepo
+**Repository:** https://github.com/btl-run/btlrunRepo
 
 ## Setup Complete ✓
 
@@ -23,7 +23,7 @@ All infrastructure and tooling is configured and ready for development.
 ### Git Repository
 
 - **Status:** Initialized and pushed to GitHub
-- **Account:** battle-quest
+- **Account:** btl-run
 - **Commits:** 4 commits
   - Initial project setup
   - AskAI/KVS services, assets, UI mockups
@@ -67,16 +67,16 @@ All infrastructure and tooling is configured and ready for development.
 You have these resources already deployed:
 
 ```
-battle-quest-prod-askai      (Lambda, Node.js 20.x)
+btl-run-prod-askai      (Lambda, Node.js 20.x)
   └─ URL: https://5qxowokttms7px4cmtza4cugku0ovubz.lambda-url.us-east-1.on.aws/
 
-battle-quest-prod-kvs        (Lambda, Node.js 20.x)
+btl-run-prod-kvs        (Lambda, Node.js 20.x)
   └─ URL: https://ajeqoveqydsyhxofa5kwb3bx6a0ptbcw.lambda-url.us-east-1.on.aws/
 
-battle-quest-kvs-prod        (DynamoDB Table)
+btl-run-kvs-prod        (DynamoDB Table)
 
-battle-quest/prod/openai-api-key (Secrets Manager)
-  └─ ARN: arn:aws:secretsmanager:us-east-1:615821144597:secret:battle-quest/prod/openai-api-key-LdzRqt
+btl-run/prod/openai-api-key (Secrets Manager)
+  └─ ARN: arn:aws:secretsmanager:us-east-1:615821144597:secret:btl-run/prod/openai-api-key-LdzRqt
 ```
 
 These will remain untouched. New btl-run infrastructure will deploy alongside them.

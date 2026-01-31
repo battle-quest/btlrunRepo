@@ -3,7 +3,7 @@
     "Environment": "prod",
     "DomainName": "",
     "HostedZoneId": "",
-    "OpenAiApiKeySecretArn": "arn:aws:secretsmanager:us-east-1:615821144597:secret:battle-quest/prod/openai-api-key-LdzRqt",
+    "OpenAiApiKeySecretArn": "arn:aws:secretsmanager:us-east-1:615821144597:secret:btl-run/prod/openai-api-key-LdzRqt",
     "DefaultAiModel": "gpt-5-nano"
   },
   "Tags": {

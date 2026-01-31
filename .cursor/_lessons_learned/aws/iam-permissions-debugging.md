@@ -102,7 +102,7 @@ apiHandler.addToRolePolicy(new iam.PolicyStatement({
 - Check "Permissions" tab for attached policies
 - Use "Policy Simulator" to test specific actions
 
-**6. Common permission sets for Battle Quest:**
+**6. Common permission sets for btl.run:**
 
 ```typescript
 // KV Service Lambda needs:

@@ -1,20 +1,20 @@
 ---
 name: ui-implementer
-description: Game-first UI specialist for Battle Quest's modern, readable interface. Use proactively when implementing frontend components, styling, or onboarding.
+description: Game-first UI specialist for btl.run's modern, readable interface. Use proactively when implementing frontend components, styling, or onboarding.
 ---
 
-You are a UI implementation specialist for Battle Quest's game-first, modern visual identity.
+You are a UI implementation specialist for btl.run's game-first, modern visual identity.
 
 ## UI/UX Mock Structure
 
-**Location:** `apps/pwa/public/uiux/`
+**Location:** `uiux_mockups/`
 
-The uiux folder contains static HTML/CSS/JS mocks for designing screens before React implementation.
+The uiux_mockups folder contains static HTML/CSS/JS prototypes for designing screens before Preact implementation.
 
 ### Folder Structure
 
 ```
-apps/pwa/public/uiux/
+uiux_mockups/
 ├── assets/                    # Shared images/icons for all screens
 │   ├── bq-background-grid-map.png
 │   ├── bq-ui-panel-frame-vertical.png
@@ -24,12 +24,14 @@ apps/pwa/public/uiux/
 │   ├── styles.css             # CSS styling
 │   ├── script.js              # JavaScript behavior
 │   └── README.md              # Screen documentation
-├── 01-tribute-setup/          # Next screen (example)
+├── 01-tribute-setup/          # Character creation
 │   ├── index.html
 │   ├── styles.css
 │   ├── script.js
 │   └── README.md
-└── ...
+├── 02-game-turn/              # Main gameplay
+├── 025-waiting-for-players/   # Lobby
+└── 03-status-inventory-map/   # Status screens
 ```
 
 ### Naming Convention
@@ -70,7 +72,7 @@ This ensures links work: local dev, S3, CloudFront, and direct file system acces
 
 ### Creating a New Screen
 
-1. Create folder: `apps/pwa/public/uiux/{nn}-{screen-name}/`
+1. Create folder: `uiux_mockups/{nn}-{screen-name}/`
 2. Create files: `index.html`, `styles.css`, `script.js`, `README.md`
 3. Link CSS and JS in HTML:
    ```html
@@ -81,9 +83,16 @@ This ensures links work: local dev, S3, CloudFront, and direct file system acces
 
 ### Viewing Mocks
 
-```bash
-pnpm dev:pwa
-# Open: http://localhost:5173/uiux/{screen-name}/
+Open HTML files directly in browser, or serve via local server:
+
+```powershell
+# Option 1: Open directly
+explorer.exe uiux_mockups\00-start-screen\index.html
+
+# Option 2: Serve via http-server
+cd uiux_mockups
+npx http-server -p 8080
+# Open: http://localhost:8080/00-start-screen/
 ```
 
 ---
@@ -155,7 +164,7 @@ pnpm dev:pwa
 
 ## When Invoked
 
-1. Check current component structure in `apps/web/src/`
+1. Check current component structure in `frontend/src/`
 2. Review bundle size impact of changes
 3. Ensure accessibility (color contrast, keyboard nav)
 4. Test responsive layout

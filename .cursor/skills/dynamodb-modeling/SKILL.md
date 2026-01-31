@@ -3,11 +3,11 @@ name: dynamodb-modeling
 description: Design and implement DynamoDB single-table patterns with partition/sort keys, GSIs, optimistic locking, and batch operations. Use when modeling data for the KV service, implementing queries, or optimizing DynamoDB access patterns.
 ---
 
-# DynamoDB Data Modeling for Battle Quest
+# DynamoDB Data Modeling for btl.run
 
 ## Table Design
 
-**Single table: `battlequest_kv`**
+**Single table: `btlrun_kv`**
 
 Primary key:
 - `pk` (string) — partition key
@@ -25,8 +25,8 @@ Standard attributes:
 ```typescript
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 
-const table = new dynamodb.Table(this, 'BattleQuestKV', {
-  tableName: 'battlequest_kv',
+const table = new dynamodb.Table(this, 'btlrunKV', {
+  tableName: 'btlrun_kv',
   partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
   sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING },
   billingMode: dynamodb.BillingMode.PAY_PER_REQUEST, // On-demand for unpredictable traffic
@@ -88,7 +88,7 @@ import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 
 async function getMatchState(matchId: string) {
   const result = await dynamodb.send(new GetItemCommand({
-    TableName: 'battlequest_kv',
+    TableName: 'btlrun_kv',
     Key: marshall({ pk: `match#${matchId}`, sk: 'state' }),
   }));
   
@@ -109,7 +109,7 @@ async function updateMatchState(matchId: string, state: any, expectedVer?: numbe
   
   try {
     await dynamodb.send(new PutItemCommand({
-      TableName: 'battlequest_kv',
+      TableName: 'btlrun_kv',
       Item: marshall({
         pk: `match#${matchId}`,
         sk: 'state',
@@ -140,7 +140,7 @@ async function updateMatchState(matchId: string, state: any, expectedVer?: numbe
 ```typescript
 async function appendEventLog(matchId: string, seq: number, event: any) {
   await dynamodb.send(new PutItemCommand({
-    TableName: 'battlequest_kv',
+    TableName: 'btlrun_kv',
     Item: marshall({
       pk: `match#${matchId}`,
       sk: `log#${seq.toString().padStart(6, '0')}`,
@@ -158,7 +158,7 @@ import { QueryCommand } from '@aws-sdk/client-dynamodb';
 
 async function getEventLogs(matchId: string, afterSeq?: number, limit = 50) {
   const result = await dynamodb.send(new QueryCommand({
-    TableName: 'battlequest_kv',
+    TableName: 'btlrun_kv',
     KeyConditionExpression: 'pk = :pk AND sk >= :sk',
     ExpressionAttributeValues: marshall({
       ':pk': `match#${matchId}`,
@@ -185,7 +185,7 @@ import { BatchGetItemCommand } from '@aws-sdk/client-dynamodb';
 async function batchGetStates(matchIds: string[]) {
   const result = await dynamodb.send(new BatchGetItemCommand({
     RequestItems: {
-      'battlequest_kv': {
+      'btlrun_kv': {
         Keys: matchIds.map(id => marshall({
           pk: `match#${id}`,
           sk: 'state',
@@ -194,7 +194,7 @@ async function batchGetStates(matchIds: string[]) {
     },
   }));
   
-  return result.Responses?.['battlequest_kv']?.map(item => {
+  return result.Responses?.['btlrun_kv']?.map(item => {
     const unmarshalled = unmarshall(item);
     return JSON.parse(unmarshalled.v);
   }) || [];
@@ -208,7 +208,7 @@ import { UpdateItemCommand } from '@aws-sdk/client-dynamodb';
 
 async function incrementCounter(key: string, amount = 1): Promise<number> {
   const result = await dynamodb.send(new UpdateItemCommand({
-    TableName: 'battlequest_kv',
+    TableName: 'btlrun_kv',
     Key: marshall({ pk: key, sk: 'count' }),
     UpdateExpression: 'ADD #val :inc',
     ExpressionAttributeNames: { '#val': 'v' },
@@ -228,7 +228,7 @@ async function setRateLimit(userId: string, route: string, count: number, ttlSec
   const ttl = Math.floor(Date.now() / 1000) + ttlSeconds + 10; // +10s buffer
   
   await dynamodb.send(new PutItemCommand({
-    TableName: 'battlequest_kv',
+    TableName: 'btlrun_kv',
     Item: marshall({
       pk: `rate#${userId}`,
       sk: `${route}#${window}`,
@@ -246,7 +246,7 @@ import { DeleteItemCommand } from '@aws-sdk/client-dynamodb';
 
 async function deleteItem(pk: string, sk: string) {
   await dynamodb.send(new DeleteItemCommand({
-    TableName: 'battlequest_kv',
+    TableName: 'btlrun_kv',
     Key: marshall({ pk, sk }),
   }));
 }
@@ -299,7 +299,7 @@ async function putLargeValue(pk: string, sk: string, value: any) {
     const compressed = await gzipAsync(Buffer.from(json));
     
     await dynamodb.send(new PutItemCommand({
-      TableName: 'battlequest_kv',
+      TableName: 'btlrun_kv',
       Item: marshall({
         pk,
         sk,
@@ -311,7 +311,7 @@ async function putLargeValue(pk: string, sk: string, value: any) {
   } else {
     // Store uncompressed
     await dynamodb.send(new PutItemCommand({
-      TableName: 'battlequest_kv',
+      TableName: 'btlrun_kv',
       Item: marshall({ pk, sk, v: json, ct: 'application/json' }),
     }));
   }
@@ -319,7 +319,7 @@ async function putLargeValue(pk: string, sk: string, value: any) {
 
 async function getLargeValue(pk: string, sk: string) {
   const result = await dynamodb.send(new GetItemCommand({
-    TableName: 'battlequest_kv',
+    TableName: 'btlrun_kv',
     Key: marshall({ pk, sk }),
   }));
   
@@ -346,7 +346,7 @@ async function acquireLock(matchId: string, ttlSeconds = 30): Promise<boolean> {
   
   try {
     await dynamodb.send(new PutItemCommand({
-      TableName: 'battlequest_kv',
+      TableName: 'btlrun_kv',
       Item: marshall({
         pk: `lock#match#${matchId}`,
         sk: 'v',

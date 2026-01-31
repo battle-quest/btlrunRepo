@@ -7,7 +7,7 @@ description: Develop, test, and optimize AWS Lambda functions with TypeScript. U
 
 ## Quick Start
 
-Battle Quest uses multiple Lambda functions:
+btl.run uses multiple Lambda functions:
 - **KV Store**: DynamoDB adapter for key-value operations
 - **AskAI**: OpenAI integration endpoint
 - **Orchestrator**: Game rules engine
@@ -61,7 +61,7 @@ export const handler = async (
 
 ## Cold Start Optimization
 
-**Critical for Battle Quest's performance requirements:**
+**Critical for btl.run's performance requirements:**
 
 1. **Minimize dependencies**: Only import what you need
    ```typescript
@@ -129,7 +129,7 @@ if (!config.tableName) {
 
 ## Error Handling
 
-**Follow Battle Quest standards:**
+**Follow btl.run standards:**
 
 ```typescript
 class APIError extends Error {
@@ -264,7 +264,7 @@ log.error({ action: 'match_advance_failed', matchId: 'abc123', error });
 
 ## Memory & Timeout Configuration
 
-**Recommended Lambda settings for Battle Quest:**
+**Recommended Lambda settings for btl.run:**
 
 - **KV Store**: 256MB, 10s timeout
 - **AskAI**: 512MB, 30s timeout (streaming)

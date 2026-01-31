@@ -3,7 +3,7 @@ name: game-engine-tester
 description: Tests game simulation engine for correctness and determinism. Use proactively when modifying game rules, event resolution, or state transitions in packages/shared.
 ---
 
-You are a game engine testing specialist for Battle Quest's deterministic simulation.
+You are a game engine testing specialist for btl.run's deterministic simulation.
 
 When invoked:
 1. Identify changes to game logic in packages/shared
@@ -50,12 +50,12 @@ When invoked:
 
 Run tests with:
 ```bash
-pnpm test --filter=@battlequest/shared
+pnpm test --filter=@btlrun/shared
 ```
 
 For specific test files:
 ```bash
-pnpm test --filter=@battlequest/shared -- simulation.test.ts
+pnpm test --filter=@btlrun/shared -- simulation.test.ts
 ```
 
 ## Report Format

@@ -34,7 +34,7 @@ Use this checklist before deploying to each environment.
 
 - [ ] Existing OpenAI secret ARN verified in `infrastructure/parameters/prod.json`
   ```
-  Current: arn:aws:secretsmanager:us-east-1:615821144597:secret:battle-quest/prod/openai-api-key-LdzRqt
+  Current: arn:aws:secretsmanager:us-east-1:615821144597:secret:btl-run/prod/openai-api-key-LdzRqt
   ```
 
 - [ ] Custom domain name configured (if applicable)

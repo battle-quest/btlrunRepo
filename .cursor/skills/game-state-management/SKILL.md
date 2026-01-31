@@ -3,11 +3,11 @@ name: game-state-management
 description: Implement event-sourced game state with snapshots, reducers, idempotency, and deterministic simulation. Use when building the game engine, handling match state transitions, or implementing event replay.
 ---
 
-# Game State Management for Battle Quest
+# Game State Management for btl.run
 
 ## Core Architecture
 
-Battle Quest uses **event sourcing** with **snapshots**:
+btl.run uses **event sourcing** with **snapshots**:
 
 1. **Events** are append-only and immutable (source of truth)
 2. **Snapshots** are derived state for fast reads

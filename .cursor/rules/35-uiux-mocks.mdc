@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Cursor Rule: UI/UX Mocks
 
 **Applies to:** `apps/pwa/public/uiux/**`

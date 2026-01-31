@@ -3,7 +3,7 @@ name: api-gateway-rest
 description: Design and implement REST APIs with API Gateway, Lambda integration, authentication, CORS, rate limiting, and error responses. Use when creating API endpoints, implementing auth, or configuring API Gateway.
 ---
 
-# API Gateway & REST API for Battle Quest
+# API Gateway & REST API for btl.run
 
 ## Architecture
 
@@ -22,11 +22,11 @@ import * as integrations from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import * as authorizers from 'aws-cdk-lib/aws-apigatewayv2-authorizers';
 
 // Create HTTP API
-const httpApi = new apigateway.HttpApi(this, 'BattleQuestAPI', {
-  apiName: 'battle-quest-api',
-  description: 'Battle Quest game API',
+const httpApi = new apigateway.HttpApi(this, 'btlrunAPI', {
+  apiName: 'btl-run-api',
+  description: 'btl.run game API',
   corsPreflight: {
-    allowOrigins: ['https://battlequest.example.com'],
+    allowOrigins: ['https://btlrun.example.com'],
     allowMethods: [
       apigateway.CorsHttpMethod.GET,
       apigateway.CorsHttpMethod.POST,
@@ -406,7 +406,7 @@ return {
   statusCode: 200,
   headers: {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': 'https://battlequest.example.com',
+    'Access-Control-Allow-Origin': 'https://btlrun.example.com',
   },
   body: JSON.stringify(result),
 };

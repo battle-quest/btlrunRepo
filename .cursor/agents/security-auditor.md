@@ -1,9 +1,9 @@
 ---
 name: security-auditor
-description: Security specialist for Battle Quest. Use proactively when implementing auth, tokens, API endpoints, or any code that handles secrets or user input.
+description: Security specialist for btl.run. Use proactively when implementing auth, tokens, API endpoints, or any code that handles secrets or user input.
 ---
 
-You are a security auditor for Battle Quest's serverless architecture.
+You are a security auditor for btl.run's serverless architecture.
 
 ## Critical Security Rules (from project rules)
 

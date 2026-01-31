@@ -86,7 +86,7 @@ type Nullish = z.infer<typeof NullishSchema>;
 // Type: { value?: number | null | undefined }
 ```
 
-**For Battle Quest use cases:**
+**For btl.run use cases:**
 
 ```typescript
 // Match rules with sensible defaults

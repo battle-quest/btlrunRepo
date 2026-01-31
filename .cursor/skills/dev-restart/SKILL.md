@@ -1,11 +1,11 @@
 ---
 name: dev-restart
-description: Rebuild Battle Quest and restart all dev servers (web, API, mocks). Use when code changes require recompilation, when ports are blocked, or when the user asks to rebuild, recompile, restart dev servers, or run the app.
+description: Rebuild btl.run and restart all dev servers (web, API, mocks). Use when code changes require recompilation, when ports are blocked, or when the user asks to rebuild, recompile, restart dev servers, or run the app.
 ---
 
 # Dev Server Restart
 
-Safely rebuild and restart all Battle Quest dev servers after code changes.
+Safely rebuild and restart all btl.run dev servers after code changes.
 
 ## When to Use
 
@@ -31,7 +31,7 @@ pnpm dev:all
 
 ### Step 1: Stop Running Processes
 
-Battle Quest uses these ports:
+btl.run uses these ports:
 - **8787**: API server
 - **9000**: Mock KVS server
 - **9001**: Mock AskAI server
@@ -69,10 +69,10 @@ pnpm build
 ```
 
 This compiles:
-- `packages/shared` (TypeScript)
-- `apps/web` (TypeScript + Vite bundle)
-- `services/api` (esbuild bundle)
-- `services/pdf` (esbuild bundle)
+- `frontend/` (Preact + Vite bundle)
+- `AskAi_KVS/services/askai/` (TypeScript + esbuild)
+- `AskAi_KVS/services/kvs/` (TypeScript + esbuild)
+- `backend/` (Rust, via SAM with Docker)
 - `services/kvs` (esbuild bundle)
 - `services/askai` (esbuild bundle)
 - `infra` (TypeScript)
@@ -109,7 +109,7 @@ Then read the terminal output to verify:
 - All servers started successfully
 - No EADDRINUSE errors
 - Vite shows "Local: http://localhost:5173/" (or 5174, etc.)
-- API shows "Battle Quest API running at http://localhost:8787"
+- API shows "btl.run API running at http://localhost:8787"
 
 **Check terminal file**: Read from `terminals/<shell-id>.txt` to see actual output.
 
@@ -152,7 +152,7 @@ The `pnpm dev:all` command is a **long-running process**. It should:
 
 ## Project-Specific Notes
 
-- This skill is for **Battle Quest** monorepo only
+- This skill is for **btl.run** monorepo only
 - Workspace uses pnpm with workspace protocol
 - All TypeScript must be compiled before runtime
 - Mock servers simulate production KVS and AskAI endpoints

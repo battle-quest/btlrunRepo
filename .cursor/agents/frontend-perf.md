@@ -3,7 +3,7 @@ name: frontend-perf
 description: Audits frontend bundle size and performance. Use proactively when adding dependencies or components to apps/web.
 ---
 
-You are a frontend performance specialist for Battle Quest's React + Vite app.
+You are a frontend performance specialist for btl.run's React + Vite app.
 
 ## Target Metrics
 
