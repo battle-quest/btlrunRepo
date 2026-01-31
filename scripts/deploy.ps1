@@ -97,7 +97,7 @@ try {
 
 # Upload frontend to S3
 if (-not $SkipFrontendUpload) {
-    Write-Host "`n[5/5] Uploading frontend to S3..." -ForegroundColor Yellow
+    Write-Host "`n[5/6] Uploading frontend to S3..." -ForegroundColor Yellow
     
     # Get bucket name from stack outputs
     $stackName = "btl-run-$Environment"
@@ -116,7 +116,8 @@ if (-not $SkipFrontendUpload) {
         --delete `
         --cache-control "max-age=31536000,immutable" `
         --exclude "index.html" `
-        --exclude "*.json"
+        --exclude "*.json" `
+        --exclude "mocks/*"
 
     # Upload index.html and JSON with no-cache
     aws s3 cp "$ProjectRoot\frontend\dist\index.html" "s3://$bucketName/index.html" `
@@ -125,6 +126,35 @@ if (-not $SkipFrontendUpload) {
     Get-ChildItem "$ProjectRoot\frontend\dist\*.json" | ForEach-Object {
         aws s3 cp $_.FullName "s3://$bucketName/$($_.Name)" `
             --cache-control "no-cache,no-store,must-revalidate"
+    }
+
+    # Upload UI/UX mockups to /mocks/
+    Write-Host "`n[6/6] Uploading UI/UX mockups to S3..." -ForegroundColor Yellow
+    $MocksDir = Join-Path $ProjectRoot "uiux_mockups"
+    
+    if (Test-Path $MocksDir) {
+        Write-Host "Uploading mockups to s3://$bucketName/mocks/" -ForegroundColor Gray
+        
+        # Sync mockups with appropriate cache headers
+        # HTML files: no-cache for easy updates
+        # CSS/JS: short cache for iteration during development
+        # Assets (images): longer cache
+        aws s3 sync "$MocksDir" "s3://$bucketName/mocks" `
+            --delete `
+            --cache-control "max-age=3600" `
+            --exclude "*.html" `
+            --exclude "*.md"
+
+        # Upload HTML files with no-cache
+        Get-ChildItem "$MocksDir" -Recurse -Filter "*.html" | ForEach-Object {
+            $relativePath = $_.FullName.Substring($MocksDir.Length + 1).Replace("\", "/")
+            aws s3 cp $_.FullName "s3://$bucketName/mocks/$relativePath" `
+                --cache-control "no-cache,no-store,must-revalidate"
+        }
+        
+        Write-Host "Mockups uploaded successfully" -ForegroundColor Green
+    } else {
+        Write-Host "No mockups directory found, skipping..." -ForegroundColor DarkGray
     }
 
     # Invalidate CloudFront cache
@@ -140,7 +170,7 @@ if (-not $SkipFrontendUpload) {
             --paths "/*" | Out-Null
     }
 } else {
-    Write-Host "`n[5/5] Skipping frontend upload..." -ForegroundColor DarkGray
+    Write-Host "`n[5-6/6] Skipping frontend and mockups upload..." -ForegroundColor DarkGray
 }
 
 # Print outputs

@@ -49,6 +49,32 @@ Conditions:
     - !Not [!Equals [!Ref CertificateArn, ""]]
 
 Resources:
+  # CloudFront Function to rewrite /mocks/folder/ to /mocks/folder/index.html
+  # This is needed because S3 + OAC doesn't support default index documents
+  MocksIndexFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub "btl-run-mocks-index-${Environment}"
+      AutoPublish: true
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          var uri = request.uri;
+          
+          // If URI ends with / or has no extension, append index.html
+          if (uri.endsWith('/')) {
+            request.uri = uri + 'index.html';
+          } else if (!uri.includes('.')) {
+            // No file extension - treat as directory
+            request.uri = uri + '/index.html';
+          }
+          
+          return request;
+        }
+      FunctionConfig:
+        Comment: Rewrite mocks directory requests to index.html
+        Runtime: cloudfront-js-2.0
+
   # CloudFront Origin Access Control for S3
   CloudFrontOAC:
     Type: AWS::CloudFront::OriginAccessControl
@@ -123,8 +149,30 @@ Resources:
           CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6  # Managed-CachingOptimized
           ResponseHeadersPolicyId: 67f7725c-6f97-4210-82d7-5512b31e9d03  # Managed-SecurityHeadersPolicy
 
-        # API behavior
+        # Cache behaviors (order matters - more specific patterns first)
         CacheBehaviors:
+          # Static mockups - no SPA fallback, serve files directly
+          # Note: CustomErrorResponses is distribution-wide, but mockups should
+          # exist as actual files. If a mock file is missing, it will fall back
+          # to index.html. Ensure all mock files are deployed.
+          - PathPattern: /mocks/*
+            TargetOriginId: S3Origin
+            ViewerProtocolPolicy: redirect-to-https
+            Compress: true
+            AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+            CachedMethods:
+              - GET
+              - HEAD
+            # Use short TTL for mockups to allow easy iteration
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6  # Managed-CachingOptimized
+            ResponseHeadersPolicyId: 67f7725c-6f97-4210-82d7-5512b31e9d03
+            FunctionAssociations:
+              - EventType: viewer-request
+                FunctionARN: !GetAtt MocksIndexFunction.FunctionARN
+
           - PathPattern: /api/*
             TargetOriginId: ApiOrigin
             ViewerProtocolPolicy: redirect-to-https
