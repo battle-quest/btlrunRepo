@@ -173,7 +173,7 @@ npx http-server -p 8080
 ## Testing UI Changes
 
 After implementing:
-1. Run `pnpm dev:web`
+1. Run `cd frontend && pnpm dev`
 2. Open http://localhost:5173 in Browser tool
 3. Take screenshot to verify visual appearance
 4. Check console for errors

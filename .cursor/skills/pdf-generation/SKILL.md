@@ -28,7 +28,9 @@ description: Generate PDF exports from match logs using Lambda with PDFKit or Pu
 ## PDFKit Setup
 
 ```typescript
-// services/pdf/src/index.ts
+// Future: backend/functions/pdf/src/main.rs (Rust)
+// Or: AskAi_KVS/services/pdf/src/index.ts (TypeScript)
+// Example TypeScript implementation:
 import PDFDocument from 'pdfkit';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
@@ -253,16 +255,18 @@ async function cleanupWithAI(events: Event[]): Promise<string[]> {
 
 **PDFs can be large; optimize Lambda memory:**
 
-```typescript
-// CDK
-new lambda.Function(this, 'PDFGenerator', {
-  runtime: lambda.Runtime.NODEJS_20_X,
-  memorySize: 1024, // 1GB for large PDFs
-  timeout: cdk.Duration.seconds(60),
-  environment: {
-    EXPORT_BUCKET: exportBucket.bucketName,
-  },
-});
+```yaml
+# SAM template (when implementing PDF service)
+PDFFunction:
+  Type: AWS::Serverless::Function
+  Properties:
+    FunctionName: !Sub "btl-run-pdf-${Environment}"
+    Runtime: nodejs20.x
+    MemorySize: 1024  # 1GB for large PDFs
+    Timeout: 60
+    Environment:
+      Variables:
+        EXPORT_BUCKET: !Ref ExportBucket
 ```
 
 **Stream large PDFs to S3:**
@@ -298,13 +302,17 @@ async function streamPDFToS3(matchId: string, match: MatchState): Promise<string
 
 **Auto-delete old exports:**
 
-```typescript
-// CDK
-exportBucket.addLifecycleRule({
-  id: 'delete-old-exports',
-  prefix: 'exports/',
-  expiration: cdk.Duration.days(30), // Delete after 30 days
-});
+```yaml
+# SAM template - S3 bucket with lifecycle rule
+ExportBucket:
+  Type: AWS::S3::Bucket
+  Properties:
+    LifecycleConfiguration:
+      Rules:
+        - Id: delete-old-exports
+          Status: Enabled
+          Prefix: exports/
+          ExpirationInDays: 30
 ```
 
 ## Alternative: Client-Side PDF (jsPDF)
@@ -370,7 +378,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 ## Testing Locally
 
 ```typescript
-// services/pdf/src/local.ts
+// When implementing: AskAi_KVS/services/pdf/src/local.ts
 import { generateMatchPDF } from './index';
 
 const testMatchId = 'test-match-123';

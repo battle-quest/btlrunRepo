@@ -65,27 +65,45 @@ A hyper-efficient PWA game built with Preact, Rust Lambda, and AWS infrastructur
 
 ```
 btlrunRepo/
-├── .cursor/rules/       # Cursor AI agent configuration
+├── .cursor/             # Cursor AI configuration
+│   ├── agents/          # 13 specialized task agents
+│   ├── skills/          # 12 reusable how-to guides
+│   ├── rules/           # 12 coding standards
+│   └── _lessons_learned/ # 15 technical patterns
 ├── frontend/            # Preact PWA
 │   ├── src/             # Source code
 │   ├── public/          # Static assets
-│   └── dist/            # Build output
+│   └── dist/            # Build output (gitignored)
 ├── backend/             # Rust Lambda workspace
 │   ├── functions/api/   # Game API Lambda handler
-│   └── shared/          # Shared library
+│   └── shared/          # Shared Rust library
 ├── AskAi_KVS/           # TypeScript Lambda services
 │   ├── services/askai/  # OpenAI wrapper service
 │   ├── services/kvs/    # Key-value storage service
-│   └── shared/          # Shared utilities & clients
+│   ├── shared/          # Shared clients & schemas
+│   ├── mocks/           # Local dev mock servers
+│   └── examples/        # Usage examples
 ├── infrastructure/      # AWS SAM templates
-│   ├── template.yaml    # Root template
-│   ├── stacks/          # Nested stacks
-│   │   ├── api.yaml     # Rust game API
-│   │   ├── services.yaml # AskAI + KVS
+│   ├── template.yaml    # Root orchestrator
+│   ├── stacks/          # Nested CloudFormation stacks
+│   │   ├── services.yaml # AskAI + KVS + DynamoDB
+│   │   ├── api.yaml     # Rust game API + HTTP API Gateway
 │   │   ├── storage.yaml # S3 buckets
-│   │   └── cdn.yaml     # CloudFront
-│   └── parameters/      # Environment configs
-└── scripts/             # Deployment scripts
+│   │   └── cdn.yaml     # CloudFront + Route 53
+│   └── parameters/      # Environment configs (dev, prod)
+├── scripts/             # PowerShell deployment automation
+├── uiux_mockups/        # HTML/CSS/JS UI prototypes
+│   ├── assets/          # Shared images for mockups
+│   ├── 00-start-screen/
+│   ├── 01-tribute-setup/
+│   ├── 02-game-turn/
+│   └── 03-status-inventory-map/
+├── assets/              # Game UI assets (images, icons)
+├── docs/                # Project documentation
+│   ├── guides/          # Living how-to guides
+│   ├── history/         # Dated session summaries
+│   └── spec/            # Game specification (future)
+└── Documentation files  # README, ARCHITECTURE, SETUP, etc.
 ```
 
 ## Quick Start

@@ -121,7 +121,6 @@ AskAiFunction:
     Architectures: [arm64]
     Handler: index.handler
     CodeUri: ../../AskAi_KVS/services/askai
-import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 ```
 
 ## Testing Changes

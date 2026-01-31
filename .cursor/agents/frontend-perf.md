@@ -3,7 +3,7 @@ name: frontend-perf
 description: Audits frontend bundle size and performance. Use proactively when adding dependencies or components to frontend/.
 ---
 
-You are a frontend performance specialist for btl.run's React + Vite app.
+You are a frontend performance specialist for btl.run's Preact + Vite PWA.
 
 ## Target Metrics
 
@@ -23,12 +23,12 @@ You are a frontend performance specialist for btl.run's React + Vite app.
 
 | Component | Target Size |
 |-----------|-------------|
-| TailwindCSS (purged) | ~30KB |
-| Web font (JetBrains Mono) | ~20KB |
-| React + core libs | ~50KB |
-| App code | ~80KB |
+| CSS (global styles) | ~2KB |
+| Preact runtime | ~3KB |
+| App code | ~15KB |
+| PWA assets | ~20KB |
 | SVG icons (inlined) | ~2KB |
-| **Total** | **<200KB** |
+| **Total** | **~40KB** (actual) |
 
 ## Performance Checklist
 
@@ -53,11 +53,11 @@ You are a frontend performance specialist for btl.run's React + Vite app.
 - [ ] No heavy animation libraries
 - [ ] `backdrop-filter` for glassmorphism
 
-### React Performance:
-- [ ] Virtualized lists for long logs
-- [ ] Memoization where appropriate
+### Preact Performance:
+- [ ] Virtualized lists for long logs (when needed)
+- [ ] Memoization where appropriate (`useMemo`, `useCallback`)
 - [ ] No unnecessary re-renders on state change
-- [ ] Pause-on-hover for auto-scroll
+- [ ] Efficient state updates
 
 ## Analysis Commands
 

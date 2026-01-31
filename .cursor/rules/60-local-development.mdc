@@ -5,32 +5,69 @@ alwaysApply: true
 # Cursor Rule: Local Development
 
 ## Dev Servers
-- Web: `pnpm dev:web` → http://localhost:5173
-- API: `pnpm dev:api` → http://localhost:8787
-- SAM Lambda: `pnpm sam:local` → http://localhost:3000 (requires Docker)
 
-## Environment
-- Copy `.env.example` to `.env` before first run
-- Required vars: `VITE_API_BASE_URL`, `KVS_ENDPOINT`, `ASKAI_ENDPOINT`, `API_HMAC_SECRET`
+**Frontend (Preact PWA):**
+```powershell
+cd frontend
+pnpm install
+pnpm dev  # → http://localhost:5173
+```
+
+**TypeScript Services (Mock Servers):**
+```powershell
+cd AskAi_KVS
+
+# Terminal 1: KVS Mock
+npx tsx mocks/kvs-server.ts  # → http://localhost:9000
+
+# Terminal 2: AskAI Mock
+npx tsx mocks/askai-server.ts  # → http://localhost:9001
+```
+
+**Rust Game API (Local Lambda):**
+```powershell
+cd backend
+cargo lambda watch  # → http://localhost:9000/lambda-url/api
+```
+
+## Environment Setup
+
+**Frontend:**
+- Copy `frontend/.env.example` to `frontend/.env.local`
+- Set endpoints to local mocks or deployed URLs
+
+**Backend/Services:**
+- Copy `.env.example` to `.env` (root)
+- Configure service endpoints
 
 ## Browser Debugging
+
 Cursor Browser tool can:
-- View pages at localhost:5173 when Vite is running
+- Navigate to http://localhost:5173 when Vite is running
 - Take screenshots
 - Read console messages
 - Interact with elements
 
-## VS Code Debug Profiles
-- `Debug Web (Chrome)` — Vite + Chrome DevTools
-- `Debug Web + API (Dev Servers)` — Both servers + Chrome
-
 ## Lambda Testing
-SAM CLI installed. For local Lambda:
-1. Ensure Docker Desktop is running
-2. Run `pnpm sam:local`
-3. Test at http://localhost:3000
+
+### Option 1: Local Mock Servers (Recommended)
+Use the mock servers in `AskAi_KVS/mocks/` for development without AWS.
+
+### Option 2: SAM Local
+For testing actual Lambda handlers:
+```powershell
+cd infrastructure
+sam build --use-container
+sam local start-api  # → http://localhost:3000
+# Requires Docker running
+```
+
+### Option 3: Deployed Endpoints
+Point local frontend to deployed Lambda endpoints in `.env.local`.
 
 ## Hot Reload
-- Vite: automatic on file save
-- API: tsx watch mode, restarts on save
-- SAM: rebuild required after code changes
+
+- **Vite**: Automatic on file save
+- **Mock servers**: Automatic (tsx watch mode)
+- **Rust Lambda**: Automatic with `cargo lambda watch`
+- **SAM local**: Manual rebuild required

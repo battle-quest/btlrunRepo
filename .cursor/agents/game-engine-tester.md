@@ -49,13 +49,19 @@ When invoked:
 ## Test Execution
 
 Run tests with:
-```bash
-pnpm test --filter=@btlrun/shared
+```powershell
+# For Rust game logic
+cd backend
+cargo test
+
+# For TypeScript utilities
+cd AskAi_KVS/shared
+pnpm test  # (when tests are added)
 ```
 
 For specific test files:
-```bash
-pnpm test --filter=@btlrun/shared -- simulation.test.ts
+```powershell
+cargo test simulation_tests
 ```
 
 ## Report Format

@@ -22,18 +22,35 @@ Standard attributes:
 
 ## SAM Table Definition
 
-```typescript
-import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-
-const table = new dynamodb.Table(this, 'btlrunKV', {
-  tableName: 'btlrun_kv',
-  partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
-  sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING },
-  billingMode: dynamodb.BillingMode.PAY_PER_REQUEST, // On-demand for unpredictable traffic
-  timeToLiveAttribute: 'ttl',
-  pointInTimeRecovery: true,
-  removalPolicy: cdk.RemovalPolicy.RETAIN, // Protect production data
-});
+```yaml
+# infrastructure/stacks/services.yaml (example)
+KVSTable:
+  Type: AWS::DynamoDB::Table
+  DeletionPolicy: Retain           # Protect production data
+  UpdateReplacePolicy: Retain
+  Properties:
+    TableName: !Sub "btl-run-kvs-${Environment}"
+    BillingMode: PAY_PER_REQUEST   # On-demand for unpredictable traffic
+    AttributeDefinitions:
+      - AttributeName: pk
+        AttributeType: S
+      - AttributeName: sk
+        AttributeType: S
+    KeySchema:
+      - AttributeName: pk
+        KeyType: HASH
+      - AttributeName: sk
+        KeyType: RANGE
+    TimeToLiveSpecification:
+      AttributeName: ttl
+      Enabled: true
+    PointInTimeRecoverySpecification:
+      PointInTimeRecoveryEnabled: true
+    Tags:
+      - Key: Project
+        Value: btl-run
+      - Key: Environment
+        Value: !Ref Environment
 ```
 
 ## Key Naming Conventions

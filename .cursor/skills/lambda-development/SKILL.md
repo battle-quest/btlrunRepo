@@ -17,10 +17,12 @@ btl.run uses multiple Lambda functions:
 ## Project Structure
 
 ```
-services/
-├── api/          # Orchestrator & Auth handlers
-├── pdf/          # PDF generator
-└── (add more as needed)
+backend/functions/         # Rust Lambda functions
+└── api/                  # Game API handler
+
+AskAi_KVS/services/       # TypeScript Lambda functions
+├── askai/                # OpenAI wrapper
+└── kvs/                  # DynamoDB key-value storage
 ```
 
 ## Lambda Handler Pattern
@@ -277,13 +279,14 @@ log.error({ action: 'match_advance_failed', matchId: 'abc123', error });
 - **Auth**: 128MB, 3s timeout
 
 Set in SAM template:
-```typescript
-new lambda.Function(this, 'KVFunction', {
-  runtime: lambda.Runtime.NODEJS_20_X,
-  memorySize: 256,
-  timeout: cdk.Duration.seconds(10),
-  // ...
-});
+```yaml
+MyFunction:
+  Type: AWS::Serverless::Function
+  Properties:
+    Runtime: nodejs20.x
+    MemorySize: 256
+    Timeout: 10
+    # ...
 ```
 
 ## Deployment Checklist
