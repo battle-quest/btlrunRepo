@@ -80,10 +80,12 @@ Never create .md files in root directory. Use this structure:
 
 | Type | Location |
 |------|----------|
-| **Architecture docs** | Root: `README.md`, `ARCHITECTURE.md`, `SETUP.md`, etc. |
-| **Version history** | `CHANGELOG.md` (when created) |
-| **Technical lessons** | `.cursor/_lessons_learned/category/` |
-| **Integration guides** | `INTEGRATION.md`, `DEPLOYMENT-CHECKLIST.md` |
+| **Essential docs** | Root: `README.md`, `ARCHITECTURE.md`, `SETUP.md` |
+| **Living guides** | `docs/guides/{topic}.md` |
+| **Historical notes** | `docs/history/YYYY-MM-DD-{description}.md` |
+| **Version history** | `CHANGELOG.md` (when releasing versions) |
+| **Technical lessons** | `.cursor/_lessons_learned/{category}/` |
+| **Game spec** | `docs/spec/` (when created) |
 
 ---
 

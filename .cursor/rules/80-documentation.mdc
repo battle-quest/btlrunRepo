@@ -6,7 +6,7 @@ alwaysApply: true
 
 # Cursor Rule: Documentation
 
-**Critical**: btl.run uses flat, focused documentation. No session summaries, no redundant files.
+btl.run uses organized, focused documentation with clear separation between living guides and historical snapshots.
 
 ## Documentation Structure
 
@@ -19,9 +19,17 @@ btlrunRepo/
 ├── DEPLOYMENT-CHECKLIST.md      # Pre-deploy verification
 ├── STATUS.md                    # Current status
 ├── Claude.md                    # AI agent context
-├── CHANGELOG.md                 # (create when versions released)
+├── CHANGELOG.md                 # Version history (create when releasing)
+├── docs/
+│   ├── guides/                  # Living operational guides
+│   │   ├── README.md
+│   │   └── {topic}.md           # Create as needed
+│   ├── history/                 # Historical session notes
+│   │   ├── README.md
+│   │   └── YYYY-MM-DD-{description}.md
+│   └── spec/                    # Game specification
 └── .cursor/
-    └── _lessons_learned/        # Technical pitfalls
+    └── _lessons_learned/        # Technical debugging patterns
         ├── aws/
         ├── typescript/
         ├── frontend/
@@ -30,58 +38,72 @@ btlrunRepo/
 
 ## Rules
 
-### 1. Root Directory - Essential Files Only
+### 1. Root Directory - Essential Reference Docs
 
-**NEVER create these:**
+**Only these belong in root:**
+- ✅ README.md, ARCHITECTURE.md, SETUP.md (essential references)
+- ✅ INTEGRATION.md, DEPLOYMENT-CHECKLIST.md, STATUS.md (setup docs)
+- ✅ Claude.md (AI context)
+- ✅ CHANGELOG.md (version history when releasing)
+- ✅ Standard files (.gitignore, package.json, etc.)
+
+**NEVER create in root:**
 - ❌ `SESSION_SUMMARY.md`
 - ❌ `COMPLETION_NOTES.md`
 - ❌ `IMPLEMENTATION_SUMMARY.md`
-- ❌ `FILE_INVENTORY.md`
-- ❌ Any session/status summaries
+- ❌ Any other status/summary files
 
-**Only these belong in root:**
-- ✅ README.md, ARCHITECTURE.md, SETUP.md (existing)
-- ✅ INTEGRATION.md, DEPLOYMENT-CHECKLIST.md, STATUS.md (existing)
-- ✅ Claude.md (AI context)
-- ✅ CHANGELOG.md (when creating version releases)
-- ✅ Standard files (.gitignore, package.json, etc.)
+### 2. Living Guides - `docs/guides/`
 
-### 2. Update Existing Docs, Don't Create New
+**Purpose:** Current, maintained how-to documentation
 
-When you have information to document:
+**Create here when:**
+- Documenting how to use a feature
+- Writing detailed operational procedures
+- Creating onboarding materials
+- Explaining complex workflows
 
-```
-┌─ Is this setup/deployment information?
-│  └─ YES → Update SETUP.md or DEPLOYMENT-CHECKLIST.md
-│
-├─ Is this architectural information?
-│  └─ YES → Update ARCHITECTURE.md
-│
-├─ Is this integration information?
-│  └─ YES → Update INTEGRATION.md
-│
-├─ Is this status/progress information?
-│  └─ YES → Update STATUS.md
-│
-├─ Is this a version milestone?
-│  └─ YES → Create/update CHANGELOG.md
-│
-└─ Is this a technical lesson?
-   └─ YES → .cursor/_lessons_learned/category/name.md
-```
+**Examples:**
+- `docs/guides/testing-workflow.md`
+- `docs/guides/game-mechanics-explained.md`
+- `docs/guides/debugging-techniques.md`
 
-### 3. Technical Lessons - `.cursor/_lessons_learned/`
+**Maintenance:**
+- Keep these updated as system evolves
+- Delete when obsolete
+- Consolidate overlapping guides
 
-**Purpose**: Capture debugging solutions and patterns to prevent repeated mistakes
+### 3. Historical Notes - `docs/history/`
+
+**Purpose:** Dated snapshots of major sessions and decisions
+
+**Create here when:**
+- Completing a major implementation phase
+- Making significant architectural decisions
+- Finishing a milestone
+- Documenting complex problem-solving
+
+**Format:**
+- Filename: `YYYY-MM-DD-description.md`
+- Length: 100-300 lines (concise)
+- Style: Bullet points, not paragraphs
+- Content: Decisions and outcomes, not code walkthrough
+
+**Important:**
+- These are historical snapshots - never update after creation
+- Check `docs/history/README.md` - update existing if same day/topic
+- Add entry to timeline in `docs/history/README.md`
+
+### 4. Technical Lessons - `.cursor/_lessons_learned/`
+
+**Purpose:** Capture debugging solutions to prevent repeated mistakes
 
 **Create here when:**
 - Solving a non-obvious problem
 - Documenting a recurring issue
-- Capturing a best practice from experience
+- Capturing a technical best practice
 
-**Example**:
-- `.cursor/_lessons_learned/aws/sam-nested-stacks.md`
-- `.cursor/_lessons_learned/frontend/vite-env-variables.md`
+**Categories:** aws/, typescript/, frontend/, api/, zod/, general/
 
 ## Documentation Quality
 
@@ -136,20 +158,25 @@ SETUP.md          → "Here's how to deploy..." (same info again)
 
 ## Checklist Before Creating New File
 
+## Checklist Before Creating New Doc
+
 Before creating ANY new .md file:
 
-- [ ] Is there an existing file where this belongs?
-- [ ] Am I creating a session summary? (If yes, STOP - update existing docs instead)
-- [ ] Is this information already documented elsewhere?
-- [ ] Is this file truly necessary or just convenient?
-- [ ] Will this file stay current or become obsolete quickly?
+- [ ] Does this belong in an existing root doc? (README, SETUP, ARCHITECTURE, etc.)
+- [ ] If it's a how-to, should it go in `docs/guides/`?
+- [ ] If it's historical, should it go in `docs/history/YYYY-MM-DD-name.md`?
+- [ ] If it's a technical lesson, should it go in `.cursor/_lessons_learned/`?
+- [ ] Am I duplicating existing information?
+- [ ] Will I maintain this or will it become stale?
 
-**When in doubt**: Update an existing file instead of creating a new one.
+**When in doubt:** Update an existing file instead of creating a new one.
 
 ## btl.run Documentation Philosophy
 
-- **Flat structure** - Essential files in root
-- **Living documents** - Keep updated, no historical archives
-- **No summaries** - Work speaks through commits and code
-- **Lessons learned** - Only technical debugging insights
+- **Organized hierarchy** - Root (essential), docs/guides/ (how-to), docs/history/ (dated snapshots)
+- **Living documents** - Root docs and guides stay current
+- **Historical snapshots** - docs/history/ captures major milestones (never updated)
+- **Technical lessons** - `.cursor/_lessons_learned/` for debugging patterns
 - **One source of truth** - Each topic has ONE authoritative file
+- **Dated history** - All historical notes include YYYY-MM-DD in filename
+- **No session summaries in root** - Use docs/history/ instead
