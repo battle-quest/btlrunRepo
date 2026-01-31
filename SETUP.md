@@ -80,9 +80,11 @@ aws secretsmanager put-secret-value `
 1. **Install prerequisites** (all installed):
    - AWS CLI configured
    - SAM CLI
-   - Rust + cargo-lambda  
+   - Rust + cargo-lambda (pip installed)
    - Node.js + pnpm
-   - Docker
+   - Docker (required for SAM builds)
+   
+   **Note:** For Rust Lambda builds, SAM uses Docker (`--use-container` flag) which handles cross-compilation automatically. This is the recommended approach and doesn't require Zig locally.
 
 2. **Configure OpenAI secret** (see options above)
 
