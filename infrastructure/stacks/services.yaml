@@ -109,7 +109,6 @@ Resources:
             - "*"
           AllowMethods:
             - POST
-            - OPTIONS
           AllowOrigins:
             - "*"
       Tags:
@@ -136,12 +135,7 @@ Resources:
           AllowHeaders:
             - "*"
           AllowMethods:
-            - GET
-            - POST
-            - PUT
-            - PATCH
-            - DELETE
-            - OPTIONS
+            - "*"
           AllowOrigins:
             - "*"
       Tags:
@@ -168,13 +162,13 @@ Resources:
 Outputs:
   AskAiFunctionUrl:
     Description: AskAI Function URL endpoint
-    Value: !GetAtt AskAiFunction.FunctionUrl
+    Value: !GetAtt AskAiFunctionUrl.FunctionUrl
     Export:
       Name: !Sub "${AWS::StackName}-AskAiUrl"
 
   KVSFunctionUrl:
     Description: KVS Function URL endpoint
-    Value: !GetAtt KVSFunction.FunctionUrl
+    Value: !GetAtt KVSFunctionUrl.FunctionUrl
     Export:
       Name: !Sub "${AWS::StackName}-KvsUrl"
 
