@@ -64,9 +64,10 @@ This project runs on Windows with PowerShell. Always use PowerShell-compatible s
 **Frontend Development:**
 Copy `frontend/.env.example` to `frontend/.env.local`:
 ```powershell
-VITE_API_ENDPOINT=http://localhost:3000
-VITE_ASKAI_ENDPOINT=http://localhost:9001
-VITE_KVS_ENDPOINT=http://localhost:9000
+# For local development with mock servers
+VITE_API_ENDPOINT=http://localhost:9000     # Rust Lambda (cargo lambda watch)
+VITE_ASKAI_ENDPOINT=http://localhost:9001   # AskAI mock
+VITE_KVS_ENDPOINT=http://localhost:9002     # KVS mock (PORT=9002)
 ```
 
 **Backend/Services:**

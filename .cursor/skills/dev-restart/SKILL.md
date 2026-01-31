@@ -73,11 +73,11 @@ Build all components:
 # Rust builds via SAM during deployment
 ```
 
-This compiles:
-- `frontend/` (Preact + Vite bundle)
-- `AskAi_KVS/services/askai/` (TypeScript + esbuild)
-- `AskAi_KVS/services/kvs/` (TypeScript + esbuild)
-- `backend/` (Rust, via SAM with Docker)
+Build outputs:
+- `frontend/dist/` (Preact + Vite bundle)
+- `AskAi_KVS/services/askai/dist/` (TypeScript + esbuild)
+- `AskAi_KVS/services/kvs/dist/` (TypeScript + esbuild)
+- `backend/target/lambda/` (Rust, via SAM with Docker)
 - `services/kvs` (esbuild bundle)
 - `services/askai` (esbuild bundle)
 - `infra` (TypeScript)

@@ -97,6 +97,7 @@ btlrunRepo/
 │   ├── 00-start-screen/
 │   ├── 01-tribute-setup/
 │   ├── 02-game-turn/
+│   ├── 025-waiting-for-players/
 │   └── 03-status-inventory-map/
 ├── assets/              # Game UI assets (images, icons)
 ├── docs/                # Project documentation

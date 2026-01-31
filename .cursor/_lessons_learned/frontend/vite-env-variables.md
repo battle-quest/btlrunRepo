@@ -4,7 +4,7 @@ category: frontend
 severity: medium
 keywords: [vite, env, environment, VITE_, process.env, import.meta]
 related_rules: [60-local-development.mdc]
-related_skills: [react-vite-performance]
+related_skills: [preact-vite-performance]
 created: 2026-01-24
 ---
 

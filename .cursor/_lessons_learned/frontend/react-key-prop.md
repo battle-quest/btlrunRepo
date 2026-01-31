@@ -4,7 +4,7 @@ category: frontend
 severity: medium
 keywords: [react, key, list, map, reconciliation, performance, warning]
 related_rules: []
-related_skills: [react-vite-performance]
+related_skills: [preact-vite-performance]
 created: 2026-01-24
 ---
 

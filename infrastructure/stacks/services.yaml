@@ -185,13 +185,13 @@ Resources:
 Outputs:
   AskAiFunctionUrl:
     Description: AskAI Function URL endpoint
-    Value: !GetAtt AskAiFunctionUrl.FunctionUrl
+    Value: !GetAtt AskAiFunction.FunctionUrl
     Export:
       Name: !Sub "${AWS::StackName}-AskAiUrl"
 
   KVSFunctionUrl:
     Description: KVS Function URL endpoint
-    Value: !GetAtt KVSFunctionUrl.FunctionUrl
+    Value: !GetAtt KVSFunction.FunctionUrl
     Export:
       Name: !Sub "${AWS::StackName}-KvsUrl"
 

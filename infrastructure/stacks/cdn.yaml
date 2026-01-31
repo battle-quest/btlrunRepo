@@ -94,8 +94,7 @@ Resources:
           - Id: S3Origin
             DomainName: !Ref FrontendBucketDomainName
             OriginAccessControlId: !Ref CloudFrontOAC
-            S3OriginConfig:
-              OriginAccessIdentity: ""
+            S3OriginConfig: {}
 
           # API Gateway origin
           - Id: ApiOrigin

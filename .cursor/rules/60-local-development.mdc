@@ -17,8 +17,8 @@ pnpm dev  # → http://localhost:5173
 ```powershell
 cd AskAi_KVS
 
-# Terminal 1: KVS Mock
-npx tsx mocks/kvs-server.ts  # → http://localhost:9000
+# Terminal 1: KVS Mock  
+PORT=9002 npx tsx mocks/kvs-server.ts  # → http://localhost:9002
 
 # Terminal 2: AskAI Mock
 npx tsx mocks/askai-server.ts  # → http://localhost:9001
@@ -27,7 +27,7 @@ npx tsx mocks/askai-server.ts  # → http://localhost:9001
 **Rust Game API (Local Lambda):**
 ```powershell
 cd backend
-cargo lambda watch  # → http://localhost:9000/lambda-url/api
+cargo lambda watch  # → http://localhost:9000
 ```
 
 ## Environment Setup
