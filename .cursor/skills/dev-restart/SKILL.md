@@ -20,11 +20,14 @@ Safely rebuild and restart all btl.run dev servers after code changes.
 # 1. Stop any running dev servers
 pnpm exec kill-port 8787 9000 9001 5173
 
-# 2. Build all packages
-pnpm build
+# 2. Build components (if needed)
+.\scripts\build-frontend.ps1
+.\scripts\build-services.ps1
 
-# 3. Start all dev servers
-pnpm dev:all
+# 3. Start dev servers manually in separate terminals
+cd frontend && pnpm dev              # Terminal 1
+npx tsx AskAi_KVS/mocks/kvs-server.ts    # Terminal 2
+npx tsx AskAi_KVS/mocks/askai-server.ts  # Terminal 3
 ```
 
 ## Detailed Workflow
@@ -63,9 +66,11 @@ foreach ($p in $ports) {
 
 ### Step 2: Build Everything
 
-Run full workspace build:
-```bash
-pnpm build
+Build all components:
+```powershell
+.\scripts\build-frontend.ps1
+.\scripts\build-services.ps1
+# Rust builds via SAM during deployment
 ```
 
 This compiles:
@@ -108,8 +113,8 @@ Start-Sleep -Seconds 2
 Then read the terminal output to verify:
 - All servers started successfully
 - No EADDRINUSE errors
-- Vite shows "Local: http://localhost:5173/" (or 5174, etc.)
-- API shows "btl.run API running at http://localhost:8787"
+- Vite shows "Local: http://localhost:5173/"
+- Mock servers show listening ports (9000, 9001)
 
 **Check terminal file**: Read from `terminals/<shell-id>.txt` to see actual output.
 

@@ -19,16 +19,23 @@ description: Tests live OpenAI calls through the btl.run AskAI endpoint and the 
 - **AskAI Lambda path (local or deployed)**: `ASKAI_ENDPOINT` (Lambda URL).
   - This is what the API calls to reach OpenAI.
 
-## Quick Start: DevTools Parity (Local API)
+## Quick Start: Local Mock Server
 
-1. Start the API:
-   - `pnpm dev:api`
-2. Ensure the client base URL matches your API:
-   - `VITE_API_BASE_URL=http://localhost:8787`
-3. Send a DevTools-equivalent request:
-   - `curl -v -X POST "http://localhost:8787/v1/dev/askai" -H "Content-Type: application/json" -d "{\"question\":\"What is btl.run?\",\"maxTokens\":200,\"temperature\":0.7}"`
-4. Expect response fields:
-   - `answer`, `rawOutput`, `attempts`, `usedFallback`
+1. Start the AskAI mock server:
+   ```powershell
+   cd AskAi_KVS
+   npx tsx mocks/askai-server.ts  # Runs on localhost:9001
+   ```
+
+2. Test the mock endpoint:
+   ```powershell
+   curl -X POST "http://localhost:9001" `
+     -H "Content-Type: application/json" `
+     -d '{\"systemPrompt\":\"You are a test.\",\"input\":\"Say hello\",\"maxTokens\":20}'
+   ```
+
+3. Expect response fields:
+   - `output`, `tokensUsed`, `model`
 
 ## Quick Start: Live AskAI Endpoint (Real OpenAI)
 
