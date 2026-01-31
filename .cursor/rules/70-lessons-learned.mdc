@@ -1,0 +1,74 @@
+---
+description: Consult and contribute to lessons learned to avoid repeated mistakes
+alwaysApply: true
+---
+
+# Cursor Rule: Lessons Learned
+
+## Before Starting Tasks
+
+When beginning work that involves:
+- AWS infrastructure (CDK, Lambda, IAM)
+- API implementation (CORS, validation, auth)
+- Zod schema design
+- TypeScript type patterns
+- React/Vite frontend work
+- Async/await patterns
+
+**Check relevant lessons first**: `.cursor/_lessons_learned/{category}/`
+
+Categories:
+- `typescript/` - Type system, any vs unknown, optional chaining
+- `aws/` - CDK, Lambda, IAM, DynamoDB
+- `api/` - CORS, validation order, error handling
+- `zod/` - Schema patterns, optional vs default, AI validation
+- `frontend/` - Vite env vars, React patterns
+- `general/` - Async/await, logging
+
+## After Solving Hard Problems
+
+When you solve an issue that:
+- Took multiple attempts
+- Had a non-obvious solution
+- Is likely to recur
+
+**Create or update a lesson**:
+1. Copy `.cursor/_lessons_learned/_TEMPLATE.md`
+2. Fill in Problem, Root Cause, Solution, Prevention
+3. Add searchable keywords
+4. Link to related rules and skills
+
+## Lesson Format Quick Reference
+
+```markdown
+---
+id: category-short-name
+category: typescript|aws|api|zod|frontend|general
+severity: low|medium|high|critical
+keywords: [searchable, terms]
+related_rules: [rule-file.mdc]
+related_skills: [skill-folder]
+---
+
+# Title
+
+## Problem
+What error or behavior occurred?
+
+## Root Cause
+Why did this happen?
+
+## Solution
+How to fix it (with code examples).
+
+## Prevention
+Checklist to avoid in future.
+```
+
+## Key Lessons to Know
+
+High-severity lessons every agent should be aware of:
+- `typescript/any-vs-unknown.md` - Never use `any`, always `unknown` + zod
+- `aws/iam-permissions-debugging.md` - Use CDK grant methods
+- `api/cors-configuration.md` - Configure at API Gateway level
+- `zod/ai-output-validation.md` - Retry once, then fallback

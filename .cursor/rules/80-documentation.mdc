@@ -1,0 +1,390 @@
+# Cursor Rule: Documentation Organization
+
+## Purpose
+
+Prevent documentation clutter and maintain clear chronology of project evolution.
+
+**All documentation must be production-level quality** - clear, accurate, and maintained.
+
+## Problem
+
+Over time, agents create many .md files in the root directory (STATUS.md, COMPLETION_SUMMARY.md, FILE_INVENTORY.md, etc.). These files:
+- Clutter the root directory
+- Have overlapping content
+- Lack chronological context
+- Confuse future agents and users
+- Make it hard to track how ideas evolved
+
+## Solution
+
+Use a structured documentation system with clear separation between living guides and historical artifacts.
+
+---
+
+## Documentation Structure
+
+```
+BattleQuestRepo/
+├── README.md                    # Main project overview (KEEP)
+├── CHANGELOG.md                 # Version history and milestones (KEEP)
+├── Claude.md                    # Agent context (KEEP)
+├── apps/
+│   └── docs/
+│       ├── guides/              # LIVING operational guides
+│       │   ├── README.md
+│       │   ├── quickstart.md
+│       │   ├── deployment.md
+│       │   └── testing.md
+│       ├── project-history/     # HISTORICAL session notes
+│       │   ├── README.md
+│       │   ├── 2026-01-24-phase1-completion.md
+│       │   ├── 2026-01-24-subagent-audits.md
+│       │   └── YYYY-MM-DD-description.md
+│       ├── prompts/             # AI system prompts
+│       └── spec.md              # Game specification
+└── .cursor/
+    └── _lessons_learned/        # Technical pitfalls and solutions
+        ├── typescript/
+        ├── aws/
+        └── ...
+```
+
+---
+
+## Rules
+
+### 1. Root Directory - Minimal
+
+**NEVER** create these in root:
+- ❌ STATUS.md
+- ❌ COMPLETION_SUMMARY.md
+- ❌ PRODUCTION_READINESS.md
+- ❌ FILE_INVENTORY.md
+- ❌ IMPLEMENTATION_NOTES.md
+- ❌ Any other summary/status files
+
+**ONLY** these should exist in root:
+- ✅ README.md - Main project overview
+- ✅ CHANGELOG.md - Version history
+- ✅ Claude.md - Agent context
+- ✅ PRODUCTION_READY.md - Production checklist
+- ✅ OPENAI_VERIFICATION.md - OpenAI verification record
+- ✅ Standard project files (.gitignore, package.json, etc.)
+
+### 2. Living Guides - `apps/docs/guides/`
+
+**Purpose**: Current, maintained operational documentation
+
+**Create here when:**
+- Writing a guide that should stay current (quickstart, deployment)
+- Documenting how to use/test/deploy the system
+- Creating onboarding materials
+
+**Maintenance**:
+- Keep these files updated
+- When content changes significantly, note in CHANGELOG.md
+- If guide represents major architectural shift, archive old version to `docs/project-history/`
+
+**Examples**:
+- `quickstart.md` - 5-minute setup
+- `deployment.md` - AWS deployment
+- `testing.md` - Running tests
+
+**Other docs**:
+- ✅ `apps/docs/*.md` is allowed for general documentation (ex: `apps/docs/spec.md`)
+- ✅ Keep docs under `apps/docs/` unless they belong in guides or project history
+
+### 3. Historical Notes - `apps/docs/project-history/`
+
+**Purpose**: Chronological record of sessions and decisions
+
+> **⚠️ Summary Quality Rules**:  
+> ✅ Check for existing summaries FIRST - update instead of creating duplicates  
+> ✅ Be concise - 100-300 lines, bullet points not paragraphs  
+> ✅ Be additive - each summary adds NEW information  
+> ✅ One summary per topic/session - consolidate related work
+
+**Create here when:**
+- Completing a major implementation session
+- Documenting what was built and why
+- Recording architectural decisions at a point in time
+- Finishing a milestone or phase
+
+**Naming Convention**:
+```
+YYYY-MM-DD-description.md
+```
+
+**Examples**:
+- `2026-01-24-phase1-completion.md` - MVP implementation summary
+- `2026-01-24-security-hardening.md` - Security audit and fixes
+- `2026-01-25-longplay-scheduling.md` - Long Play feature implementation
+
+**Important**:
+- **NEVER update** these files after creation (they're historical snapshots)
+- Include date in filename for chronological sorting
+- Add entry to `docs/project-history/README.md` timeline
+- Update root `CHANGELOG.md` with the milestone
+
+**Summary Quality Standards**:
+
+Before creating a new summary in `docs/project-history/`:
+
+1. **Check for Existing Coverage**
+   - Read `apps/docs/project-history/README.md` to see recent summaries
+   - Search for overlapping topics from the same date or session
+   - Avoid creating redundant summaries that cover the same work
+
+2. **Be Concise**
+   - Focus on key decisions, changes, and outcomes
+   - Avoid verbose descriptions of obvious changes
+   - Use bullet points for lists, not paragraphs
+   - Target 100-300 lines max for most summaries
+   - Link to code/commits rather than duplicating implementation details
+
+3. **Be Additive, Not Duplicative**
+   - If a summary exists for today, **UPDATE** it rather than creating a new one
+   - Each summary should add new information, not repeat existing summaries
+   - Reference previous summaries by filename instead of re-explaining context
+   - Group related work into a single summary rather than multiple fragmentary ones
+
+4. **Reduce Confusion**
+   - Use clear, descriptive filenames (not generic like "updates.md")
+   - Start with a brief "Context" section explaining why this work was needed
+   - Include a "Related Summaries" section if this builds on previous work
+   - Keep the scope focused - one feature/phase per summary
+
+**Examples**:
+
+❌ **BAD - Duplicative and Verbose**:
+```
+2026-01-24-api-updates.md (800 lines, detailed code walkthrough)
+2026-01-24-more-api-fixes.md (500 lines, overlapping content)
+2026-01-24-final-api-changes.md (600 lines, repeating earlier info)
+```
+
+✅ **GOOD - Concise and Additive**:
+```
+2026-01-24-api-refactoring.md (250 lines)
+  - Context: Why refactoring was needed
+  - Key changes: Bullet list of major updates
+  - Issues fixed: Reference to specific bugs
+  - Testing results: Pass/fail summary
+  - Next steps: Brief list
+```
+
+### 4. CHANGELOG.md - Major Milestones
+
+**Purpose**: High-level version history
+
+**Update when:**
+- Completing a major feature
+- Releasing a version
+- Making significant architectural changes
+- Finishing a phase/milestone
+
+**Format**: Follow [Keep a Changelog](https://keepachangelog.com/)
+- Group by version
+- Include date
+- Categorize: Added, Changed, Fixed, Security, Performance
+
+### 5. Lessons Learned - `.cursor/_lessons_learned/`
+
+**Purpose**: Technical pitfalls and solutions for future agents
+
+**Create here when:**
+- Solving a problem that took multiple attempts
+- Finding a non-obvious solution
+- Discovering a common pitfall
+- Learning something that should be remembered
+
+**Structure**: See Rule 70-lessons-learned.mdc
+
+---
+
+## Decision Tree
+
+When creating documentation, ask:
+
+```
+┌─ Is this a session summary or status report?
+│  └─ YES → apps/docs/project-history/YYYY-MM-DD-name.md
+│
+├─ Is this a guide for using/deploying the system?
+│  └─ YES → apps/docs/guides/name.md
+│
+├─ Is this a major milestone or version?
+│  └─ YES → Update CHANGELOG.md
+│
+├─ Is this a technical lesson or pitfall?
+│  └─ YES → .cursor/_lessons_learned/category/name.md
+│
+└─ Is this project overview or main README?
+   └─ YES → Update README.md (don't create new file)
+```
+
+---
+
+## Examples
+
+### ❌ BAD - Creating Root Clutter
+
+```bash
+# DON'T DO THIS
+Write STATUS.md
+Write COMPLETION_SUMMARY.md
+Write DEPLOYMENT_NOTES.md
+Write PRODUCTION_CHECKLIST.md
+```
+
+**Problem**: Root becomes cluttered, no chronology, unclear which is current
+
+### ✅ GOOD - Organized Structure
+
+```bash
+# Session summary
+Write apps/docs/project-history/2026-01-24-phase1-completion.md
+
+# Update milestone
+Update CHANGELOG.md (add version 0.1.0 entry)
+
+# Create/update guide
+Write apps/docs/guides/deployment.md (living document)
+
+# Document technical lesson
+Write .cursor/_lessons_learned/aws/lambda-cold-starts.md
+```
+
+**Result**: Clean root, clear chronology, easy to find current vs historical
+
+---
+
+## Templates
+
+### Session Summary Template
+
+```markdown
+# [Feature/Phase Name] - YYYY-MM-DD
+
+## Context
+1-2 sentences: Why this work was needed.
+
+## What Was Done
+- Bullet list of major changes (not every file touched)
+- Link to commits/PRs for implementation details
+- Focus on WHAT changed, not HOW (code shows the how)
+
+## Decisions Made
+- Key architectural choices with brief rationale
+- Trade-offs considered (1-2 sentences each max)
+
+## Issues Discovered & Fixed
+- Brief problem description → solution applied
+- Reference lesson files for technical details
+
+## Outcomes
+- Final status (what works now)
+- Test results summary (not full logs)
+- Next steps (3-5 items max)
+
+## Related Documentation
+- Links to related summaries (if this builds on previous work)
+- Updated guides (if applicable)
+```
+
+**Guidelines**:
+- Keep total length 100-300 lines
+- Use bullet points, not paragraphs
+- Be specific but concise
+- Link to code rather than describing implementation
+
+Save to: `apps/docs/project-history/YYYY-MM-DD-description.md`
+
+### Guide Template
+
+```markdown
+# [Topic] Guide
+
+Brief description of what this guide covers.
+
+## Prerequisites
+- Required tools/knowledge...
+
+## Steps
+1. First step...
+2. Second step...
+
+## Troubleshooting
+Common issues and solutions...
+
+## Related Documentation
+- Links to other guides...
+```
+
+Save to: `apps/docs/guides/topic.md`
+
+---
+
+## Enforcement
+
+### Before Creating Any .md File
+
+1. Check: Is this going in the correct location?
+2. Check: Does a similar file already exist?
+3. Check: Should this update an existing file instead?
+4. Check: Is the filename properly dated (if historical)?
+5. Check: Will this be concise and additive (not duplicative)?
+
+### When Completing a Session
+
+1. **Check existing summaries first**
+   - Read `apps/docs/project-history/README.md` for today's summaries
+   - If a summary exists for your work today, update it instead of creating new
+   
+2. **Create ONE concise summary** in `apps/docs/project-history/YYYY-MM-DD-name.md`
+   - Keep it focused and concise (100-300 lines)
+   - Use bullet points, not verbose paragraphs
+   - Reference code/commits, don't duplicate implementation details
+   
+3. **Update `CHANGELOG.md`** with milestone entry
+4. **Update living guides** in `apps/docs/guides/` if needed
+5. **Do NOT create multiple summary files** for the same session/topic
+
+### Periodic Cleanup
+
+- Review root directory for stray .md files
+- Move misplaced docs to correct location
+- Update CHANGELOG.md to reflect major changes
+- Ensure project-history timeline is up to date
+
+**Managing Duplicate/Verbose Summaries**:
+- If multiple summaries cover the same date/topic, consolidate into one
+- Archive overly verbose summaries (>500 lines) by:
+  1. Creating a concise version with key points only
+2. Moving verbose original to `apps/docs/project-history/archived/` if needed for reference
+  3. Updating the timeline README to point to the concise version
+- Keep the signal-to-noise ratio high: focus on decisions and outcomes, not detailed play-by-play
+
+---
+
+## Benefits
+
+1. **Clean Root**: Only essential files in root directory
+2. **Clear Chronology**: Dated filenames show evolution over time
+3. **Living vs Historical**: Clear separation between current guides and past notes
+4. **Context Preservation**: Historical decisions are documented with context
+5. **Easy Navigation**: Organized structure makes finding information simple
+6. **Future-Proof**: New agents can understand project history and current state
+
+---
+
+## Related Rules
+
+- **70-lessons-learned.mdc** - Where to document technical solutions
+- **Claude.md** - Main agent context (includes documentation section)
+
+---
+
+**Enforcement Level**: CRITICAL  
+**Applies To**: All agents, all sessions  
+**Last Updated**: 2026-01-24

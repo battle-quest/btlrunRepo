@@ -1,0 +1,599 @@
+---
+alwaysApply: true
+---
+
+# Cursor Rule: Production-Level Coding Standards
+
+**ALL code must be production-ready quality**. This is not a prototype or POC - every line should be enterprise-grade.
+
+---
+
+## Core Principles
+
+1. **Production-Level Code** - Every commit should be deployable to production
+2. **Self-Documenting** - Code should be readable without extensive comments
+3. **Defensive** - Handle edge cases, validate inputs, expect failure
+4. **Observable** - Comprehensive logging and error context
+5. **Testable** - Pure functions, dependency injection, mockable interfaces
+
+---
+
+## TypeScript Standards
+
+### Type Safety
+- ✅ **Strict mode enabled** - No exceptions
+- ✅ **No `any` types** - Use `unknown` + zod validation or proper typing
+- ✅ **Explicit return types** on all exported functions
+- ✅ **Readonly by default** - Use `readonly` for arrays/objects that shouldn't mutate
+- ✅ **Discriminated unions** for state machines and event types
+
+**Example**:
+```typescript
+// ❌ BAD
+export function processData(data: any) {
+  return data.map(x => x.value);
+}
+
+// ✅ GOOD
+export function processData(data: unknown): ProcessedResult {
+  const validated = DataArraySchema.parse(data);
+  return validated.map((item): ProcessedItem => ({
+    id: item.id,
+    value: item.value,
+    timestamp: Date.now(),
+  }));
+}
+```
+
+### Null Safety
+- Use optional chaining (`?.`) for nullable chains
+- Use nullish coalescing (`??`) for defaults
+- Validate existence before usage
+- Return explicit `undefined` or `null`, never both
+
+---
+
+## Code Quality Standards
+
+### Function Design
+- **Single Responsibility** - One function, one purpose
+- **Max 50 lines** - If longer, refactor into smaller functions
+- **Max 3 parameters** - Use options object for more
+- **Pure when possible** - No side effects unless necessary
+- **Early returns** - Fail fast, reduce nesting
+
+**Example**:
+```typescript
+// ❌ BAD - Multiple responsibilities, nested
+export function handleGameAction(game, action, user) {
+  if (game.status === 'active') {
+    if (user.canAct) {
+      if (action.type === 'move') {
+        // ... 30 lines of move logic
+      } else if (action.type === 'attack') {
+        // ... 30 lines of attack logic
+      }
+    }
+  }
+  return game;
+}
+
+// ✅ GOOD - Single responsibility, pure, early returns
+export function validateGameAction(
+  game: GameSnapshot,
+  action: PlayerAction,
+  user: User
+): ValidationResult {
+  if (game.status !== 'active') {
+    return { valid: false, error: 'Game not active' };
+  }
+  
+  if (!user.canAct) {
+    return { valid: false, error: 'User cannot act' };
+  }
+  
+  return { valid: true };
+}
+
+export function executeMove(game: GameSnapshot, action: MoveAction): GameSnapshot {
+  // ... focused move logic
+}
+
+export function executeAttack(game: GameSnapshot, action: AttackAction): GameSnapshot {
+  // ... focused attack logic
+}
+```
+
+### Variable Naming
+- **Descriptive** - `tributeCount` not `tc`
+- **Intention-revealing** - `hasActiveAlliance` not `flag`
+- **Consistent** - Use same terms throughout codebase
+- **No abbreviations** unless universally known (HTTP, API, etc.)
+- **Constants in UPPER_SNAKE_CASE**
+
+### Error Handling
+- **Never swallow errors** - Always log or rethrow
+- **Context-rich errors** - Include relevant data for debugging
+- **Typed errors** - Use custom error classes or discriminated unions
+- **Graceful degradation** - Fallback to safe defaults when possible
+
+**Example**:
+```typescript
+// ❌ BAD
+try {
+  const result = await callAPI();
+  return result;
+} catch (e) {
+  return null; // Lost the error!
+}
+
+// ✅ GOOD
+try {
+  const result = await callAPI();
+  return { success: true, data: result };
+} catch (error) {
+  logger.error('API call failed', {
+    error,
+    context: { userId, gameId, timestamp: Date.now() },
+  });
+  return { 
+    success: false, 
+    error: error instanceof Error ? error.message : 'Unknown error',
+  };
+}
+```
+
+---
+
+## Comments & Documentation
+
+### When to Comment
+
+**DO comment**:
+- ✅ **Why, not what** - Explain reasoning and trade-offs
+- ✅ **Complex algorithms** - Explain the approach
+- ✅ **Non-obvious behavior** - Edge cases, gotchas
+- ✅ **Public APIs** - JSDoc for exported functions
+- ✅ **TODO/FIXME** - With ticket number and context
+
+**DON'T comment**:
+- ❌ Obvious code - `// increment counter` for `count++`
+- ❌ Redundant info - `// returns the user` for `function getUser()`
+- ❌ Commented-out code - Delete it, use git history
+
+### Production-Level Comments
+
+**Good comments add value**:
+```typescript
+// ❌ BAD - States the obvious
+// Loop through tributes
+for (const tribute of tributes) {
+  // Check if alive
+  if (tribute.isAlive) {
+    // Add to array
+    alive.push(tribute);
+  }
+}
+
+// ✅ GOOD - Explains why and important context
+/**
+ * Filters living tributes for alliance calculation.
+ * 
+ * Note: We exclude tributes with HP <= 0 even if status is 'alive'
+ * to handle the edge case where death event hasn't processed yet.
+ * This prevents alliances from forming with effectively dead tributes.
+ */
+const livingTributes = tributes.filter(t => 
+  t.status === 'alive' && t.stats.hp > 0
+);
+```
+
+### JSDoc Standards
+
+All **exported** functions must have JSDoc:
+
+```typescript
+/**
+ * Advances game state by one turn, processing all pending actions.
+ * 
+ * @param snapshot - Current game state
+ * @param actions - Player actions to process this turn
+ * @param config - Game configuration and rules
+ * @returns Updated game snapshot with new events
+ * 
+ * @throws {ValidationError} If actions are invalid for current game state
+ * @throws {GameStateError} If game is not in 'active' status
+ * 
+ * @example
+ * ```typescript
+ * const newSnapshot = advanceTurn(snapshot, actions, config);
+ * ```
+ */
+export function advanceTurn(
+  snapshot: GameSnapshot,
+  actions: readonly PlayerAction[],
+  config: GameConfig
+): GameSnapshot {
+  // Implementation
+}
+```
+
+---
+
+## Logging Standards
+
+### Production Logging Requirements
+
+- ✅ **Request ID** - All logs in API include requestId for tracing
+- ✅ **Structured data** - Use object format, not string interpolation
+- ✅ **Appropriate levels** - debug/info/warn/error correctly assigned
+- ✅ **No sensitive data** - Never log tokens, passwords, PII
+- ✅ **Context-rich** - Include relevant IDs and state
+
+**Example**:
+```typescript
+// ❌ BAD
+console.log('User joined game');
+console.log(`Error: ${error}`);
+
+// ✅ GOOD
+logger.info('Tribute joined game', {
+  requestId,
+  gameId,
+  tributeId,
+  tributeName: sanitize(name),
+  timestamp: Date.now(),
+});
+
+logger.error('Game state validation failed', {
+  requestId,
+  gameId,
+  error: error.message,
+  errorCode: error.code,
+  snapshot: sanitizeSnapshot(snapshot), // Remove tokens/sensitive data
+});
+```
+
+### Log Levels
+
+- **DEBUG** - Detailed diagnostic information (development only)
+- **INFO** - Normal operations (user joined, game started)
+- **WARN** - Unexpected but handled (retry succeeded, fallback used)
+- **ERROR** - Failures requiring attention (validation failed, API error)
+
+---
+
+## Architecture Standards
+
+### Pure Functions
+- **No side effects** - Same input = same output
+- **Deterministic** - No random without seeded RNG
+- **Testable** - Easy to unit test
+- **Game engine** must be 100% pure
+
+**Example**:
+```typescript
+// ❌ BAD - Side effects, non-deterministic
+export function processCombat(tribute1, tribute2) {
+  const damage = Math.random() * 10; // Non-deterministic!
+  tribute1.hp -= damage; // Mutation!
+  console.log('Combat processed'); // Side effect!
+  return tribute1;
+}
+
+// ✅ GOOD - Pure, deterministic, no side effects
+export function processCombat(
+  tribute1: Readonly<Tribute>,
+  tribute2: Readonly<Tribute>,
+  rng: SeededRNG
+): CombatResult {
+  const damage = calculateDamage(tribute1.stats, tribute2.stats, rng);
+  
+  return {
+    attacker: tribute1.id,
+    defender: tribute2.id,
+    damage,
+    updatedDefender: {
+      ...tribute2,
+      stats: {
+        ...tribute2.stats,
+        hp: Math.max(0, tribute2.stats.hp - damage),
+      },
+    },
+  };
+}
+```
+
+### Dependency Injection
+- Pass dependencies as parameters
+- Don't import singletons in pure functions
+- Makes testing easier
+
+```typescript
+// ❌ BAD - Hard dependency
+import { aiClient } from './ai-client';
+
+export function generateNarration(event) {
+  return aiClient.ask(event); // Can't test without real AI!
+}
+
+// ✅ GOOD - Dependency injection
+export function generateNarration(
+  event: GameEvent,
+  aiClient: AIClient
+): Promise<string> {
+  return aiClient.ask(event); // Easy to mock in tests
+}
+```
+
+### Error Boundaries
+- Validate at system boundaries (API endpoints, file I/O)
+- Trust internal functions after validation
+- Use zod schemas at boundaries
+
+```typescript
+// API endpoint - validate everything
+export async function createGameHandler(request: unknown) {
+  const validated = CreateGameRequestSchema.parse(request); // Validation boundary
+  const snapshot = createGame(validated); // Internal - can trust input
+  return snapshot;
+}
+
+// Internal function - assume valid input
+function createGame(config: GameConfig): GameSnapshot {
+  // No validation needed - trust the input
+  return {
+    gameId: generateId(),
+    config,
+    // ...
+  };
+}
+```
+
+---
+
+## Performance Standards
+
+### Avoid Premature Optimization
+- Write clear code first
+- Optimize only if metrics show a problem
+- Measure before and after
+
+### Common Optimizations
+- ✅ **Memoization** - Cache expensive computations (React.useMemo)
+- ✅ **Lazy evaluation** - Compute only when needed
+- ✅ **Early termination** - Stop loops when answer found
+- ✅ **Batch operations** - Group API calls, DB queries
+
+```typescript
+// ❌ BAD - Recomputes every render
+function GameView({ snapshot }) {
+  const sortedTributes = snapshot.tributes.sort(...); // Expensive!
+  return <div>{sortedTributes.map(...)}</div>;
+}
+
+// ✅ GOOD - Memoized
+function GameView({ snapshot }) {
+  const sortedTributes = useMemo(
+    () => snapshot.tributes.sort(...),
+    [snapshot.tributes]
+  );
+  return <div>{sortedTributes.map(...)}</div>;
+}
+```
+
+---
+
+## Testing Standards
+
+### Test Coverage Requirements
+- ✅ **Game engine** - 100% coverage (critical business logic)
+- ✅ **Utilities** - 100% coverage (reusable functions)
+- ✅ **API handlers** - >80% coverage
+- ✅ **Frontend** - >60% coverage
+
+### Test Quality
+- **Arrange-Act-Assert** pattern
+- **One assertion per test** (or closely related assertions)
+- **Descriptive names** - "should return error when game not found"
+- **Test edge cases** - null, undefined, empty arrays, max values
+- **Test error paths** - Not just happy path
+
+```typescript
+// ✅ GOOD test structure
+describe('advanceTurn', () => {
+  describe('when game is active', () => {
+    it('should process all player actions', () => {
+      // Arrange
+      const snapshot = createTestSnapshot({ status: 'active' });
+      const actions = [createTestAction({ type: 'move' })];
+      
+      // Act
+      const result = advanceTurn(snapshot, actions, DEFAULT_CONFIG);
+      
+      // Assert
+      expect(result.events).toHaveLength(1);
+      expect(result.events[0].type).toBe('MOVE');
+    });
+    
+    it('should increment turn counter', () => {
+      const snapshot = createTestSnapshot({ status: 'active', turn: 5 });
+      const result = advanceTurn(snapshot, [], DEFAULT_CONFIG);
+      expect(result.turn).toBe(6);
+    });
+  });
+  
+  describe('when game is not active', () => {
+    it('should throw GameStateError', () => {
+      const snapshot = createTestSnapshot({ status: 'completed' });
+      expect(() => advanceTurn(snapshot, [], DEFAULT_CONFIG))
+        .toThrow(GameStateError);
+    });
+  });
+});
+```
+
+---
+
+## Security Standards
+
+### Input Validation
+- ✅ **Never trust user input** - Validate everything at API boundary
+- ✅ **Sanitize strings** - Remove dangerous characters
+- ✅ **Limit sizes** - Max length for strings, max items in arrays
+- ✅ **Whitelist, don't blacklist** - Allow known-good, not block known-bad
+
+### Secrets Management
+- ❌ **Never commit secrets** - Use .env, AWS Secrets Manager
+- ❌ **Never log secrets** - Sanitize before logging
+- ✅ **Hash tokens** - Store hashes, not plaintext
+- ✅ **Use environment variables** - Don't hardcode
+
+### Token Security
+```typescript
+// ❌ BAD
+const token = generateToken();
+await storage.put(`user:${userId}`, { token }); // Plaintext!
+
+// ✅ GOOD
+const token = generateToken();
+const tokenHash = hashToken(token);
+await storage.put(`user:${userId}`, { tokenHash });
+return { token }; // Return plaintext once, store hash
+```
+
+---
+
+## Git Standards
+
+### Commit Messages
+- **Imperative mood** - "Add feature" not "Added feature"
+- **Descriptive** - "Fix arena shrinking below minimum size" not "Fix bug"
+- **Reference issues** - Include ticket/issue number if applicable
+
+**Format**:
+```
+<type>: <subject>
+
+<body>
+
+<footer>
+```
+
+**Types**: feat, fix, docs, refactor, test, chore
+
+**Example**:
+```
+fix: prevent arena shrinking below minimum of 5
+
+The arena was shrinking to 3 instead of stopping at the documented
+minimum of 5. Updated Math.max(3, ...) to Math.max(5, ...) in
+calculateArenaShrink().
+
+Fixes #42
+```
+
+### Pull Requests
+- **Small, focused changes** - One feature/fix per PR
+- **Tests included** - All new code must have tests
+- **Documentation updated** - Update guides if behavior changes
+- **Clean diff** - No unrelated changes, formatting fixes
+
+---
+
+## Code Review Checklist
+
+Before committing, verify:
+
+- [ ] TypeScript strict mode - no errors
+- [ ] No `any` types (except documented exceptions)
+- [ ] All exported functions have JSDoc
+- [ ] All functions < 50 lines
+- [ ] All functions have explicit return types
+- [ ] Error handling in place
+- [ ] Logging includes context (requestId, IDs)
+- [ ] No secrets in code
+- [ ] Tests written and passing
+- [ ] Edge cases tested
+- [ ] No console.log (use logger)
+- [ ] Commit message is descriptive
+
+---
+
+## Enforcement
+
+**This is CRITICAL**. All code must meet these standards before merging.
+
+When writing code:
+1. Write production-level code from the start
+2. Add tests as you go (not after)
+3. Document as you write (not later)
+4. Review your own code before committing
+
+When reviewing code:
+1. Check against this standards document
+2. Reject anything that doesn't meet the bar
+3. Provide constructive feedback with examples
+
+---
+
+## Examples of Production vs Prototype Code
+
+### ❌ Prototype Code (NEVER DO THIS)
+```typescript
+export function doStuff(data: any) {
+  // TODO: add validation
+  const result = data.map(x => x.val);
+  console.log(result);
+  return result;
+}
+```
+
+Problems:
+- `any` type
+- No validation
+- Poor naming
+- console.log instead of logger
+- No error handling
+- No JSDoc
+- No tests
+
+### ✅ Production Code (ALWAYS DO THIS)
+```typescript
+/**
+ * Transforms tribute raw data into normalized tribute objects.
+ * 
+ * @param rawData - Unvalidated tribute data from external source
+ * @returns Validated and normalized tributes
+ * @throws {ValidationError} If data doesn't match expected schema
+ */
+export function normalizeTributes(rawData: unknown): Tribute[] {
+  const validated = TributeArraySchema.parse(rawData);
+  
+  return validated.map((raw): Tribute => ({
+    id: raw.id,
+    name: sanitizeName(raw.name),
+    stats: {
+      hp: raw.hp,
+      attack: raw.attack,
+      defense: raw.defense,
+    },
+    status: 'alive',
+    createdAt: Date.now(),
+  }));
+}
+```
+
+Benefits:
+- Proper types
+- Zod validation
+- Clear naming
+- JSDoc documentation
+- Error handling (zod throws)
+- Return type specified
+- Pure function
+- Easy to test
+
+---
+
+**Remember**: Every line of code is a commitment. Make it count.

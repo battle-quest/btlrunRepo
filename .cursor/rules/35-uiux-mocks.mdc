@@ -1,0 +1,87 @@
+# Cursor Rule: UI/UX Mocks
+
+**Applies to:** `apps/pwa/public/uiux/**`
+
+Static HTML/CSS/JS mocks for designing screens before React implementation.
+
+## Folder Structure
+
+```
+apps/pwa/public/uiux/
+├── assets/                    # Shared images/icons for ALL screens
+│   ├── bq-background-grid-map.png
+│   ├── bq-ui-panel-frame-vertical.png
+│   └── bq-ui-wide-button-states.png
+├── 00-start-screen/           # Each screen in its own folder
+│   ├── index.html             # HTML structure
+│   ├── styles.css             # CSS styling
+│   ├── script.js              # JavaScript behavior
+│   └── README.md              # Screen documentation (optional)
+└── {nn}-{screen-name}/        # Additional screens follow same pattern
+```
+
+## Rules
+
+### File Organization
+- **One folder per screen** — named `{nn}-{screen-name}/`
+- **Three required files** — `index.html`, `styles.css`, `script.js`
+- **Optional README.md** — documents the screen's purpose and implementation notes
+- **Shared assets in `/assets/`** — images, icons, sprites used across screens
+
+### Asset References
+Use relative paths from screen folders to assets:
+```css
+/* styles.css */
+background-image: url("../assets/bq-background-grid-map.png");
+```
+
+### Page Navigation (IMPORTANT)
+**Always use explicit filenames** — CloudFront/S3 don't auto-resolve `index.html`:
+```html
+<!-- ✅ CORRECT - explicit filename -->
+<a href="../01-tribute-setup/index.html">Next</a>
+
+<!-- ❌ WRONG - may not work on CloudFront/S3 -->
+<a href="../01-tribute-setup/">Next</a>
+```
+
+This ensures links work everywhere: local dev, S3, CloudFront, and direct file system access.
+
+### Separation of Concerns
+- **HTML** — Structure and semantic markup only
+- **CSS** — All styling in `styles.css` (no inline styles)
+- **JS** — All behavior in `script.js` (no inline scripts)
+
+### No CSS/JS Inlining
+Do NOT inline CSS or JS in HTML files. These are mocks but should follow clean separation:
+```html
+<!-- ✅ Correct -->
+<link rel="stylesheet" href="styles.css" />
+<script src="script.js"></script>
+
+<!-- ❌ Wrong -->
+<style>/* CSS here */</style>
+<script>/* JS here */</script>
+```
+
+### README.md Format
+Document each screen with:
+1. **Purpose** — What the screen does
+2. **Key Elements** — Table of UI components
+3. **Implementation Notes** — For future React conversion
+4. **Viewing** — How to preview the mock
+
+### Adding New Screens
+1. Create folder: `apps/pwa/public/uiux/{nn}-{screen-name}/`
+2. Create files: `index.html`, `styles.css`, `script.js`
+3. Optionally add `README.md`
+4. Add any new shared images to `assets/`
+
+## Viewing Mocks
+
+```bash
+pnpm dev:pwa
+# Open: http://localhost:5173/uiux/{screen-name}/
+```
+
+Clean URLs work because each folder has an `index.html`.

@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+# Cursor Rule: AI Usage
+
+- AskAI prompt must request JSON output only.
+- Validate with zod schema; if invalid, retry once with stricter prompt.
+- If still invalid, fall back to deterministic local generator.
+- Never let AI decide security-sensitive values.

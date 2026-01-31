@@ -1,0 +1,65 @@
+---
+description: AWS CDK infrastructure patterns and conventions
+globs: infra/**/*.ts
+alwaysApply: false
+---
+
+# Cursor Rule: Infrastructure (AWS CDK)
+
+## Stack Organization
+- Main stack: `infra/src/stacks/battle-quest-stack.ts`
+- Complete stack: `infra/src/stacks/complete-stack.ts`
+- Entry point: `infra/src/app.ts`
+- Export stacks from `infra/src/stacks/index.ts`
+
+## CDK Commands (from `infra/` folder)
+```bash
+pnpm synth      # Generate CloudFormation template
+pnpm diff       # Preview changes before deploy
+pnpm deploy     # Deploy to AWS
+pnpm destroy    # Tear down resources
+pnpm bootstrap  # One-time account setup (already done)
+```
+
+## Resource Patterns
+
+### Naming
+- Use `this.account` suffix for globally unique names (S3 buckets)
+- Include `stage` suffix for environment separation
+- Use descriptive construct IDs: `AssetsBucket`, `GameDataTable`
+
+### Removal Policies
+- Dev: `cdk.RemovalPolicy.DESTROY` (easy cleanup)
+- Prod: `cdk.RemovalPolicy.RETAIN` (prevent data loss)
+
+### Security Defaults
+- S3: `blockPublicAccess: BlockPublicAccess.BLOCK_ALL`
+- S3: `encryption: BucketEncryption.S3_MANAGED`
+- S3: `versioned: true` and `enforceSSL: true`
+- DynamoDB: Use IAM for access control
+- Lambda: Least-privilege IAM roles
+
+### Secrets
+- Store API and OpenAI secrets in **AWS Secrets Manager**
+- Pass **secret ARNs** to Lambdas, not plaintext values
+- Grant read access with `secret.grantRead(fn)`
+
+### CORS
+- Configure `ALLOWED_ORIGINS` via environment variables
+- Disallow `*` in production
+
+### Observability
+- Enable Lambda tracing (`tracing: lambda.Tracing.ACTIVE`)
+- Use log retention >= 90 days in production
+
+## Common Imports
+```typescript
+import * as cdk from 'aws-cdk-lib';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+```
+
+## Testing Changes
+Always run `pnpm diff` before `pnpm deploy` to review changes.

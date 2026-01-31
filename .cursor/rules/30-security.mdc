@@ -1,0 +1,12 @@
+---
+alwaysApply: true
+---
+
+# Cursor Rule: Security
+
+- Browser never calls KVS/AskAI.
+- Tokens:
+  - adminToken (creator) returned once; store hash in meta.
+  - playerToken for private actions.
+- Validate tokens on every mutating endpoint.
+- Add basic rate limiting via KVS counters.

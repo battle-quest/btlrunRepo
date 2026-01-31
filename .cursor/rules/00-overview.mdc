@@ -1,0 +1,103 @@
+---
+alwaysApply: true
+---
+
+# Cursor Rule: Project Overview
+
+## Battle Quest - Production-Grade Game Development
+
+You are working on **Battle Quest**, a retro-modern ASCII/text battle-royale game inspired by The Hunger Games. Built for massive scalability with serverless architecture on AWS.
+
+---
+
+## Critical Standards
+
+### 🏭 Production-Level Quality Required
+
+**This is not a prototype or POC. Every commit must be production-ready.**
+
+ALL code must be:
+- ✅ **Enterprise-grade** - Deployable to production immediately
+- ✅ **Production-documented** - JSDoc on exports, meaningful comments
+- ✅ **Fully tested** - Comprehensive coverage, edge cases handled  
+- ✅ **Type-safe** - Strict TypeScript, no `any` types
+- ✅ **Observable** - Structured logging with full context
+- ✅ **Secure** - Input validation, secrets management, error handling
+
+**See `.cursor/rules/20-standards.mdc` for complete requirements.**
+
+---
+
+## Keep Changes Small & Coherent
+
+- **Small PRs** - One feature or fix per commit
+- **Focused changes** - Don't mix refactoring with features
+- **Clean diffs** - No unrelated formatting changes
+- **Test coverage** - All new code must have tests
+
+---
+
+## Type Safety First
+
+- **Strongly typed interfaces** - Explicit types everywhere
+- **No `any` types** - Use `unknown` + zod validation
+- **Validation at boundaries** - API endpoints, file I/O, external data
+- **Trust internal functions** - After validation, internal code can assume valid input
+
+---
+
+## Security Always
+
+- **Never commit secrets** - Use .env, AWS Secrets Manager
+- **Never expose secrets** - Browser code never sees KVS/AskAI endpoints
+- **Hash all tokens** - Store hashes, never plaintext
+- **Validate all inputs** - Sanitize strings, limit sizes, whitelist patterns
+
+## File Safety (CRITICAL)
+
+- **Never delete untracked / uncommitted files** to “clean up” a repo.
+- If untracked/uncommitted files exist during a commit request, **ask the user** whether to commit them, ignore them, or delete them.
+- Avoid touching editor metadata folders (e.g. `.cursor/`, `.vs/`) unless explicitly requested.
+
+---
+
+## AI Outputs Must Be Validated
+
+**Rule 40-ai.mdc**:
+1. Request JSON output from AI
+2. Validate with zod schema
+3. If invalid, retry once with stricter prompt
+4. If still invalid, use deterministic fallback
+5. **Never** let AI decide security-sensitive values
+
+---
+
+## Documentation Organization
+
+**Rule 80-documentation.mdc**:
+
+Never create .md files in root directory. Use this structure:
+
+| Type | Location |
+|------|----------|
+| **Living guides** | `apps/docs/guides/` |
+| **Historical notes** | `apps/docs/project-history/YYYY-MM-DD-name.md` |
+| **Version history** | `CHANGELOG.md` |
+| **Technical lessons** | `.cursor/_lessons_learned/category/` |
+
+---
+
+## Related Rules
+
+- **10-architecture.mdc** - Monorepo structure, deployment commands
+- **20-standards.mdc** - Production code quality requirements ⭐
+- **30-security.mdc** - Security patterns and requirements
+- **40-ai.mdc** - AI integration and validation
+- **50-infrastructure.mdc** - AWS CDK patterns
+- **60-local-development.mdc** - Dev environment setup
+- **70-lessons-learned.mdc** - When to document lessons
+- **80-documentation.mdc** - Documentation organization
+
+---
+
+**Remember**: Every line of code is production code. Make it count.

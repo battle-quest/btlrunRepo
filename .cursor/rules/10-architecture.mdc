@@ -1,0 +1,39 @@
+---
+alwaysApply: true
+---
+
+# Cursor Rule: Architecture
+
+Frontend:
+- apps/web (React + Vite + TS)
+- Terminal/ASCII vibe UI with modern components.
+
+Backend:
+- services/api (Lambda handlers)
+- services/pdf (PDF generator)
+- packages/shared (types, zod schemas, simulation engine)
+
+Infrastructure:
+- infra/ (AWS CDK - TypeScript)
+- Deploys: S3, CloudFront, Lambda, API Gateway, DynamoDB
+
+Commands (from repo root):
+- `pnpm dev:web` — Vite dev server (localhost:5173)
+- `pnpm dev:api` — Local API server (localhost:8787)
+- `pnpm sam:local` — SAM local Lambda (localhost:3000, requires Docker)
+- `pnpm synth` — Generate CloudFormation
+- `pnpm diff` — Preview infrastructure changes
+- `pnpm deploy` — Deploy to AWS
+- `pnpm destroy` — Tear down resources
+
+Persistence:
+- Use KVS adapter backed by DynamoDB; keys:
+  - game:{id}:events (append-only)
+  - game:{id}:snapshot
+  - game:{id}:meta
+
+Game:
+- Lobby -> Active -> Completed
+- Quick Play: turn-based advance
+- Long Play: daily submissions + daily resolution
+- Anti-infinite: max days + hazard escalation + forced convergence.
