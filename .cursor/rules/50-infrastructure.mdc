@@ -1,63 +1,126 @@
 ---
-description: AWS CDK infrastructure patterns and conventions
-globs: infra/**/*.ts
+description: AWS SAM infrastructure patterns and conventions
+globs: ["infrastructure/**/*.yaml", "infrastructure/**/*.yml"]
 alwaysApply: false
 ---
 
-# Cursor Rule: Infrastructure (AWS CDK)
+# Cursor Rule: Infrastructure (AWS SAM)
 
 ## Stack Organization
-- Main stack: `infra/src/stacks/battle-quest-stack.ts`
-- Complete stack: `infra/src/stacks/complete-stack.ts`
-- Entry point: `infra/src/app.ts`
-- Export stacks from `infra/src/stacks/index.ts`
+- Root template: `infrastructure/template.yaml`
+- Nested stacks:
+  - `infrastructure/stacks/services.yaml` (AskAI + KVS)
+  - `infrastructure/stacks/api.yaml` (Rust game API)
+  - `infrastructure/stacks/storage.yaml` (S3 buckets)
+  - `infrastructure/stacks/cdn.yaml` (CloudFront + Route 53)
+- Parameters: `infrastructure/parameters/{env}.json`
+- SAM config: `infrastructure/samconfig.toml`
 
-## CDK Commands (from `infra/` folder)
-```bash
-pnpm synth      # Generate CloudFormation template
-pnpm diff       # Preview changes before deploy
-pnpm deploy     # Deploy to AWS
-pnpm destroy    # Tear down resources
-pnpm bootstrap  # One-time account setup (already done)
+## SAM Commands (PowerShell from root)
+```powershell
+sam validate --template infrastructure/template.yaml  # Validate templates
+.\scripts\deploy.ps1 -Environment dev                 # Deploy full stack
+.\scripts\deploy-stack.ps1 -Stack services -Environment dev  # Deploy one stack
+sam logs -n btl-run-askai-dev --tail                  # View logs
+```
+
+### Serverless Function (Rust with cargo-lambda)
+```yaml
+ApiFunction:
+  Type: AWS::Serverless::Function
+  Metadata:
+    BuildMethod: rust-cargolambda
+    BuildProperties:
+      Binary: bootstrap
+  Properties:
+    FunctionName: !Sub "btl-run-api-${Environment}"
+    Runtime: provided.al2023
+    Architectures: [arm64]
+    Handler: bootstrap
+    CodeUri: ../../backend/functions/api
+```
+
+### DynamoDB Table
+```yaml
+KVSTable:
+  Type: AWS::DynamoDB::Table
+  DeletionPolicy: Retain
+  Properties:
+    TableName: !Sub "btl-run-kvs-${Environment}"
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: pk
+        AttributeType: S
+      - AttributeName: sk
+        AttributeType: S
+    KeySchema:
+      - AttributeName: pk
+        KeyType: HASH
+      - AttributeName: sk
+        KeyType: RANGE
 ```
 
 ## Resource Patterns
 
 ### Naming
-- Use `this.account` suffix for globally unique names (S3 buckets)
-- Include `stage` suffix for environment separation
-- Use descriptive construct IDs: `AssetsBucket`, `GameDataTable`
+- Use `!Sub` with environment: `btl-run-{resource}-${Environment}`
+- For globally unique names (S3): `!Sub "btl-run-{resource}-${Environment}-${AWS::AccountId}"`
+- Consistent naming across all stacks
 
 ### Removal Policies
-- Dev: `cdk.RemovalPolicy.DESTROY` (easy cleanup)
-- Prod: `cdk.RemovalPolicy.RETAIN` (prevent data loss)
+- Dev: Omit or use `Delete` (easy cleanup)
+- Prod: `DeletionPolicy: Retain` and `UpdateReplacePolicy: Retain`
 
 ### Security Defaults
-- S3: `blockPublicAccess: BlockPublicAccess.BLOCK_ALL`
-- S3: `encryption: BucketEncryption.S3_MANAGED`
-- S3: `versioned: true` and `enforceSSL: true`
-- DynamoDB: Use IAM for access control
-- Lambda: Least-privilege IAM roles
+- S3: `PublicAccessBlockConfiguration` set to block all
+- S3: `BucketEncryption` with AES256
+- S3: `VersioningConfiguration: Enabled`
+- DynamoDB: IAM-based access control
+- Lambda: Least-privilege IAM via SAM policies
 
 ### Secrets
-- Store API and OpenAI secrets in **AWS Secrets Manager**
-- Pass **secret ARNs** to Lambdas, not plaintext values
-- Grant read access with `secret.grantRead(fn)`
+- Store OpenAI API key in **AWS Secrets Manager**
+- Pass **ARN** via parameters, not secret value
+- Grant read access via IAM policy statement:
+```yaml
+Policies:
+  - Statement:
+      - Effect: Allow
+        Action: secretsmanager:GetSecretValue
+        Resource: !Ref OpenAiApiKeySecret
+```
 
 ### CORS
-- Configure `ALLOWED_ORIGINS` via environment variables
-- Disallow `*` in production
+- Configure via environment variables
+- Function URL CORS in SAM templates
+- Never use `*` in production
 
 ### Observability
-- Enable Lambda tracing (`tracing: lambda.Tracing.ACTIVE`)
-- Use log retention >= 90 days in production
+- Enable Lambda tracing: `Tracing: Active`
+- CloudWatch log groups with retention
+- Log retention: 14 days dev, 90 days prod
 
-## Common Imports
-```typescript
-import * as cdk from 'aws-cdk-lib';
-import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
+## SAM Template Patterns
+
+### Serverless Function (Node.js with esbuild)
+```yaml
+AskAiFunction:
+  Type: AWS::Serverless::Function
+  Metadata:
+    BuildMethod: esbuild
+    BuildProperties:
+      EntryPoints:
+        - src/index.ts
+      External:
+        - '@aws-sdk/*'
+      Target: node20
+      Format: esm
+  Properties:
+    FunctionName: !Sub "btl-run-askai-${Environment}"
+    Runtime: nodejs20.x
+    Architectures: [arm64]
+    Handler: index.handler
+    CodeUri: ../../AskAi_KVS/services/askai
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 ```
 

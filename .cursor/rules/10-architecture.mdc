@@ -5,35 +5,41 @@ alwaysApply: true
 # Cursor Rule: Architecture
 
 Frontend:
-- apps/web (React + Vite + TS)
-- Terminal/ASCII vibe UI with modern components.
+- frontend/ (Preact + Vite + TypeScript PWA)
+- 40KB bundle, service worker for offline support
+- Modern UI based on mockups in uiux_mockups/
 
 Backend:
-- services/api (Lambda handlers)
-- services/pdf (PDF generator)
-- packages/shared (types, zod schemas, simulation engine)
+- backend/ (Rust Lambda game API)
+- AskAi_KVS/services/ (TypeScript Lambda services)
+  - askai/ (OpenAI wrapper)
+  - kvs/ (DynamoDB key-value storage)
+- AskAi_KVS/shared/ (shared schemas, clients, utilities)
 
 Infrastructure:
-- infra/ (AWS CDK - TypeScript)
-- Deploys: S3, CloudFront, Lambda, API Gateway, DynamoDB
+- infrastructure/ (AWS SAM with nested CloudFormation stacks)
+- Deploys: S3, CloudFront, Lambda (Rust + Node.js), HTTP API Gateway, DynamoDB, Secrets Manager
 
-Commands (from repo root):
-- `pnpm dev:web` — Vite dev server (localhost:5173)
-- `pnpm dev:api` — Local API server (localhost:8787)
-- `pnpm sam:local` — SAM local Lambda (localhost:3000, requires Docker)
-- `pnpm synth` — Generate CloudFormation
-- `pnpm diff` — Preview infrastructure changes
-- `pnpm deploy` — Deploy to AWS
-- `pnpm destroy` — Tear down resources
+Commands (PowerShell):
+- `cd frontend && pnpm dev` — Vite dev server (localhost:5173)
+- `npx tsx AskAi_KVS/mocks/kvs-server.ts` — Mock KVS (localhost:9000)
+- `npx tsx AskAi_KVS/mocks/askai-server.ts` — Mock AskAI (localhost:9001)
+- `cd backend && cargo lambda watch` — Local Rust Lambda
+- `.\scripts\deploy.ps1 -Environment dev` — Deploy full stack
+- `.\scripts\deploy-stack.ps1 -Stack services` — Deploy services only
+- `sam validate --template infrastructure/template.yaml` — Validate templates
 
 Persistence:
-- Use KVS adapter backed by DynamoDB; keys:
-  - game:{id}:events (append-only)
-  - game:{id}:snapshot
-  - game:{id}:meta
+- KVS service backed by DynamoDB
+- Table: btl-run-kvs-{env} (pk, sk, value, updatedAt)
+- Suggested key patterns:
+  - game:{id}:events (append-only event log)
+  - game:{id}:snapshot (materialized state)
+  - game:{id}:meta (game metadata)
+  - player:{id}:profile
 
 Game:
-- Lobby -> Active -> Completed
+- Lobby → Active → Completed
 - Quick Play: turn-based advance
 - Long Play: daily submissions + daily resolution
-- Anti-infinite: max days + hazard escalation + forced convergence.
+- Anti-infinite: max days + hazard escalation + forced convergence
