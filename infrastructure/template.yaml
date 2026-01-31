@@ -94,9 +94,6 @@ Resources:
   # CDN Stack - CloudFront distribution
   CdnStack:
     Type: AWS::CloudFormation::Stack
-    DependsOn:
-      - StorageStack
-      - ApiStack
     Properties:
       TemplateURL: stacks/cdn.yaml
       Parameters:
