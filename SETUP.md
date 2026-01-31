@@ -151,8 +151,8 @@ Edit `infrastructure/parameters/{env}.json`:
 **KVS Mock Server:**
 ```powershell
 cd AskAi_KVS
-npx tsx mocks/kvs-server.ts
-# http://localhost:9000
+PORT=9002 npx tsx mocks/kvs-server.ts
+# http://localhost:9002
 ```
 
 **AskAI Mock Server:**
