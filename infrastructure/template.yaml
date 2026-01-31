@@ -24,6 +24,11 @@ Parameters:
     Default: ""
     Description: Route 53 Hosted Zone ID (required if DomainName is set)
 
+  CertificateArn:
+    Type: String
+    Default: ""
+    Description: Existing ACM certificate ARN for custom domain (required if DomainName is set, must be in us-east-1)
+
   OpenAiApiKeySecretArn:
     Type: String
     Default: ""
@@ -104,6 +109,7 @@ Resources:
         ApiEndpoint: !GetAtt ApiStack.Outputs.ApiEndpoint
         DomainName: !Ref DomainName
         HostedZoneId: !Ref HostedZoneId
+        CertificateArn: !Ref CertificateArn
       Tags:
         - Key: Project
           Value: btl-run

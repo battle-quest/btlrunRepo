@@ -206,19 +206,21 @@ For faster iteration, deploy individual stacks:
 
 Edit parameter files in `infrastructure/parameters/`:
 
-- `dev.json` - Development environment
-- `prod.json` - Production environment
+- `dev.json` - Development environment (no custom domain)
+- `prod.json` - Production environment (configured with btl.run domain)
 
-To use a custom domain:
-```json
-{
-  "Parameters": {
-    "Environment": "prod",
-    "DomainName": "btl.run",
-    "HostedZoneId": "Z1234567890ABC"
-  }
-}
+**Production is pre-configured with:**
+- Domain: btl.run
+- Hosted Zone: Z064967319BVY1CFQ2IZX
+- ACM Certificate: arn:aws:acm:...:79e671d3-7e77-4114-9edb-00530b310414
+- OpenAI Secret: Existing secret ARN
+
+Deploy with:
+```powershell
+.\scripts\deploy.ps1 -Environment prod
 ```
+
+After deployment, access at: **https://btl.run**
 
 ## Service Endpoints
 

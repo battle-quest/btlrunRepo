@@ -1,8 +1,9 @@
 {
   "Parameters": {
     "Environment": "prod",
-    "DomainName": "",
-    "HostedZoneId": "",
+    "DomainName": "btl.run",
+    "HostedZoneId": "Z064967319BVY1CFQ2IZX",
+    "CertificateArn": "arn:aws:acm:us-east-1:615821144597:certificate/79e671d3-7e77-4114-9edb-00530b310414",
     "OpenAiApiKeySecretArn": "arn:aws:secretsmanager:us-east-1:615821144597:secret:btl-run/prod/openai-api-key-LdzRqt",
     "DefaultAiModel": "gpt-5-nano"
   },

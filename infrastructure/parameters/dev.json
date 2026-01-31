@@ -3,6 +3,7 @@
     "Environment": "dev",
     "DomainName": "",
     "HostedZoneId": "",
+    "CertificateArn": "",
     "OpenAiApiKeySecretArn": "",
     "DefaultAiModel": "gpt-5-nano"
   },

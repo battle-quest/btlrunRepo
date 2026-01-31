@@ -27,15 +27,26 @@ Parameters:
   DomainName:
     Type: String
     Default: ""
-    Description: Custom domain name
+    Description: Custom domain name (e.g., btl.run)
 
   HostedZoneId:
     Type: String
     Default: ""
     Description: Route 53 Hosted Zone ID
 
+  CertificateArn:
+    Type: String
+    Default: ""
+    Description: Existing ACM certificate ARN (must be in us-east-1 for CloudFront)
+
 Conditions:
   HasCustomDomain: !Not [!Equals [!Ref DomainName, ""]]
+  CreateCertificate: !And
+    - !Not [!Equals [!Ref DomainName, ""]]
+    - !Equals [!Ref CertificateArn, ""]
+  UseExistingCertificate: !And
+    - !Not [!Equals [!Ref DomainName, ""]]
+    - !Not [!Equals [!Ref CertificateArn, ""]]
 
 Resources:
   # CloudFront Origin Access Control for S3
@@ -67,11 +78,16 @@ Resources:
           - !Ref AWS::NoValue
 
         ViewerCertificate: !If
-          - HasCustomDomain
-          - AcmCertificateArn: !Ref Certificate
+          - UseExistingCertificate
+          - AcmCertificateArn: !Ref CertificateArn
             SslSupportMethod: sni-only
             MinimumProtocolVersion: TLSv1.2_2021
-          - CloudFrontDefaultCertificate: true
+          - !If
+            - CreateCertificate
+            - AcmCertificateArn: !Ref Certificate
+              SslSupportMethod: sni-only
+              MinimumProtocolVersion: TLSv1.2_2021
+            - CloudFrontDefaultCertificate: true
 
         # S3 origin for frontend
         Origins:
@@ -150,10 +166,10 @@ Resources:
         - Key: Environment
           Value: !Ref Environment
 
-  # ACM Certificate (only if custom domain is provided)
+  # ACM Certificate (only if custom domain provided but no certificate ARN)
   Certificate:
     Type: AWS::CertificateManager::Certificate
-    Condition: HasCustomDomain
+    Condition: CreateCertificate
     Properties:
       DomainName: !Ref DomainName
       ValidationMethod: DNS
