@@ -48,20 +48,17 @@ if (result.success) {
 ## Shared Schemas Location
 
 ```
-packages/shared/src/
-├── schemas/
-│   ├── match.ts
-│   ├── tribute.ts
-│   ├── event.ts
-│   ├── api.ts
-│   └── index.ts
-└── index.ts
+AskAi_KVS/shared/schemas/
+└── index.ts  # Add game-specific schemas here
+
+backend/shared/src/
+└── lib.rs  # Rust types with serde validation
 ```
 
-## Match State Schema
+## Game State Schema (Example)
 
 ```typescript
-// packages/shared/src/schemas/match.ts
+// AskAi_KVS/shared/schemas/index.ts
 import { z } from 'zod';
 
 export const TributeSchema = z.object({

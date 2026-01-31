@@ -1,17 +1,18 @@
 ---
 name: uiux-mock-page
-description: Create new UI/UX mock pages for btl.run PWA following the established folder pattern. Use when creating new screens, pages, or views for the uiux mocks, or when the user says "create page", "new screen", "add uiux screen", or references apps/pwa/public/uiux.
+description: Create new UI/UX mock pages for btl.run PWA following the established folder pattern. Use when creating new screens, pages, or views for the uiux mocks.
 ---
 
 # Create UI/UX Mock Page
 
-Create static HTML/CSS/JS mock pages for btl.run PWA in `apps/pwa/public/uiux/`.
+Create static HTML/CSS/JS mock pages for btl.run PWA in `uiux_mockups/`.
 
 ## CRITICAL: Style Source
 
-**All new pages MUST match the exact styling from these two existing screens:**
-- `apps/pwa/public/uiux/00-start-screen/`
-- `apps/pwa/public/uiux/01-tribute-setup/`
+**All new pages MUST match the exact styling from these existing screens:**
+- `uiux_mockups/00-start-screen/`
+- `uiux_mockups/01-tribute-setup/`
+- `uiux_mockups/02-game-turn/`
 
 **DO NOT** use styling guidance from anywhere else in the codebase. The uiux mocks are an isolated design system for testing UI/UX ideas independently.
 
@@ -22,14 +23,14 @@ When in doubt, **read the existing CSS files** and copy patterns directly.
 When user requests a new uiux page:
 
 1. **Read existing screens first** — review `00-start-screen/styles.css` and `01-tribute-setup/styles.css`
-2. **Determine the screen number and name** (e.g., `02-game-hub`)
-3. **Create folder**: `apps/pwa/public/uiux/{nn}-{screen-name}/`
+2. **Determine the screen number and name** (e.g., `04-new-screen`)
+3. **Create folder**: `uiux_mockups/{nn}-{screen-name}/`
 4. **Create four files** using templates below (copy CSS/JS patterns exactly)
 
 ## Folder Structure
 
 ```
-apps/pwa/public/uiux/
+uiux_mockups/
 ├── assets/                    # Shared images (DO NOT create new folder)
 ├── 00-start-screen/           # Existing
 ├── 01-tribute-setup/          # Existing
@@ -642,10 +643,12 @@ color: color-mix(in oklab, var(--accent) 75%, white);
 
 After creating the page:
 ```powershell
-# Sync to S3
-aws s3 sync apps/pwa/public/uiux s3://btl-run-web-prod-615821144597/uiux --delete
+# To test mockups locally
+cd uiux_mockups
+npx http-server -p 8080
+# Open: http://localhost:8080/00-start-screen/
 
-# Invalidate CloudFront cache
+# Mockups are for design iteration only, not deployed to production
 aws cloudfront create-invalidation --distribution-id E18WMI8W5MVMR1 --paths "/uiux/*"
 ```
 

@@ -4,14 +4,14 @@ alwaysApply: true
 
 # Cursor Rule: UI/UX Mocks
 
-**Applies to:** `apps/pwa/public/uiux/**`
+**Applies to:** `uiux_mockups/**`
 
-Static HTML/CSS/JS mocks for designing screens before React implementation.
+Static HTML/CSS/JS mocks for designing screens before Preact implementation.
 
 ## Folder Structure
 
 ```
-apps/pwa/public/uiux/
+uiux_mockups/
 ├── assets/                    # Shared images/icons for ALL screens
 │   ├── bq-background-grid-map.png
 │   ├── bq-ui-panel-frame-vertical.png
@@ -76,9 +76,9 @@ Document each screen with:
 4. **Viewing** — How to preview the mock
 
 ### Adding New Screens
-1. Create folder: `apps/pwa/public/uiux/{nn}-{screen-name}/`
-2. Create files: `index.html`, `styles.css`, `script.js`
-3. Optionally add `README.md`
+1. Create folder: `uiux_mockups/{nn}-{screen-name}/`
+2. Create files: `index.html`, `styles.css`, `script.js`, `README.md`
+3. Reference shared assets: `../assets/image.png`
 4. Add any new shared images to `assets/`
 
 ## Viewing Mocks

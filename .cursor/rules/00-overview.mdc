@@ -80,10 +80,10 @@ Never create .md files in root directory. Use this structure:
 
 | Type | Location |
 |------|----------|
-| **Living guides** | `apps/docs/guides/` |
-| **Historical notes** | `apps/docs/project-history/YYYY-MM-DD-name.md` |
-| **Version history** | `CHANGELOG.md` |
+| **Architecture docs** | Root: `README.md`, `ARCHITECTURE.md`, `SETUP.md`, etc. |
+| **Version history** | `CHANGELOG.md` (when created) |
 | **Technical lessons** | `.cursor/_lessons_learned/category/` |
+| **Integration guides** | `INTEGRATION.md`, `DEPLOYMENT-CHECKLIST.md` |
 
 ---
 

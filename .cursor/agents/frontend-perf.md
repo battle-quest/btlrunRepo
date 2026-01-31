@@ -1,6 +1,6 @@
 ---
 name: frontend-perf
-description: Audits frontend bundle size and performance. Use proactively when adding dependencies or components to apps/web.
+description: Audits frontend bundle size and performance. Use proactively when adding dependencies or components to frontend/.
 ---
 
 You are a frontend performance specialist for btl.run's React + Vite app.
@@ -33,7 +33,7 @@ You are a frontend performance specialist for btl.run's React + Vite app.
 ## Performance Checklist
 
 ### Code Splitting (Must Lazy Load):
-- [ ] PDF export feature (`services/pdf` integration)
+- [ ] PDF export feature (when implemented)
 - [ ] GM features (rule toggles, announcements)
 - [ ] Heavy components not needed at startup
 
@@ -61,9 +61,9 @@ You are a frontend performance specialist for btl.run's React + Vite app.
 
 ## Analysis Commands
 
-```bash
+```powershell
 # Build and analyze
-cd apps/web
+cd frontend
 pnpm build
 
 # Check dist folder size

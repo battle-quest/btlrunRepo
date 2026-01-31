@@ -17,9 +17,10 @@ btl.run uses **event sourcing** with **snapshots**:
 ## State Schema
 
 ```typescript
-// packages/shared/src/types.ts
+// For TypeScript: AskAi_KVS/shared/schemas/index.ts
+// Or for Rust: backend/shared/src/lib.rs
 
-export interface MatchState {
+export interface GameState {
   matchId: string;
   createdAt: number;
   mode: 'quick' | 'standard' | 'long';
@@ -70,7 +71,8 @@ export interface GameEvent {
 **Reducers must be pure functions for deterministic replay:**
 
 ```typescript
-// packages/shared/src/reducers.ts
+// Game logic (create when implementing game engine)
+// Could be in: backend/shared/src/ (Rust) or AskAi_KVS/shared/ (TypeScript)
 
 export function applyEvent(state: MatchState, event: GameEvent): MatchState {
   switch (event.type) {
@@ -214,7 +216,7 @@ async function storeIdempotencyRecord(matchId: string, key: string, data: any) {
 **Use seedable PRNG for reproducible outcomes:**
 
 ```typescript
-// packages/shared/src/random.ts
+// Random number generation for deterministic game simulation
 
 class SeededRandom {
   private seed: number;

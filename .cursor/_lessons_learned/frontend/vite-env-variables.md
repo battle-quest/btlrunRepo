@@ -67,7 +67,7 @@ declare global {
 **2. Create env.d.ts for TypeScript:**
 
 ```typescript
-// apps/web/src/env.d.ts
+// frontend/src/env.d.ts
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {

@@ -94,7 +94,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 **3. Create a response helper:**
 
 ```typescript
-// services/api/src/utils/response.ts
+// Example for Lambda response utility
 const getAllowedOrigin = (requestOrigin: string | undefined): string => {
   const allowedOrigins = [
     'http://localhost:5173',
