@@ -153,8 +153,8 @@ Start the mock servers for local testing without AWS:
 
 ```bash
 # Terminal 1: KVS Mock (in-memory storage)
-npx tsx mocks/kvs-server.ts
-# Runs at http://localhost:9000
+PORT=9002 npx tsx mocks/kvs-server.ts
+# Runs at http://localhost:9002
 
 # Terminal 2: AskAI Mock (simulated responses)
 npx tsx mocks/askai-server.ts
@@ -164,7 +164,7 @@ npx tsx mocks/askai-server.ts
 ### Environment for Local Dev
 
 ```bash
-KVS_ENDPOINT=http://localhost:9000
+KVS_ENDPOINT=http://localhost:9002
 ASKAI_ENDPOINT=http://localhost:9001
 ```
 

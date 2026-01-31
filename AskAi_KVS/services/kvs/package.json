@@ -1,5 +1,5 @@
 {
-  "name": "@your-app/kvs",
+  "name": "@btl-run/kvs",
   "version": "1.0.0",
   "private": true,
   "type": "module",

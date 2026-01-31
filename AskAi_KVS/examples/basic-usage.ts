@@ -9,7 +9,7 @@ import { KVSClient, AIClient } from '../shared/clients';
 
 // Initialize clients (use your endpoints in production)
 const kvs = new KVSClient({
-  endpoint: process.env.KVS_ENDPOINT || 'http://localhost:9000',
+  endpoint: process.env.KVS_ENDPOINT || 'http://localhost:9002',
   timeout: 5000,
 });
 

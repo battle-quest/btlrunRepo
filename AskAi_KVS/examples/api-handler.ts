@@ -12,7 +12,7 @@ import { createLogger, generateId } from '../shared/utils';
 
 // Initialize clients from environment
 const kvsClient = new KVSClient({
-  endpoint: process.env.KVS_ENDPOINT || 'http://localhost:9000',
+  endpoint: process.env.KVS_ENDPOINT || 'http://localhost:9002',
   timeout: 8000,
 });
 

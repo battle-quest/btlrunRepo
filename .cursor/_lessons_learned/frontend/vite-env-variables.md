@@ -88,7 +88,7 @@ interface ImportMeta {
 export const config = {
   apiEndpoint: import.meta.env.VITE_API_ENDPOINT || 'http://localhost:3000',
   askaiEndpoint: import.meta.env.VITE_ASKAI_ENDPOINT || 'http://localhost:9001',
-  kvsEndpoint: import.meta.env.VITE_KVS_ENDPOINT || 'http://localhost:9000',
+  kvsEndpoint: import.meta.env.VITE_KVS_ENDPOINT || 'http://localhost:9002',
   appName: 'btl.run',
   isDev: import.meta.env.DEV,
   isProd: import.meta.env.PROD,
@@ -105,7 +105,7 @@ fetch(`${config.apiEndpoint}/health`);
 # frontend/.env.local (local dev, gitignored)
 VITE_API_ENDPOINT=http://localhost:3000
 VITE_ASKAI_ENDPOINT=http://localhost:9001
-VITE_KVS_ENDPOINT=http://localhost:9000
+VITE_KVS_ENDPOINT=http://localhost:9002
 
 # frontend/.env.production (production build)
 VITE_API_ENDPOINT=https://api.btl.run

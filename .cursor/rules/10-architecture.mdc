@@ -22,7 +22,7 @@ Infrastructure:
 
 Commands (PowerShell):
 - `cd frontend && pnpm dev` — Vite dev server (localhost:5173)
-- `npx tsx AskAi_KVS/mocks/kvs-server.ts` — Mock KVS (localhost:9000)
+- `PORT=9002 npx tsx AskAi_KVS/mocks/kvs-server.ts` — Mock KVS (localhost:9002)
 - `npx tsx AskAi_KVS/mocks/askai-server.ts` — Mock AskAI (localhost:9001)
 - `cd backend && cargo lambda watch` — Local Rust Lambda
 - `.\scripts\deploy.ps1 -Environment dev` — Deploy full stack

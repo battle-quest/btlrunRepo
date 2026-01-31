@@ -75,8 +75,8 @@ const reply = await ai.chat([
 pnpm dev:mocks
 
 # Or separately
-pnpm dev:kvs-mock   # http://localhost:9000
-pnpm dev:askai-mock # http://localhost:9001
+PORT=9002 npx tsx mocks/kvs-server.ts   # http://localhost:9002
+npx tsx mocks/askai-server.ts           # http://localhost:9001
 ```
 
 ## Build Lambda Functions

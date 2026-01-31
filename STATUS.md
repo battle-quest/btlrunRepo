@@ -114,8 +114,8 @@ These will remain untouched. New btl-run infrastructure will deploy alongside th
    
    # Mock services
    cd AskAi_KVS
-   npx tsx mocks/kvs-server.ts    # :9000
-   npx tsx mocks/askai-server.ts  # :9001
+   PORT=9002 npx tsx mocks/kvs-server.ts    # :9002
+   npx tsx mocks/askai-server.ts            # :9001
    ```
 
 2. **Make changes**

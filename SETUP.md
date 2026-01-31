@@ -167,8 +167,9 @@ npx tsx mocks/askai-server.ts
 cd frontend
 
 # Create .env.local
-echo "VITE_KVS_ENDPOINT=http://localhost:9000" > .env.local
+echo "VITE_API_ENDPOINT=http://localhost:9000" > .env.local
 echo "VITE_ASKAI_ENDPOINT=http://localhost:9001" >> .env.local
+echo "VITE_KVS_ENDPOINT=http://localhost:9002" >> .env.local
 
 pnpm dev
 ```

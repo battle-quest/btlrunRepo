@@ -35,10 +35,10 @@ npx tsx AskAi_KVS/mocks/askai-server.ts  # Terminal 3
 ### Step 1: Stop Running Processes
 
 btl.run uses these ports:
-- **8787**: API server
-- **9000**: Mock KVS server
-- **9001**: Mock AskAI server
 - **5173**: Vite web server (may auto-increment to 5174, 5175, etc.)
+- **9000**: Rust API (cargo lambda watch)
+- **9001**: Mock AskAI server
+- **9002**: Mock KVS server
 
 **Recommended approach** - Use kill-port if available:
 ```bash
@@ -95,8 +95,8 @@ Build outputs:
 pnpm dev:all
 ```
 
-This starts (via concurrently):
-- Mock KVS server on port 9000
+This starts:
+- Mock KVS server on port 9002 (PORT=9002)
 - Mock AskAI server on port 9001
 - API server on port 8787
 - Vite web server on port 5173 (or next available)
