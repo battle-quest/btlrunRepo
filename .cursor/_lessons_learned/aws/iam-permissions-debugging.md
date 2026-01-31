@@ -24,18 +24,23 @@ Or silent failures where operations just don't work.
 ## Root Cause
 
 - Lambda's execution role doesn't have required permissions
-- CDK `grant*` methods weren't called or were called incorrectly
+- SAM policies not configured correctly or missing
 - Resource ARN in policy doesn't match actual resource
 - Condition keys restrict access unexpectedly
 - Cross-account or cross-region access issues
 
 ## Solution
 
-**1. Use CDK grant methods (preferred):**
+**1. Use SAM policies (preferred):**
 
-```typescript
-// CDK handles IAM policy creation automatically
-const table = new dynamodb.Table(this, 'GameData', {
+```yaml
+# SAM handles IAM policy creation automatically
+MyFunction:
+  Type: AWS::Serverless::Function
+  Properties:
+    Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref GameDataTable
   partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
   sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING },
 });
@@ -120,8 +125,9 @@ table.grantReadData(pdfHandler); // Read match logs
 
 ## Prevention
 
-- [ ] Always use CDK `grant*` methods instead of manual IAM policies
-- [ ] Pass resource names via environment variables
+- [ ] Always use SAM policy templates instead of manual IAM policies
+- [ ] Pass resource names/ARNs via environment variables
+- [ ] Use `!Ref` and `!GetAtt` for resource references in policies
 - [ ] Check CloudWatch Logs immediately after Access Denied
 - [ ] Test with SAM local before deploying (uses your AWS credentials)
 - [ ] Run `sam validate --lint` to check IAM policy syntax

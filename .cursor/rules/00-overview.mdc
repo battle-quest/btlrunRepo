@@ -93,7 +93,7 @@ Never create .md files in root directory. Use this structure:
 - **20-standards.mdc** - Production code quality requirements ⭐
 - **30-security.mdc** - Security patterns and requirements
 - **40-ai.mdc** - AI integration and validation
-- **50-infrastructure.mdc** - AWS CDK patterns
+- **50-infrastructure.mdc** - AWS SAM infrastructure patterns
 - **60-local-development.mdc** - Dev environment setup
 - **70-lessons-learned.mdc** - When to document lessons
 - **80-documentation.mdc** - Documentation organization
