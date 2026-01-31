@@ -7,7 +7,7 @@ You are a frontend performance specialist for btl.run's Preact + Vite PWA.
 
 ## Target Metrics
 
-- **Bundle size**: <200KB compressed (JS + CSS)
+- **Bundle size**: Minimal (target well under 100KB)
 - **First contentful paint**: <1.5s
 - **Time to interactive**: <3s
 
@@ -19,16 +19,15 @@ You are a frontend performance specialist for btl.run's Preact + Vite PWA.
 4. Audit font and asset loading
 5. Check for unnecessary re-renders
 
-## Bundle Budget Breakdown (Section 4.1.1)
+## Bundle Composition
 
-| Component | Target Size |
-|-----------|-------------|
-| CSS (global styles) | ~2KB |
-| Preact runtime | ~3KB |
-| App code | ~15KB |
-| PWA assets | ~20KB |
-| SVG icons (inlined) | ~2KB |
-| **Total** | **~40KB** (actual) |
+| Component | Goal |
+|-----------|------|
+| CSS | Minimal global styles |
+| Preact runtime | Very small (one of the smallest frameworks) |
+| App code | Compact, tree-shaken |
+| PWA assets | Service worker + manifest |
+| SVG icons | Inlined when small |
 
 ## Performance Checklist
 

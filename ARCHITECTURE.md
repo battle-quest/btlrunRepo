@@ -8,7 +8,7 @@ Complete technical architecture for the btl.run PWA game.
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                            User's Browser                               │
 │  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │                     Preact PWA (40KB)                            │   │
+│  │                     Preact PWA                                   │   │
 │  │  ├─ Service Worker (offline support)                             │   │
 │  │  ├─ Game UI (from uiux_mockups/)                                 │   │
 │  │  └─ Client SDKs (KVSClient, AIClient)                            │   │
@@ -56,12 +56,12 @@ Complete technical architecture for the btl.run PWA game.
 
 | Layer | Technology | Why |
 |-------|-----------|-----|
-| **Frontend** | Preact 10.28 | 3KB runtime, React-compatible |
-| | Vite 5.4 | Fast builds, HMR, PWA plugin |
+| **Frontend** | Preact | Minimal runtime, React-compatible |
+| | Vite | Fast builds, HMR, PWA plugin |
 | | TypeScript (strict) | Type safety |
 | | Service Worker | Offline support, caching |
-| **Game API** | Rust 1.93 | Fastest Lambda cold starts |
-| | lambda_http 0.13 | API Gateway integration |
+| **Game API** | Rust | Fastest Lambda cold starts |
+| | lambda_http | API Gateway integration |
 | | Tokio (async) | Async runtime |
 | **AI Service** | Node.js 20.x | OpenAI SDK, existing codebase |
 | | OpenAI API | gpt-5-nano (fast, cheap) |
@@ -81,7 +81,7 @@ Complete technical architecture for the btl.run PWA game.
 ```
 btlrunRepo/
 │
-├── frontend/                      # Preact PWA (3KB runtime)
+├── frontend/                      # Preact PWA
 │   ├── src/
 │   │   ├── main.tsx               # App entry point
 │   │   ├── app.tsx                # Root component
@@ -250,14 +250,14 @@ sequenceDiagram
 cd frontend
 pnpm install
 pnpm build
-# Output: dist/ (40KB bundle)
+# Output: dist/ (optimized bundle)
 ```
 
 ### TypeScript Services
 ```powershell
 .\scripts\build-services.ps1
 # Uses esbuild per service
-# Output: AskAi_KVS/services/*/dist/index.js (7-8KB each)
+# Output: AskAi_KVS/services/*/dist/index.js (minimal bundles)
 ```
 
 ### Rust Backend
@@ -265,10 +265,10 @@ pnpm build
 # Via SAM (recommended - uses Docker for cross-compilation)
 sam build --use-container --template infrastructure/stacks/api.yaml
 
-# Or directly with cargo-lambda (requires Zig)
+# Or directly with cargo-lambda
 cd backend
 cargo lambda build --release --arm64
-# Output: target/lambda/*/bootstrap
+# Output: target/lambda/*/bootstrap (optimized ARM64 binary)
 ```
 
 ## Deployment Workflow
@@ -331,15 +331,14 @@ Each Lambda has minimal permissions:
 
 ### Bundle Sizes
 
-- Frontend: 40.46 KB (Preact + app code)
-- AskAI Service: 7.77 KB
-- KVS Service: 6.25 KB
-- Rust API: TBD (typically 5-10 MB with dependencies)
+- Frontend: Highly optimized (Preact + minimal dependencies)
+- TypeScript Services: Minimal (esbuild bundling with external AWS SDK)
+- Rust API: Optimized ARM64 binary
 
 ### Lambda Cold Starts
 
-- **Rust (ARM64)**: ~100-200ms typical
-- **Node.js (ARM64)**: ~50-100ms typical
+- **Rust (ARM64)**: Fastest cold starts
+- **Node.js (ARM64)**: Very fast cold starts
 - **Preact PWA**: Instant (cached at CDN edge)
 
 ### Caching Strategy

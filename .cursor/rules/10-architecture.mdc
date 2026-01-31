@@ -6,7 +6,7 @@ alwaysApply: true
 
 Frontend:
 - frontend/ (Preact + Vite + TypeScript PWA)
-- 40KB bundle, service worker for offline support
+- Highly optimized bundle with service worker for offline support
 - Modern UI based on mockups in uiux_mockups/
 
 Backend:

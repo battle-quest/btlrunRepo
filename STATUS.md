@@ -9,38 +9,35 @@ All infrastructure and tooling is configured and ready for development.
 
 ### Prerequisites Installed
 
-| Tool | Version | Status |
-|------|---------|--------|
-| AWS CLI | 2.32.18 | Installed |
-| SAM CLI | 1.153.1 | Installed |
-| Rust | 1.93.0 | Installed |
-| Cargo Lambda | 1.8.6 (via pip) | Installed |
-| Node.js | v24.13.0 | Installed |
-| pnpm | 10.28.1 | Installed |
-| Docker | 29.1.2 | Installed |
-| GitHub CLI | 2.85.0 | Installed |
+| Tool | Status |
+|------|--------|
+| AWS CLI | ✓ Installed |
+| SAM CLI | ✓ Installed |
+| Rust | ✓ Installed |
+| Cargo Lambda (via pip) | ✓ Installed |
+| Node.js | ✓ Installed |
+| pnpm | ✓ Installed |
+| Docker | ✓ Installed |
+| GitHub CLI | ✓ Installed |
 
 ### Git Repository
 
 - **Status:** Initialized and pushed to GitHub
 - **Account:** btl-run
-- **Commits:** 4 commits
-  - Initial project setup
-  - AskAI/KVS services, assets, UI mockups
-  - Infrastructure integration
-  - Build script fixes
+- Clean commit history with infrastructure setup
 
 ### Project Structure Created
 
 ```
-✓ .cursor/rules/          Cursor cloud agent configuration
-✓ frontend/               Preact PWA with Vite (14KB bundle)
-✓ backend/                Rust Lambda workspace
-✓ AskAi_KVS/             TypeScript services (7-8KB each)
-✓ infrastructure/         SAM templates with 4 nested stacks
-✓ scripts/                PowerShell deployment automation
-✓ assets/                 Game UI assets
-✓ uiux_mockups/          UI/UX prototypes
+✓ .cursor/               Agent configuration (rules, agents, skills, lessons)
+✓ frontend/              Preact PWA with Vite
+✓ backend/               Rust Lambda workspace
+✓ AskAi_KVS/            TypeScript Lambda services
+✓ infrastructure/        SAM templates with nested stacks
+✓ scripts/               PowerShell deployment automation
+✓ assets/                Game UI assets
+✓ uiux_mockups/         UI/UX prototypes
+✓ docs/                  Documentation (guides, history)
 ```
 
 ### Infrastructure Stacks Defined
@@ -54,11 +51,11 @@ All infrastructure and tooling is configured and ready for development.
 
 ### Build Process Verified
 
-| Component | Build Status | Output Size |
-|-----------|--------------|-------------|
-| Frontend (Preact) | Tested ✓ | 40.46 KB |
-| Services (TypeScript) | Tested ✓ | askai: 7.77KB, kvs: 6.25KB |
-| Backend (Rust) | Pending SAM build | TBD |
+| Component | Build Status |
+|-----------|--------------|
+| Frontend (Preact) | ✓ Tested, optimized |
+| Services (TypeScript) | ✓ Tested, esbuild bundling |
+| Backend (Rust) | ✓ Ready for SAM Docker build |
 
 **Note:** Rust builds via SAM use Docker for cross-compilation to Lambda ARM64.
 
@@ -140,9 +137,12 @@ These will remain untouched. New btl-run infrastructure will deploy alongside th
 
 - `README.md` - Overview and quick start
 - `SETUP.md` - Detailed setup instructions
+- `ARCHITECTURE.md` - Technical architecture
 - `INTEGRATION.md` - AskAI/KVS integration strategy
+- `DEPLOYMENT-CHECKLIST.md` - Pre-deployment verification
 - `STATUS.md` - This file
-- `.cursor/rules/` - AI agent guidance
+- `docs/` - Guides, history, specifications
+- `.cursor/` - Agent configuration
 
 ## Known Considerations
 
@@ -154,7 +154,7 @@ These will remain untouched. New btl-run infrastructure will deploy alongside th
 
 ## Architecture Decision Record
 
-- **Frontend:** Preact (3KB) chosen for minimal bundle size
+- **Frontend:** Preact chosen for minimal bundle size
 - **Game API:** Rust chosen for optimal Lambda cold starts
 - **Services:** Node.js chosen for existing codebase compatibility
 - **Infrastructure:** SAM nested stacks for modular deployment

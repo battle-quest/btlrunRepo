@@ -9,20 +9,21 @@ Optimize the btl.run Preact PWA for minimal bundle size and fast loading.
 
 ## Target Metrics
 
-- **Bundle size**: <50KB total (currently ~40KB)
+- **Bundle size**: Minimal (well under 100KB)
 - **First contentful paint**: <1s
 - **Time to interactive**: <2s
 
-## Current Bundle Analysis
+## Bundle Composition
 
-From `frontend/package.json` and build output:
+The Preact PWA is highly optimized with:
 ```
-Preact runtime:       ~3KB
-App code:            ~14KB
-CSS:                 ~2KB
-PWA assets:          ~20KB
-Total:               ~40KB ✓ (well under target)
+Preact runtime:       Very small framework
+App code:             Compact and tree-shaken
+CSS:                  Minimal global styles
+PWA assets:           Service worker + manifest
 ```
+
+Check actual bundle size by running `pnpm build` in `frontend/` directory.
 
 ## Vite Configuration
 
@@ -267,13 +268,13 @@ The current frontend (40KB) is already highly optimized. Key to maintaining perf
 
 1. **Avoid heavy dependencies** - question every new package
 2. **Lazy load features** - game modes, PDF export, advanced features
-3. **Keep Preact** - don't switch to React (3KB vs 45KB)
+3. **Keep Preact** - don't switch to React (much smaller runtime)
 4. **Monitor bundle size** - run this agent after adding features
 
 ## Success Criteria
 
 Performance audit passes when:
-- ✅ Total bundle < 50KB (currently 40KB)
+- ✅ Bundle remains minimal
 - ✅ No unnecessary dependencies
 - ✅ Critical features load fast
 - ✅ Lighthouse score > 90

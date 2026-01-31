@@ -66,10 +66,10 @@ A hyper-efficient PWA game built with Preact, Rust Lambda, and AWS infrastructur
 ```
 btlrunRepo/
 ├── .cursor/             # Cursor AI configuration
-│   ├── agents/          # 13 specialized task agents
-│   ├── skills/          # 12 reusable how-to guides
-│   ├── rules/           # 12 coding standards
-│   └── _lessons_learned/ # 15 technical patterns
+│   ├── agents/          # Specialized task agents
+│   ├── skills/          # Reusable how-to guides
+│   ├── rules/           # Coding standards
+│   └── _lessons_learned/ # Technical patterns
 ├── frontend/            # Preact PWA
 │   ├── src/             # Source code
 │   ├── public/          # Static assets
