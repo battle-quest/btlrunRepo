@@ -1,0 +1,12 @@
+{
+  "Parameters": {
+    "Environment": "dev",
+    "DomainName": "",
+    "HostedZoneId": ""
+  },
+  "Tags": {
+    "Project": "btl-run",
+    "Environment": "dev",
+    "ManagedBy": "SAM"
+  }
+}

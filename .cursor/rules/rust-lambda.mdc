@@ -1,0 +1,127 @@
+---
+description: Rust Lambda development patterns and cargo-lambda usage
+globs: ["backend/**/*.rs", "backend/**/Cargo.toml"]
+alwaysApply: false
+---
+
+# Rust Lambda Development Rules
+
+## Tooling
+
+Use `cargo-lambda` for all Lambda development:
+
+```powershell
+# Install cargo-lambda
+cargo install cargo-lambda
+
+# Build for Lambda (ARM64)
+cargo lambda build --release --arm64
+
+# Watch and test locally
+cargo lambda watch
+
+# Invoke locally
+cargo lambda invoke api --data-ascii '{"httpMethod": "GET", "path": "/"}'
+```
+
+## Project Structure
+
+```
+backend/
+├── Cargo.toml              # Workspace manifest
+├── functions/
+│   └── api/                # API handler function
+│       ├── Cargo.toml
+│       └── src/
+│           └── main.rs
+└── shared/                 # Shared library
+    ├── Cargo.toml
+    └── src/
+        └── lib.rs
+```
+
+## Lambda Function Template
+
+```rust
+use lambda_http::{run, service_fn, Body, Error, Request, Response};
+use tracing_subscriber::filter::{EnvFilter, LevelFilter};
+
+async fn handler(event: Request) -> Result<Response<Body>, Error> {
+    let path = event.uri().path();
+    let method = event.method();
+    
+    // Your logic here
+    
+    Ok(Response::builder()
+        .status(200)
+        .header("content-type", "application/json")
+        .body(Body::from(r#"{"status":"ok"}"#))?)
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Error> {
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            EnvFilter::builder()
+                .with_default_directive(LevelFilter::INFO.into())
+                .from_env_lossy(),
+        )
+        .with_target(false)
+        .without_time()
+        .init();
+
+    run(service_fn(handler)).await
+}
+```
+
+## Dependencies
+
+Essential crates for Lambda functions:
+
+```toml
+[dependencies]
+lambda_http = "0.13"
+tokio = { version = "1", features = ["macros"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+```
+
+## Best Practices
+
+1. **Cold Start Optimization**
+   - Keep dependencies minimal
+   - Use `--release` and `--arm64` for smallest binary
+   - Initialize expensive resources lazily
+
+2. **Error Handling**
+   - Use `thiserror` for custom errors
+   - Return proper HTTP status codes
+   - Log errors with `tracing`
+
+3. **Shared Code**
+   - Put reusable logic in `backend/shared/`
+   - Reference as workspace dependency: `shared = { path = "../shared" }`
+
+4. **Testing**
+   - Use `cargo lambda watch` for local development
+   - Write unit tests in each crate
+   - Integration tests can use `cargo lambda invoke`
+
+## SAM Integration
+
+Lambda functions are referenced in SAM templates:
+
+```yaml
+ApiFunction:
+  Type: AWS::Serverless::Function
+  Metadata:
+    BuildMethod: rust-cargolambda
+  Properties:
+    CodeUri: ../backend/functions/api
+    Handler: bootstrap
+    Runtime: provided.al2023
+    Architectures:
+      - arm64
+```

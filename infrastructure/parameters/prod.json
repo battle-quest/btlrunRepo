@@ -1,0 +1,12 @@
+{
+  "Parameters": {
+    "Environment": "prod",
+    "DomainName": "",
+    "HostedZoneId": ""
+  },
+  "Tags": {
+    "Project": "btl-run",
+    "Environment": "prod",
+    "ManagedBy": "SAM"
+  }
+}

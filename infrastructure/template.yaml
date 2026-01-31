@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  btl.run - Root SAM template
+  Orchestrates nested stacks for modular deployment
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+    Description: Deployment environment
+
+  DomainName:
+    Type: String
+    Default: ""
+    Description: Custom domain name (leave empty for CloudFront default)
+
+  HostedZoneId:
+    Type: String
+    Default: ""
+    Description: Route 53 Hosted Zone ID (required if DomainName is set)
+
+Conditions:
+  HasCustomDomain: !Not [!Equals [!Ref DomainName, ""]]
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: provided.al2023
+    Architectures:
+      - arm64
+    Environment:
+      Variables:
+        ENVIRONMENT: !Ref Environment
+        RUST_LOG: info
+
+Resources:
+  # Storage Stack - S3 buckets for frontend and artifacts
+  StorageStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: stacks/storage.yaml
+      Parameters:
+        Environment: !Ref Environment
+      Tags:
+        - Key: Project
+          Value: btl-run
+        - Key: Environment
+          Value: !Ref Environment
+
+  # API Stack - API Gateway and Lambda functions
+  ApiStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: stacks/api.yaml
+      Parameters:
+        Environment: !Ref Environment
+      Tags:
+        - Key: Project
+          Value: btl-run
+        - Key: Environment
+          Value: !Ref Environment
+
+  # CDN Stack - CloudFront distribution
+  CdnStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - StorageStack
+      - ApiStack
+    Properties:
+      TemplateURL: stacks/cdn.yaml
+      Parameters:
+        Environment: !Ref Environment
+        FrontendBucketName: !GetAtt StorageStack.Outputs.FrontendBucketName
+        FrontendBucketArn: !GetAtt StorageStack.Outputs.FrontendBucketArn
+        FrontendBucketDomainName: !GetAtt StorageStack.Outputs.FrontendBucketDomainName
+        ApiEndpoint: !GetAtt ApiStack.Outputs.ApiEndpoint
+        DomainName: !Ref DomainName
+        HostedZoneId: !Ref HostedZoneId
+      Tags:
+        - Key: Project
+          Value: btl-run
+        - Key: Environment
+          Value: !Ref Environment
+
+Outputs:
+  FrontendBucket:
+    Description: S3 bucket for frontend assets
+    Value: !GetAtt StorageStack.Outputs.FrontendBucketName
+
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !GetAtt ApiStack.Outputs.ApiEndpoint
+
+  CloudFrontDomain:
+    Description: CloudFront distribution domain
+    Value: !GetAtt CdnStack.Outputs.CloudFrontDomain
+
+  CloudFrontDistributionId:
+    Description: CloudFront distribution ID (for cache invalidation)
+    Value: !GetAtt CdnStack.Outputs.CloudFrontDistributionId
+
+  WebsiteUrl:
+    Description: Website URL
+    Value: !If
+      - HasCustomDomain
+      - !Sub "https://${DomainName}"
+      - !Sub "https://${CdnStack.Outputs.CloudFrontDomain}"

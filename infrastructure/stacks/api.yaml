@@ -1,0 +1,129 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  btl.run API Stack
+  API Gateway and Lambda functions
+
+Parameters:
+  Environment:
+    Type: String
+    Description: Deployment environment
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: provided.al2023
+    Architectures:
+      - arm64
+    Environment:
+      Variables:
+        ENVIRONMENT: !Ref Environment
+        RUST_LOG: info
+    Tracing: Active
+
+Resources:
+  # HTTP API Gateway
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref Environment
+      Description: btl.run HTTP API
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowHeaders:
+          - Content-Type
+          - Authorization
+          - X-Requested-With
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        MaxAge: 600
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 100
+        ThrottlingRateLimit: 50
+      Tags:
+        Project: btl-run
+        Environment: !Ref Environment
+
+  # Main API Lambda function
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: rust-cargolambda
+      BuildProperties:
+        Binary: bootstrap
+    Properties:
+      FunctionName: !Sub "btl-run-api-${Environment}"
+      Description: btl.run API handler
+      CodeUri: ../../backend/functions/api
+      Handler: bootstrap
+      Events:
+        RootPath:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /
+            Method: GET
+        ApiPath:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api
+            Method: GET
+        HealthPath:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /health
+            Method: GET
+        ApiHealthPath:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/health
+            Method: GET
+        CatchAll:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/{proxy+}
+            Method: ANY
+      Tags:
+        Project: btl-run
+        Environment: !Ref Environment
+
+  # CloudWatch Log Group for API Lambda
+  ApiFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${ApiFunction}"
+      RetentionInDays: 14
+      Tags:
+        - Key: Project
+          Value: btl-run
+        - Key: Environment
+          Value: !Ref Environment
+
+Outputs:
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}"
+
+  ApiFunctionArn:
+    Description: API Lambda function ARN
+    Value: !GetAtt ApiFunction.Arn
+
+  ApiFunctionName:
+    Description: API Lambda function name
+    Value: !Ref ApiFunction
+
+  HttpApiId:
+    Description: HTTP API ID
+    Value: !Ref HttpApi

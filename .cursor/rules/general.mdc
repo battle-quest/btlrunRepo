@@ -1,0 +1,76 @@
+---
+description: General project conventions for btl.run PWA game
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# btl.run Project Rules
+
+## Project Overview
+
+btl.run is a hyper-efficient PWA game built with:
+- **Frontend**: Preact + Vite (in `frontend/`)
+- **Backend**: Rust Lambda functions (in `backend/`)
+- **Infrastructure**: AWS SAM with nested CloudFormation stacks (in `infrastructure/`)
+
+## Directory Structure
+
+```
+btlrunRepo/
+├── frontend/          # Preact PWA - static files deployed to S3
+├── backend/           # Rust Lambda workspace
+│   ├── functions/     # Individual Lambda function crates
+│   └── shared/        # Shared library crate
+├── infrastructure/    # SAM templates
+│   ├── template.yaml  # Root template
+│   └── stacks/        # Nested stack templates
+└── scripts/           # PowerShell deployment scripts
+```
+
+## Code Conventions
+
+### General
+- Use TypeScript for frontend, Rust for backend
+- Prefer small, focused functions
+- Write self-documenting code with minimal comments
+- All public APIs must have documentation
+
+### Frontend (Preact)
+- Use functional components with hooks
+- Keep components small and composable
+- Use CSS modules or inline styles for scoping
+- Optimize for bundle size - avoid large dependencies
+
+### Backend (Rust)
+- Use `cargo-lambda` for building and testing
+- Shared code goes in `backend/shared/`
+- Each Lambda function is a separate crate in `backend/functions/`
+- Use `lambda_http` for API Gateway integration
+
+### Infrastructure
+- Use SAM nested stacks for modularity
+- Parameters in `infrastructure/parameters/`
+- Never hardcode secrets - use SSM Parameter Store or Secrets Manager
+
+## Deployment Commands
+
+```powershell
+# Build frontend
+.\scripts\build-frontend.ps1
+
+# Build backend
+.\scripts\build-backend.ps1
+
+# Deploy everything
+.\scripts\deploy.ps1 -Environment dev
+
+# Deploy single stack
+.\scripts\deploy-stack.ps1 -Stack api -Environment dev
+```
+
+## File Naming
+
+- Frontend components: PascalCase (e.g., `GameBoard.tsx`)
+- Frontend utilities: camelCase (e.g., `gameUtils.ts`)
+- Rust files: snake_case (e.g., `game_logic.rs`)
+- Infrastructure: kebab-case (e.g., `api-gateway.yaml`)
