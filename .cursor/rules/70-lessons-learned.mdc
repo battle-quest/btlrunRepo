@@ -8,7 +8,7 @@ alwaysApply: true
 ## Before Starting Tasks
 
 When beginning work that involves:
-- AWS infrastructure (CDK, Lambda, IAM)
+- AWS infrastructure (SAM, Lambda, IAM)
 - API implementation (CORS, validation, auth)
 - Zod schema design
 - TypeScript type patterns
@@ -69,6 +69,7 @@ Checklist to avoid in future.
 
 High-severity lessons every agent should be aware of:
 - `typescript/any-vs-unknown.md` - Never use `any`, always `unknown` + zod
-- `aws/iam-permissions-debugging.md` - Use CDK grant methods
+- `aws/iam-permissions-debugging.md` - Use SAM policy templates
+- `aws/sam-nested-stacks.md` - Nested stack patterns and dependencies
 - `api/cors-configuration.md` - Configure at API Gateway level
 - `zod/ai-output-validation.md` - Retry once, then fallback

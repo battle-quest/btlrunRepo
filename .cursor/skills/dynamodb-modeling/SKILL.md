@@ -20,7 +20,7 @@ Standard attributes:
 - `ttl` (number) — epoch seconds for auto-expiration
 - `meta` (map) — optional metadata
 
-## CDK Table Definition
+## SAM Table Definition
 
 ```typescript
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';

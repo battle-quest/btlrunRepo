@@ -14,48 +14,63 @@ Endpoints:
 - Authenticated: Create match, join, submit actions, advance turns
 - Privileged: GM actions, export PDF
 
-## CDK Setup
+## SAM Setup
 
-```typescript
-import * as apigateway from 'aws-cdk-lib/aws-apigatewayv2';
-import * as integrations from 'aws-cdk-lib/aws-apigatewayv2-integrations';
-import * as authorizers from 'aws-cdk-lib/aws-apigatewayv2-authorizers';
+```yaml
+# infrastructure/stacks/api.yaml
+Resources:
+  # HTTP API Gateway
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref Environment
+      Description: btl.run game API
+      CorsConfiguration:
+        AllowOrigins:
+          - "https://btl.run"
+          - "http://localhost:5173"
+        AllowHeaders:
+          - Content-Type
+          - Authorization
+          - Idempotency-Key
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        MaxAge: 3600
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 100
+        ThrottlingRateLimit: 50
 
-// Create HTTP API
-const httpApi = new apigateway.HttpApi(this, 'btlrunAPI', {
-  apiName: 'btl-run-api',
-  description: 'btl.run game API',
-  corsPreflight: {
-    allowOrigins: ['https://btlrun.example.com'],
-    allowMethods: [
-      apigateway.CorsHttpMethod.GET,
-      apigateway.CorsHttpMethod.POST,
-      apigateway.CorsHttpMethod.PUT,
-      apigateway.CorsHttpMethod.DELETE,
-    ],
-    allowHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key'],
-    maxAge: cdk.Duration.hours(1),
-  },
-});
-
-// Lambda integration
-const lambdaIntegration = new integrations.HttpLambdaIntegration(
-  'OrchestratorIntegration',
-  orchestratorFunction
-);
-
-// Add routes
-httpApi.addRoutes({
-  path: '/match',
-  methods: [apigateway.HttpMethod.POST],
-  integration: lambdaIntegration,
-});
-
-httpApi.addRoutes({
-  path: '/match/{matchId}',
-  methods: [apigateway.HttpMethod.GET],
-  integration: lambdaIntegration,
-});
+  # Game API Lambda with routes
+  GameApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "btl-run-api-${Environment}"
+      CodeUri: ../../backend/functions/api
+      Handler: bootstrap
+      Runtime: provided.al2023
+      Events:
+        GetMatch:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /match/{matchId}
+            Method: GET
+        CreateMatch:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /match
+            Method: POST
+        CatchAll:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/{proxy+}
+            Method: ANY
 ```
 
 ## Route Design
@@ -435,7 +450,7 @@ console.log(result);
 
 ## Deployment Checklist
 
-- [ ] All routes defined in CDK
+- [ ] All routes defined in SAM template Events
 - [ ] Lambda permissions configured
 - [ ] CORS properly configured
 - [ ] Authentication implemented

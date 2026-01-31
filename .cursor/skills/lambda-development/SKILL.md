@@ -272,7 +272,7 @@ log.error({ action: 'match_advance_failed', matchId: 'abc123', error });
 - **PDF Generator**: 1024MB, 60s timeout (large documents)
 - **Auth**: 128MB, 3s timeout
 
-Set in CDK:
+Set in SAM template:
 ```typescript
 new lambda.Function(this, 'KVFunction', {
   runtime: lambda.Runtime.NODEJS_20_X,
@@ -306,4 +306,4 @@ Before deploying:
 - **Fix**: Increase memory allocation, check for memory leaks
 
 **Issue**: Missing environment variables
-- **Fix**: Verify CDK stack exports, check Lambda configuration
+- **Fix**: Verify SAM stack outputs, check Lambda configuration in template

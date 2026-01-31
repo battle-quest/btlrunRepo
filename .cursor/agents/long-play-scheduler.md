@@ -30,7 +30,7 @@ When a human misses the cutoff:
 
 ### Option 1: EventBridge Scheduled Rule
 ```typescript
-// CDK example
+// SAM example
 const dailyResolver = new events.Rule(this, 'DailyResolver', {
   schedule: events.Schedule.cron({ hour: '20', minute: '0' }),
   targets: [new targets.LambdaFunction(resolverLambda)]
