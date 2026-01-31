@@ -64,7 +64,7 @@ Resources:
             Action: s3:GetObject
             Resource: !Sub "${FrontendBucket.Arn}/*"
             Condition:
-              StringEquals:
+              StringLike:
                 AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/*"
 
   # S3 bucket for deployment artifacts (Lambda code, etc.)
