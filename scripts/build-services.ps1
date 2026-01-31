@@ -82,7 +82,7 @@ foreach ($service in $services) {
         }
 
         $sizeKB = [math]::Round((Get-Item "dist/index.js").Length / 1KB, 2)
-        Write-Host "  ✓ $service built (${sizeKB}KB)" -ForegroundColor Green
+        Write-Host "  [OK] $service built (${sizeKB}KB)" -ForegroundColor Green
     } finally {
         Pop-Location
     }
