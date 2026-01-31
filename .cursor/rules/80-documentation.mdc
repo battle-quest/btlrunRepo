@@ -129,7 +129,7 @@ SETUP.md          → "Here's how to deploy..." (same info again)
 ```markdown
 # DO NOT keep outdated information
 "Deploy with: pnpm deploy"  ← Wrong (we use PowerShell scripts)
-"Uses CDK for infrastructure" ← Wrong (we use SAM)
+"Deploy with: npm run deploy" ← Wrong (we use PowerShell scripts)
 ```
 
 **Instead**: Update immediately when changes occur

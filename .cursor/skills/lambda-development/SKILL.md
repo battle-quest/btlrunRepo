@@ -290,7 +290,7 @@ new lambda.Function(this, 'KVFunction', {
 
 Before deploying:
 - [ ] TypeScript compiled with no errors
-- [ ] Environment variables defined in CDK
+- [ ] Environment variables defined in SAM template Properties
 - [ ] IAM permissions granted (least privilege)
 - [ ] Error handling covers all paths
 - [ ] Logging includes requestId

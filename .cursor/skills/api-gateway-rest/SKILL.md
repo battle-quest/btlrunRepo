@@ -414,7 +414,7 @@ function handleError(error: unknown, requestId: string): APIGatewayProxyResultV2
 **Handle preflight and actual requests:**
 
 ```typescript
-// CDK handles OPTIONS preflight automatically with corsPreflight config
+# Handled by SAM CorsConfiguration
 
 // Lambda adds CORS headers to responses
 return {

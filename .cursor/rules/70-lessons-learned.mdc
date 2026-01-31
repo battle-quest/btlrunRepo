@@ -19,7 +19,7 @@ When beginning work that involves:
 
 Categories:
 - `typescript/` - Type system, any vs unknown, optional chaining
-- `aws/` - CDK, Lambda, IAM, DynamoDB
+- `aws/` - SAM, nested stacks, Lambda, IAM, DynamoDB
 - `api/` - CORS, validation order, error handling
 - `zod/` - Schema patterns, optional vs default, AI validation
 - `frontend/` - Vite env vars, React patterns
