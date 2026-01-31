@@ -1,0 +1,107 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 01: Tribute Setup)
+
+  PURPOSE
+  - Quick setup screen: choose map, tribute count, review roster.
+  - All defaults prepopulated — user can begin in 2 taps.
+  - Receives game type via URL param: ?type=classic|spicy|funny
+
+  IMPLEMENTATION NOTES (for the future React screen)
+  - Read `type` from URL or app state
+  - Prepopulate AI tributes based on type
+  - Allow adding human players (future feature)
+  - "Begin" routes to the game (Turn Hub)
+
+  FOLDER STRUCTURE
+  - Each screen lives in its own folder: /uiux/{screen-name}/
+  - Files: index.html, styles.css, script.js, README.md
+  - Shared assets: /uiux/assets/
+  - Links to other pages MUST use explicit filenames for CloudFront/S3 compatibility:
+    href="../{other-screen}/index.html" (NOT href="../{other-screen}/")
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/01-tribute-setup/index.html?type=classic
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Setup</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run tribute setup">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <main class="panel" aria-label="Setup panel">
+          <!-- Header with back button and type badge -->
+          <header class="header">
+            <a href="../00-start-screen/index.html" class="back-btn" aria-label="Go back">←</a>
+            <h1 class="header-title">Quick Setup</h1>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Map Pack Selection -->
+          <section class="section-card" aria-label="Map selection">
+            <p class="section-label">Map Pack</p>
+            <div class="map-picker">
+              <div class="map-strip" role="listbox" aria-label="Choose a map" id="mapStrip">
+                <article class="map-card" role="option" tabindex="0" data-map="arena-prime" aria-selected="false">
+                  <p class="map-row">Arena Prime<span class="map-tag">Balanced · Strategy wins</span></p>
+                </article>
+
+                <article class="map-card" role="option" tabindex="0" data-map="inferno-pit" aria-selected="true">
+                  <p class="map-row">Inferno Pit<span class="map-tag">Aggressive · No hiding</span></p>
+                </article>
+
+                <article class="map-card" role="option" tabindex="0" data-map="chaos-carnival" aria-selected="false">
+                  <p class="map-row">Chaos Carnival<span class="map-tag">Random · Expect chaos</span></p>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- Tribute Count -->
+          <section class="section-card" aria-label="Tribute count">
+            <p class="section-label">Tributes</p>
+            <div class="count-row" role="listbox" aria-label="Number of tributes">
+              <button class="count-btn" role="option" data-count="6" aria-selected="true">6</button>
+              <button class="count-btn" role="option" data-count="8" aria-selected="false">8</button>
+              <button class="count-btn" role="option" data-count="12" aria-selected="false">12</button>
+              <button class="count-btn" role="option" data-count="16" aria-selected="false">16</button>
+              <button class="count-btn" role="option" data-count="24" aria-selected="false">24</button>
+            </div>
+          </section>
+
+          <!-- Tribute Roster -->
+          <section class="section-card section-card--roster" style="flex: 1; min-height: 0; display: flex; flex-direction: column;">
+            <p class="section-label section-label--roster">Roster</p>
+            <div class="roster" id="roster" role="list" aria-label="Tribute roster">
+              <!-- Tributes rendered by script.js -->
+            </div>
+          </section>
+
+          <!-- Begin Button -->
+          <section class="begin-section">
+            <button class="begin-btn" type="button" id="beginBtn">
+              <span class="begin-btn-content">
+                <span class="begin-btn-title">Begin</span>
+                <span class="begin-btn-sub" id="beginSubtext">6 tributes · 1 survivor</span>
+              </span>
+            </button>
+          </section>
+
+          <!-- Ad Banner -->
+          <footer class="ad-banner" aria-label="Banner ad placeholder">
+            <span><strong>Ad</strong> · banner placeholder</span>
+          </footer>
+        </main>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

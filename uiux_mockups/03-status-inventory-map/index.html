@@ -1,0 +1,149 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 03: Status / Inventory / Map)
+
+  PURPOSE
+  - A "hidden" utility screen reached by tapping the left-rail band on 02.
+  - Two tabs: Status (health/inventory) and Map (explored territory).
+  - Uses a colored left rail as the back affordance (no explicit back button).
+
+  URL PARAMS
+  - type: classic|spicy|funny (affects colors)
+  - map: arena-prime|inferno-pit|chaos-carnival
+  - count: number of tributes
+  - choice: 1|2|3 (last user choice)
+  - tab: status|map (active tab, default: status)
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/03-status-inventory-map/index.html?type=classic&map=inferno-pit&count=6&choice=1
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Status</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run status, inventory, and map">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <!-- Back rail: distinct color, tap anywhere to return -->
+        <aside class="back-rail" aria-label="Back rail">
+          <a class="back-rail-hit" id="backRail" href="../02-game-turn/index.html" aria-label="Back to turn"></a>
+        </aside>
+
+        <main class="panel" aria-label="Status panel">
+          <header class="header">
+            <h1 class="header-title">Status</h1>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <div class="subhead" aria-label="Context">
+            <div class="pill" id="turnPill">Turn 1</div>
+            <div class="pill pill--map" id="mapPill">Inferno Pit</div>
+            <div class="pill pill--alive" id="alivePill">6 alive</div>
+          </div>
+
+          <!-- Tab bar -->
+          <nav class="tab-bar" role="tablist" aria-label="View tabs">
+            <button
+              class="tab-btn tab-btn--active"
+              id="tabStatus"
+              role="tab"
+              aria-selected="true"
+              aria-controls="panelStatus"
+            >Status</button>
+            <button
+              class="tab-btn"
+              id="tabMap"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panelMap"
+            >Map</button>
+          </nav>
+
+          <!-- Tab content wrapper -->
+          <div class="tab-content">
+            <!-- Status Tab Panel -->
+            <section
+              class="tab-panel tab-panel--active"
+              id="panelStatus"
+              role="tabpanel"
+              aria-labelledby="tabStatus"
+            >
+              <section class="card card--vitals" aria-label="Vitals">
+                <div class="card-title">Vitals</div>
+                <div class="stat-row">
+                  <span class="stat-name">HP</span>
+                  <div class="stat-bar"><span class="stat-fill" id="hpFill"></span></div>
+                  <span class="stat-val" id="hpVal">82%</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-name">Stamina</span>
+                  <div class="stat-bar"><span class="stat-fill" id="stamFill"></span></div>
+                  <span class="stat-val" id="stamVal">66%</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-name">Hunger</span>
+                  <div class="stat-bar"><span class="stat-fill stat-fill--warn" id="foodFill"></span></div>
+                  <span class="stat-val" id="foodVal">52%</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-name">Heat</span>
+                  <div class="stat-bar"><span class="stat-fill stat-fill--hot" id="heatFill"></span></div>
+                  <span class="stat-val" id="heatVal">42%</span>
+                </div>
+              </section>
+
+              <section class="card card--inventory" aria-label="Inventory">
+                <div class="card-title">Inventory</div>
+                <div class="inv-scroll" id="invScroll">
+                  <div class="inv-grid" id="invGrid">
+                    <!-- Populated by JS -->
+                  </div>
+                </div>
+              </section>
+            </section>
+
+            <!-- Map Tab Panel -->
+            <section
+              class="tab-panel"
+              id="panelMap"
+              role="tabpanel"
+              aria-labelledby="tabMap"
+              hidden
+            >
+              <section class="card card--fullmap" aria-label="Explored map">
+                <div class="card-title">Explored Territory</div>
+                <div class="fullmap-container">
+                  <div class="fullmap-shell" role="img" aria-label="Full explored map">
+                    <div class="map-grid-container" id="mapGrid" aria-hidden="true">
+                      <!-- Grid tiles rendered by JS -->
+                    </div>
+                    <div class="map-player-marker" id="playerMarker"></div>
+                  </div>
+                </div>
+                <div class="map-legend">
+                  <span class="legend-item"><span class="legend-swatch legend-swatch--current"></span>Current</span>
+                  <span class="legend-item"><span class="legend-swatch legend-swatch--path"></span>Path</span>
+                  <span class="legend-item"><span class="legend-swatch legend-swatch--explored"></span>Visible</span>
+                  <span class="legend-item"><span class="legend-swatch legend-swatch--fog"></span>Unknown</span>
+                </div>
+              </section>
+            </section>
+          </div>
+
+          <footer class="ad-banner" aria-label="Banner ad placeholder">
+            <span><strong>Ad</strong> · banner placeholder</span>
+          </footer>
+        </main>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+

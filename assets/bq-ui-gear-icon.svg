@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <defs>
+    <linearGradient id="bq-gear-fill" x1="128" y1="32" x2="128" y2="224" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#122433"/>
+      <stop offset="0.55" stop-color="#0B1822"/>
+      <stop offset="1" stop-color="#071118"/>
+    </linearGradient>
+
+    <linearGradient id="bq-gear-stroke" x1="64" y1="56" x2="192" y2="208" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A8FFFE"/>
+      <stop offset="0.5" stop-color="#39F6F3"/>
+      <stop offset="1" stop-color="#1AB8B4"/>
+    </linearGradient>
+
+    <linearGradient id="bq-gear-stroke2" x1="92" y1="70" x2="176" y2="198" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#70FFFB"/>
+      <stop offset="1" stop-color="#18A6A3"/>
+    </linearGradient>
+
+    <filter id="bq-cyan-glow" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3.2" result="blur"/>
+      <feColorMatrix
+        in="blur"
+        type="matrix"
+        values="0 0 0 0 0.22  0 0 0 0 0.96  0 0 0 0 0.95  0 0 0 0.80 0"
+        result="glow"
+      />
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="bq-inner-soften" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="0.55" result="soft"/>
+      <feMerge>
+        <feMergeNode in="soft"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <mask id="bq-gear-mask">
+      <rect x="0" y="0" width="256" height="256" fill="#000"/>
+
+      <!-- Gear body -->
+      <circle cx="128" cy="128" r="78" fill="#FFF"/>
+
+      <!-- Teeth (12) -->
+      <rect x="119" y="26" width="18" height="28" rx="4" fill="#FFF" transform="rotate(0 128 128)"/>
+      <rect x="119" y="26" width="18" height="28" rx="4" fill="#FFF" transform="rotate(30 128 128)"/>
+      <rect x="119" y="26" width="18" height="28" rx="4" fill="#FFF" transform="rotate(60 128 128)"/>
+      <rect x="119" y="26" width="18" height="28" rx="4" fill="#FFF" transform="rotate(90 128 128)"/>
+      <rect x="119" y="26" width="18" height="28" rx="4" fill="#FFF" transform="rotate(120 128 128)"/>
+      <rect x="119" y="26" width="18" height="28" rx="4" fill="#FFF" transform="rotate(150 128 128)"/>
+      <rect x="119" y="26" width="18" height="28" rx="4" fill="#FFF" transform="rotate(180 128 128)"/>
+      <rect x="119" y="26" width="18" height="28" rx="4" fill="#FFF" transform="rotate(210 128 128)"/>
+      <rect x="119" y="26" width="18" height="28" rx="4" fill="#FFF" transform="rotate(240 128 128)"/>
+      <rect x="119" y="26" width="18" height="28" rx="4" fill="#FFF" transform="rotate(270 128 128)"/>
+      <rect x="119" y="26" width="18" height="28" rx="4" fill="#FFF" transform="rotate(300 128 128)"/>
+      <rect x="119" y="26" width="18" height="28" rx="4" fill="#FFF" transform="rotate(330 128 128)"/>
+
+      <!-- Center hole -->
+      <circle cx="128" cy="128" r="36" fill="#000"/>
+    </mask>
+  </defs>
+
+  <!-- Filled silhouette -->
+  <g mask="url(#bq-gear-mask)">
+    <rect x="0" y="0" width="256" height="256" fill="url(#bq-gear-fill)"/>
+    <!-- subtle top highlight -->
+    <path
+      d="M60 104C82 72 107 58 128 58C149 58 174 72 196 104"
+      stroke="#8BFFFE"
+      stroke-opacity="0.20"
+      stroke-width="10"
+      stroke-linecap="round"
+      filter="url(#bq-inner-soften)"
+    />
+  </g>
+
+  <!-- Outer strokes (teeth + ring) -->
+  <g filter="url(#bq-cyan-glow)">
+    <circle cx="128" cy="128" r="78" stroke="url(#bq-gear-stroke)" stroke-width="5" />
+
+    <rect x="119" y="26" width="18" height="28" rx="4" fill="none" stroke="url(#bq-gear-stroke)" stroke-width="4" transform="rotate(0 128 128)"/>
+    <rect x="119" y="26" width="18" height="28" rx="4" fill="none" stroke="url(#bq-gear-stroke)" stroke-width="4" transform="rotate(30 128 128)"/>
+    <rect x="119" y="26" width="18" height="28" rx="4" fill="none" stroke="url(#bq-gear-stroke)" stroke-width="4" transform="rotate(60 128 128)"/>
+    <rect x="119" y="26" width="18" height="28" rx="4" fill="none" stroke="url(#bq-gear-stroke)" stroke-width="4" transform="rotate(90 128 128)"/>
+    <rect x="119" y="26" width="18" height="28" rx="4" fill="none" stroke="url(#bq-gear-stroke)" stroke-width="4" transform="rotate(120 128 128)"/>
+    <rect x="119" y="26" width="18" height="28" rx="4" fill="none" stroke="url(#bq-gear-stroke)" stroke-width="4" transform="rotate(150 128 128)"/>
+    <rect x="119" y="26" width="18" height="28" rx="4" fill="none" stroke="url(#bq-gear-stroke)" stroke-width="4" transform="rotate(180 128 128)"/>
+    <rect x="119" y="26" width="18" height="28" rx="4" fill="none" stroke="url(#bq-gear-stroke)" stroke-width="4" transform="rotate(210 128 128)"/>
+    <rect x="119" y="26" width="18" height="28" rx="4" fill="none" stroke="url(#bq-gear-stroke)" stroke-width="4" transform="rotate(240 128 128)"/>
+    <rect x="119" y="26" width="18" height="28" rx="4" fill="none" stroke="url(#bq-gear-stroke)" stroke-width="4" transform="rotate(270 128 128)"/>
+    <rect x="119" y="26" width="18" height="28" rx="4" fill="none" stroke="url(#bq-gear-stroke)" stroke-width="4" transform="rotate(300 128 128)"/>
+    <rect x="119" y="26" width="18" height="28" rx="4" fill="none" stroke="url(#bq-gear-stroke)" stroke-width="4" transform="rotate(330 128 128)"/>
+  </g>
+
+  <!-- Inner rings + notches -->
+  <g filter="url(#bq-cyan-glow)">
+    <circle cx="128" cy="128" r="52" stroke="url(#bq-gear-stroke2)" stroke-width="3" stroke-opacity="0.85"/>
+    <circle cx="128" cy="128" r="36" stroke="url(#bq-gear-stroke)" stroke-width="5"/>
+
+    <!-- small inner notches (8) -->
+    <rect x="124.5" y="68" width="7" height="14" rx="2" fill="#0B1822" stroke="#39F6F3" stroke-opacity="0.55" stroke-width="2" transform="rotate(0 128 128)"/>
+    <rect x="124.5" y="68" width="7" height="14" rx="2" fill="#0B1822" stroke="#39F6F3" stroke-opacity="0.55" stroke-width="2" transform="rotate(45 128 128)"/>
+    <rect x="124.5" y="68" width="7" height="14" rx="2" fill="#0B1822" stroke="#39F6F3" stroke-opacity="0.55" stroke-width="2" transform="rotate(90 128 128)"/>
+    <rect x="124.5" y="68" width="7" height="14" rx="2" fill="#0B1822" stroke="#39F6F3" stroke-opacity="0.55" stroke-width="2" transform="rotate(135 128 128)"/>
+    <rect x="124.5" y="68" width="7" height="14" rx="2" fill="#0B1822" stroke="#39F6F3" stroke-opacity="0.55" stroke-width="2" transform="rotate(180 128 128)"/>
+    <rect x="124.5" y="68" width="7" height="14" rx="2" fill="#0B1822" stroke="#39F6F3" stroke-opacity="0.55" stroke-width="2" transform="rotate(225 128 128)"/>
+    <rect x="124.5" y="68" width="7" height="14" rx="2" fill="#0B1822" stroke="#39F6F3" stroke-opacity="0.55" stroke-width="2" transform="rotate(270 128 128)"/>
+    <rect x="124.5" y="68" width="7" height="14" rx="2" fill="#0B1822" stroke="#39F6F3" stroke-opacity="0.55" stroke-width="2" transform="rotate(315 128 128)"/>
+  </g>
+
+  <!-- Magenta "bolt" accents to match panel corners -->
+  <g>
+    <circle cx="128" cy="76" r="7.5" fill="#B71CA5" opacity="0.9"/>
+    <circle cx="128" cy="76" r="5.2" fill="#FF57E7" opacity="0.95"/>
+    <path d="M124.6 73.1 L131.4 78.9" stroke="#2A0B25" stroke-opacity="0.55" stroke-width="2.2" stroke-linecap="round"/>
+
+    <circle cx="180" cy="128" r="7.5" fill="#B71CA5" opacity="0.9"/>
+    <circle cx="180" cy="128" r="5.2" fill="#FF57E7" opacity="0.95"/>
+    <path d="M176.6 125.1 L183.4 130.9" stroke="#2A0B25" stroke-opacity="0.55" stroke-width="2.2" stroke-linecap="round"/>
+
+    <circle cx="128" cy="180" r="7.5" fill="#B71CA5" opacity="0.9"/>
+    <circle cx="128" cy="180" r="5.2" fill="#FF57E7" opacity="0.95"/>
+    <path d="M124.6 177.1 L131.4 182.9" stroke="#2A0B25" stroke-opacity="0.55" stroke-width="2.2" stroke-linecap="round"/>
+
+    <circle cx="76" cy="128" r="7.5" fill="#B71CA5" opacity="0.9"/>
+    <circle cx="76" cy="128" r="5.2" fill="#FF57E7" opacity="0.95"/>
+    <path d="M72.6 125.1 L79.4 130.9" stroke="#2A0B25" stroke-opacity="0.55" stroke-width="2.2" stroke-linecap="round"/>
+  </g>
+</svg>

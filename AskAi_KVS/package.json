@@ -1,0 +1,26 @@
+{
+  "name": "askai-kvs-export",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AskAI (OpenAI wrapper) and KVS (DynamoDB key-value storage) Lambda services",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm --filter=./services/* --filter=./shared build",
+    "build:askai": "cd services/askai && pnpm build",
+    "build:kvs": "cd services/kvs && pnpm build",
+    "build:shared": "cd shared && pnpm build",
+    "dev:mocks": "npx concurrently \"npx tsx mocks/kvs-server.ts\" \"npx tsx mocks/askai-server.ts\"",
+    "dev:kvs-mock": "npx tsx mocks/kvs-server.ts",
+    "dev:askai-mock": "npx tsx mocks/askai-server.ts",
+    "example": "npx tsx examples/basic-usage.ts",
+    "install:all": "pnpm install && cd services/askai && pnpm install && cd ../kvs && pnpm install && cd ../../shared && pnpm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

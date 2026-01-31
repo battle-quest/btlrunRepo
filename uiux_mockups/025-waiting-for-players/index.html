@@ -1,0 +1,160 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 025: Waiting for Players)
+
+  PURPOSE
+  - Shows waiting state in Long Play mode after user submits their choice
+  - Displays which players have submitted vs still pending
+  - Shows progress toward turn resolution
+  - Allows user to change choice if not locked
+  - Displays daily cutoff timer for Long Play
+
+  URL PARAMS
+  - type: classic|spicy|funny (affects colors and theming)
+  - map: arena-prime|inferno-pit|chaos-carnival
+  - count: number of tributes
+  - choice: 1|2|3 (user's submitted choice)
+
+  FOLDER STRUCTURE
+  - Each screen lives in its own folder: /uiux/{screen-name}/
+  - Files: index.html, styles.css, script.js, README.md
+  - Shared assets: /uiux/assets/
+  - Links MUST use explicit filenames for CloudFront/S3:
+    href="../{other-screen}/index.html"
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/025-waiting-for-players/index.html?type=classic&map=inferno-pit&count=6&choice=1
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Waiting for Players</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run waiting for players">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <!-- Left rail: tap to open Status/Inventory/Map -->
+        <aside class="left-rail" aria-label="Quick stats rail">
+          <a
+            class="left-rail-hit"
+            id="leftRail"
+            href="../03-status-inventory-map/index.html"
+            aria-label="Open status, inventory, and map"
+          >
+            <span class="left-rail-visual" aria-hidden="true">
+              <span class="left-rail-bars" aria-hidden="true">
+                <span class="attr-bar attr-bar--hp"></span>
+                <span class="attr-bar attr-bar--stam"></span>
+                <span class="attr-bar attr-bar--hung"></span>
+              </span>
+            </span>
+          </a>
+        </aside>
+
+        <main class="panel" aria-label="Waiting panel">
+          <!-- Header with Day/Turn status -->
+          <header class="header">
+            <a href="../02-game-turn/index.html" class="back-btn" aria-label="Back to game">←</a>
+            <h1 class="header-title">Awaiting Turn</h1>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Turn Status Bar -->
+          <div class="turn-status" aria-label="Turn status">
+            <div class="status-pill">
+              <span class="status-day">Day 1</span>
+              <span class="status-divider">·</span>
+              <span class="status-alive" id="aliveCount">6 alive</span>
+            </div>
+            <div class="map-pill" id="mapPill">Inferno Pit</div>
+          </div>
+
+          <!-- Your Submitted Choice (locked in) -->
+          <section class="your-choice" aria-label="Your submitted choice">
+            <div class="choice-card">
+              <div class="choice-header">
+                <span class="choice-icon">✓</span>
+                <span class="choice-label">Your Choice Submitted</span>
+              </div>
+              <div class="choice-content">
+                <div class="choice-avatar">👤</div>
+                <div class="choice-details">
+                  <span class="choice-name">You</span>
+                  <span class="choice-action" id="yourChoice">Scout the perimeter</span>
+                </div>
+                <button class="change-btn" id="changeBtn" aria-label="Change your choice">
+                  <span class="change-icon">✎</span>
+                  <span class="change-text">Change</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Waiting Progress Section -->
+          <section class="waiting-section" aria-label="Waiting for other players">
+            <div class="waiting-card">
+              <div class="waiting-header">
+                <span class="waiting-icon" aria-hidden="true">⏳</span>
+                <span class="waiting-title">Waiting for Players</span>
+              </div>
+              <div class="waiting-progress">
+                <div class="progress-track">
+                  <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span class="progress-label" id="progressLabel">1 of 6 submitted</span>
+              </div>
+              
+              <!-- Player Status List -->
+              <div class="player-list" id="playerList">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+          </section>
+
+          <!-- Daily Cutoff Timer (Long Play) -->
+          <section class="cutoff-section" aria-label="Daily cutoff timer">
+            <div class="cutoff-card">
+              <div class="cutoff-header">
+                <span class="cutoff-icon">🕐</span>
+                <span class="cutoff-label">Next Resolution</span>
+              </div>
+              <div class="cutoff-timer" id="cutoffTimer">
+                <span class="timer-hours">08</span>
+                <span class="timer-sep">:</span>
+                <span class="timer-minutes">42</span>
+                <span class="timer-sep">:</span>
+                <span class="timer-seconds">15</span>
+              </div>
+              <p class="cutoff-note">
+                Turn resolves at <strong>9:00 PM ET</strong> daily, or when all players submit.
+              </p>
+            </div>
+          </section>
+
+          <!-- Notification Prompt -->
+          <section class="notify-section" aria-label="Notification settings">
+            <div class="notify-card">
+              <div class="notify-content">
+                <span class="notify-icon">🔔</span>
+                <span class="notify-text">Get notified when the turn resolves?</span>
+              </div>
+              <button class="notify-btn" id="notifyBtn">Enable</button>
+            </div>
+          </section>
+
+          <!-- Ad Banner -->
+          <footer class="ad-banner" aria-label="Banner ad placeholder">
+            <span><strong>Ad</strong> · banner placeholder</span>
+          </footer>
+        </main>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

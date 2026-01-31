@@ -1,0 +1,342 @@
+openapi: 3.0.3
+info:
+  title: AskAI + KVS API
+  version: 1.0.0
+  description: |
+    OpenAPI specification for the AskAI and KVS serverless services.
+
+    ## AskAI Service
+    A Lambda-based OpenAI API wrapper with retry logic and structured responses.
+
+    ## KVS Service
+    A Lambda-based key-value storage service using DynamoDB.
+
+servers:
+  - url: http://localhost:9001
+    description: Local AskAI mock server
+  - url: http://localhost:9000
+    description: Local KVS mock server
+  - url: https://{askaiEndpoint}
+    description: Production AskAI endpoint
+    variables:
+      askaiEndpoint:
+        default: your-askai-endpoint.amazonaws.com
+  - url: https://{kvsEndpoint}
+    description: Production KVS endpoint
+    variables:
+      kvsEndpoint:
+        default: your-kvs-endpoint.amazonaws.com
+
+tags:
+  - name: AskAI
+    description: AI prompt and response operations
+  - name: KVS
+    description: Key-value storage operations
+
+paths:
+  /:
+    post:
+      tags: [AskAI]
+      summary: Send prompt to AI
+      description: |
+        Send a system prompt and user input to OpenAI and receive a response.
+        Supports automatic retry logic for rate limits and token parameter handling.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AskAIRequest"
+            examples:
+              simple:
+                summary: Simple question
+                value:
+                  systemPrompt: "You are a helpful assistant."
+                  input: "What is the capital of France?"
+                  maxTokens: 100
+              json:
+                summary: JSON response
+                value:
+                  systemPrompt: "You are a helpful assistant. Output JSON only with structure: { \"answer\": \"text\" }"
+                  input: "What is 2+2?"
+                  maxTokens: 50
+                  temperature: 0.3
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AskAIResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /{key}:
+    get:
+      tags: [KVS]
+      summary: Get value by key
+      parameters:
+        - $ref: "#/components/parameters/Key"
+      responses:
+        "200":
+          description: Value retrieved
+          content:
+            application/json:
+              schema:
+                description: The stored value (any JSON type)
+        "404":
+          description: Key not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    put:
+      tags: [KVS]
+      summary: Create or replace value
+      parameters:
+        - $ref: "#/components/parameters/Key"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              description: Any JSON value to store
+            examples:
+              object:
+                summary: Store an object
+                value:
+                  name: "John"
+                  score: 100
+              array:
+                summary: Store an array
+                value: [1, 2, 3]
+              string:
+                summary: Store a string
+                value: "Hello World"
+      responses:
+        "200":
+          description: Value stored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "413":
+          description: Body too large
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    post:
+      tags: [KVS]
+      summary: Create value (fail if exists)
+      parameters:
+        - $ref: "#/components/parameters/Key"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              description: Any JSON value to store
+      responses:
+        "200":
+          description: Value created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "409":
+          description: Key already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags: [KVS]
+      summary: Partial update (merge)
+      description: |
+        Merge the provided object with the existing value.
+        Only works if both existing and new values are objects.
+      parameters:
+        - $ref: "#/components/parameters/Key"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Partial object to merge with existing value
+            examples:
+              partial:
+                summary: Update score only
+                value:
+                  score: 150
+      responses:
+        "200":
+          description: Value updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "404":
+          description: Key not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [KVS]
+      summary: Delete key
+      parameters:
+        - $ref: "#/components/parameters/Key"
+      responses:
+        "200":
+          description: Key deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  parameters:
+    Key:
+      name: key
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: "^[a-zA-Z0-9:_\\-.]+$"
+        maxLength: 512
+      description: |
+        Storage key. Allowed characters: a-z, A-Z, 0-9, :, _, -, .
+        Maximum length: 512 characters.
+      examples:
+        simple:
+          value: "user:123"
+        nested:
+          value: "app:settings:theme"
+
+  schemas:
+    AskAIRequest:
+      type: object
+      required:
+        - systemPrompt
+        - input
+      properties:
+        systemPrompt:
+          type: string
+          description: System prompt to set AI behavior
+          example: "You are a helpful assistant."
+        input:
+          type: string
+          description: User input or question
+          example: "What is the capital of France?"
+        maxTokens:
+          type: integer
+          description: Maximum tokens in response
+          default: 500
+          minimum: 1
+          maximum: 4000
+        temperature:
+          type: number
+          description: Creativity level (0-1)
+          default: 0.7
+          minimum: 0
+          maximum: 1
+        model:
+          type: string
+          description: OpenAI model to use
+          default: "gpt-4-turbo"
+          example: "gpt-4-turbo"
+
+    AskAIResponse:
+      type: object
+      required:
+        - output
+      properties:
+        output:
+          type: string
+          description: AI-generated response text
+          example: "Paris is the capital of France."
+        tokensUsed:
+          type: integer
+          description: Total tokens consumed
+          example: 150
+        model:
+          type: string
+          description: Model that generated the response
+          example: "gpt-4-turbo"
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error code or type
+          example: "Not found"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "The requested key does not exist"

@@ -1,0 +1,162 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 02: Game Turn)
+
+  PURPOSE
+  - Shows game in progress after user clicks "Begin"
+  - AI tributes make their choices automatically (animated sequence)
+  - AI generates story narrative from all choices
+  - Presents the next question to the user
+
+  URL PARAMS
+  - type: classic|spicy|funny (affects colors and narrative tone)
+  - map: arena-prime|inferno-pit|chaos-carnival
+  - count: number of tributes
+  - choice: 1|2|3 (user's first turn choice from 00-start-screen)
+
+  FOLDER STRUCTURE
+  - Each screen lives in its own folder: /uiux/{screen-name}/
+  - Files: index.html, styles.css, script.js, README.md
+  - Shared assets: /uiux/assets/
+  - Links MUST use explicit filenames for CloudFront/S3:
+    href="../{other-screen}/index.html"
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/02-game-turn/index.html?type=classic&map=inferno-pit&count=6&choice=1
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Turn 1</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run game turn">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <!-- Left rail: tap to open Status/Inventory/Map (styled to match 03) -->
+        <aside class="left-rail" aria-label="Quick stats rail">
+          <a
+            class="left-rail-hit"
+            id="leftRail"
+            href="../03-status-inventory-map/index.html"
+            aria-label="Open status, inventory, and map"
+          >
+            <span class="left-rail-visual" aria-hidden="true">
+              <span class="left-rail-bars" aria-hidden="true">
+                <span class="attr-bar attr-bar--hp"></span>
+                <span class="attr-bar attr-bar--stam"></span>
+                <span class="attr-bar attr-bar--hung"></span>
+              </span>
+            </span>
+          </a>
+        </aside>
+
+        <main class="panel" aria-label="Game turn panel">
+          <!-- Header with Day/Turn status -->
+          <header class="header">
+            <a href="../01-tribute-setup/index.html" class="back-btn" aria-label="Back to setup">←</a>
+            <h1 class="header-title">Turn 1</h1>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Turn Status Bar -->
+          <div class="turn-status" aria-label="Turn status">
+            <div class="status-pill">
+              <span class="status-day">Day 1</span>
+              <span class="status-divider">·</span>
+              <span class="status-alive" id="aliveCount">6 alive</span>
+            </div>
+            <div class="map-pill" id="mapPill">Inferno Pit</div>
+          </div>
+
+          <!-- AI Processing Animation -->
+          <section class="ai-processing" id="aiProcessing" aria-label="AI tributes choosing">
+            <div class="processing-card">
+              <div class="processing-header">
+                <span class="processing-icon">🤖</span>
+                <span class="processing-label">AI Tributes Choosing...</span>
+              </div>
+              <div class="tribute-choices" id="tributeChoices">
+                <!-- Animated tribute choices rendered by JS -->
+              </div>
+              <div class="processing-progress">
+                <div class="progress-bar" id="progressBar"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Story Narrative (hidden until AI processing complete) -->
+          <section class="narrative" id="narrative" aria-label="Turn narrative" style="display: none;">
+            <div class="narrative-card">
+              <div class="narrative-header">
+                <span class="narrative-icon">📜</span>
+                <span class="narrative-label">Turn 1 Events</span>
+              </div>
+              <div class="narrative-text" id="narrativeText">
+                <!-- Story content rendered by JS -->
+              </div>
+            </div>
+          </section>
+
+          <!-- Event Log (collapsed, shows key events) -->
+          <section class="event-log" id="eventLog" aria-label="Event log" style="display: none;">
+            <div class="event-card">
+              <div class="event-header" role="button" tabindex="0" aria-expanded="false" id="eventToggle">
+                <span class="event-icon">⚔️</span>
+                <span class="event-label">Events</span>
+                <span class="event-count" id="eventCount">3</span>
+                <span class="event-chevron">▼</span>
+              </div>
+              <div class="event-list" id="eventList">
+                <!-- Events rendered by JS -->
+              </div>
+            </div>
+          </section>
+
+          <!-- Next Question (hidden until AI processing complete) -->
+          <section class="next-question" id="nextQuestion" aria-label="Your next choice" style="display: none;">
+            <div class="question-card">
+              <div class="question-header">
+                <span class="gm-badge">AI GM</span>
+                <span class="question-prompt" id="questionPrompt">What do you do next?</span>
+              </div>
+            </div>
+
+            <!-- User's choice buttons -->
+            <button class="wide-btn" type="button" id="opt1">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title" id="opt1Title">Scout the area</span>
+                <span class="wide-btn-sub" id="opt1Sub">Look for threats and opportunities</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button" id="opt2">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title" id="opt2Title">Set up camp</span>
+                <span class="wide-btn-sub" id="opt2Sub">Rest and recover your strength</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button" id="opt3">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title" id="opt3Title">Hunt for supplies</span>
+                <span class="wide-btn-sub" id="opt3Sub">Risk it for better gear</span>
+              </span>
+            </button>
+          </section>
+
+          <!-- Ad Banner -->
+          <footer class="ad-banner" aria-label="Banner ad placeholder">
+            <span><strong>Ad</strong> · banner placeholder</span>
+          </footer>
+        </main>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

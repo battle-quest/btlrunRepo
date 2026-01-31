@@ -1,0 +1,648 @@
+/**
+ * btl.run PWA — UI/UX Mock (Screen 00: Start Screen)
+ *
+ * Design goals:
+ * - Portrait-first, single-screen, dense native-game feel
+ * - "HUD" frame background + tappable content inside
+ * - Swipeable Type selector (scroll-snap)
+ * - "Game already started" vibe: GM broadcast + arena/map + immediate choices
+ * - Use `bq-ui-wide-button-states.png` sprite for the choice buttons
+ */
+
+:root {
+  --bg0: #060a0f;
+  --bg1: #0b1220;
+  --panel: rgba(8, 14, 22, 0.84);
+  --text: rgba(235, 246, 255, 0.95);
+  --muted: rgba(235, 246, 255, 0.72);
+  --dim: rgba(235, 246, 255, 0.55);
+
+  --teal: #28f2d3;
+  --teal2: rgba(40, 242, 211, 0.18);
+  --magenta: #ff4dd8;
+  --magenta2: rgba(255, 77, 216, 0.14);
+
+  --stroke: rgba(40, 242, 211, 0.35);
+  --stroke2: rgba(40, 242, 211, 0.18);
+  --shadow: rgba(0, 0, 0, 0.55);
+
+  --r: 16px;
+  --tap: 48px;
+
+  /* Frame-safe inset: tuned for the provided artwork. Adjust per device testing. */
+  --frame-pad-x: 22px;
+  --frame-pad-top: 10px;
+  --frame-pad-bottom: 34px;
+
+  /*
+    Wide-screen behavior:
+    - On desktop / wide viewports, stop expanding and instead show a centered "phone canvas".
+    - This keeps the UI proportions reasonable instead of stretching to fill a huge width.
+  */
+  --screen-max-w: 520px;
+
+  /* Accent defaults (overridden by .screen[data-type=...]) */
+  --accent: var(--teal);
+  --accent2: rgba(40, 242, 211, 0.18);
+  --sprite-hue: 0deg;
+}
+
+* { box-sizing: border-box; }
+
+/* Page transition animations */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+/* View Transitions API support */
+::view-transition-old(root) {
+  animation: fadeSlideOut 200ms ease-out forwards;
+}
+
+::view-transition-new(root) {
+  animation: fadeSlideIn 200ms ease-out forwards;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: radial-gradient(120% 120% at 50% 10%, var(--bg1) 0%, var(--bg0) 55%, #020409 100%);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Avoid iOS overscroll glow; keep it "app-like". */
+body {
+  overscroll-behavior: none;
+}
+
+.stage {
+  position: relative;
+  height: 100svh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  /* Base texture behind the HUD frame */
+  background:
+    radial-gradient(110% 90% at 50% 0%, rgba(40, 242, 211, 0.10), transparent 55%),
+    radial-gradient(90% 70% at 18% 18%, rgba(255, 77, 216, 0.10), transparent 55%),
+    url("../assets/bq-background-grid-map.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.screen {
+  position: relative;
+  width: min(100vw, var(--screen-max-w));
+  height: 100svh;
+  overflow: hidden;
+}
+
+/*
+  Type palette variations:
+  - Subtle differences, not full re-skins.
+  - We tint borders/labels and hue-rotate the wide button sprite.
+*/
+.screen[data-type="classic"] {
+  --accent: #28f2d3;
+  --accent2: rgba(40, 242, 211, 0.18);
+  --sprite-hue: 0deg;
+}
+
+.screen[data-type="spicy"] {
+  --accent: #ff7a2f;
+  --accent2: rgba(255, 122, 47, 0.18);
+  --sprite-hue: -62deg;
+}
+
+.screen[data-type="funny"] {
+  --accent: #ff4dd8;
+  --accent2: rgba(255, 77, 216, 0.18);
+  --sprite-hue: 130deg;
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  background-image: url("../assets/bq-ui-panel-frame-vertical.png");
+  background-repeat: no-repeat;
+  /* Stretch to fill screen perfectly (distortion acceptable) */
+  background-size: 100% 100%;
+  background-position: center;
+  pointer-events: none;
+  filter: drop-shadow(0 18px 42px rgba(0,0,0,0.65));
+}
+
+.panel {
+  position: relative;
+  width: 100%;
+  /* Fade in on page load */
+  animation: fadeSlideIn 250ms ease-out forwards;
+  /* Safe area + artwork padding */
+  padding:
+    calc(env(safe-area-inset-top) + var(--frame-pad-top))
+    calc(env(safe-area-inset-right) + var(--frame-pad-x))
+    calc(env(safe-area-inset-bottom) + var(--frame-pad-bottom))
+    calc(env(safe-area-inset-left) + var(--frame-pad-x));
+
+  /*
+    Layout note:
+    - Use flex so the banner can be pinned to the bottom via margin-top:auto.
+    - This keeps the "ad" position stable (like anchored AdMob banners).
+  */
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+
+  /* Screen already constrains width; keep content aligned */
+  margin: 0;
+}
+
+/* ------- Type selector (top) ------- */
+
+.typebar {
+  min-height: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.typebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: -32px;
+}
+
+.brand-subtitle {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.turnline {
+  width: 100%;
+  text-align: center;
+  margin-top: -14px; /* closer to top */
+}
+
+.turnline > span {
+  display: inline-block;
+  padding: 6px 16px;
+  background: #000000;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.type-picker {
+  position: relative;
+}
+
+.type-strip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 76%;
+  gap: 12px;
+
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 2px;
+  -webkit-overflow-scrolling: touch;
+
+  padding-inline: 16px;
+}
+
+/* Hide scrollbars (still scrollable) */
+.type-strip::-webkit-scrollbar { height: 0; }
+.type-strip { scrollbar-width: none; }
+
+.type-card {
+  scroll-snap-align: center;
+  border-radius: var(--r);
+  padding: 6px 14px;
+
+  background: linear-gradient(180deg, rgba(8, 14, 22, 0.86), rgba(8, 14, 22, 0.58));
+  border: 1px solid color-mix(in oklab, var(--accent) 35%, rgba(40, 242, 211, 0.18));
+  box-shadow: 0 14px 30px var(--shadow);
+
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.type-card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background:
+    radial-gradient(85% 70% at 15% 0%, var(--accent2), transparent 60%),
+    radial-gradient(75% 65% at 90% 20%, rgba(255, 77, 216, 0.10), transparent 62%);
+  pointer-events: none;
+}
+
+.type-row {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  text-align: center;
+  color: color-mix(in oklab, var(--accent) 72%, white);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.40);
+}
+
+
+.type-card[aria-selected="true"] {
+  border-color: color-mix(in oklab, var(--accent) 65%, rgba(40, 242, 211, 0.18));
+  box-shadow: 0 18px 38px rgba(0,0,0,0.62);
+}
+
+/* ------- Arena + GM broadcast (middle) ------- */
+
+.turn {
+  min-height: 80px;
+  display: grid;
+  gap: 12px;
+  width: min(80vw, 100%);
+  margin-inline: auto;
+}
+
+.arena-card,
+.broadcast-card {
+  border-radius: var(--r);
+  border: 1px solid rgba(255,255,255,0.10);
+  background: linear-gradient(180deg, rgba(0,0,0,0.40), rgba(0,0,0,0.18));
+  box-shadow: 0 12px 26px rgba(0,0,0,0.42);
+  overflow: hidden;
+}
+
+.arena-card {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 8px;
+  padding: 6px;
+  border-color: color-mix(in oklab, var(--accent) 28%, rgba(255,255,255,0.10));
+  width: min(80vw, 100%);
+  margin-inline: auto;
+}
+
+.mini-map {
+  position: relative;
+  height: 70px; /* ~20% shorter than 88px */
+  border-radius: 14px;
+  border: 1px solid color-mix(in oklab, var(--accent) 28%, rgba(255,255,255,0.12));
+  background:
+    radial-gradient(70% 70% at 50% 30%, rgba(255,255,255,0.06), transparent 70%),
+    url("../assets/bq-background-grid-map.png");
+  background-size: 160%;
+  background-position: 50% 35%;
+  overflow: hidden;
+}
+
+.mini-map::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(transparent 0%, rgba(0,0,0,0.12) 40%, transparent 70%),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.05) 0px,
+      rgba(255,255,255,0.05) 1px,
+      transparent 3px,
+      transparent 6px
+    );
+  mix-blend-mode: overlay;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.mini-map::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 10px;
+  height: 10px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--accent) 80%, white);
+  box-shadow:
+    0 0 0 2px rgba(0,0,0,0.4),
+    0 0 18px color-mix(in oklab, var(--accent) 55%, transparent);
+}
+
+.arena-meta {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+}
+
+.arena-text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.18;
+  font-weight: 750;
+}
+
+.broadcast-card {
+  padding: 2px 12px 10px;
+  border-color: rgba(255,255,255,0.10);
+  width: 85%;
+  margin-inline: auto;
+  margin-left: 35px;
+}
+
+.broadcast-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.broadcast-label {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.broadcast-pill {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: color-mix(in oklab, var(--accent) 65%, white);
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--accent) 30%, rgba(255,255,255,0.12));
+  background: color-mix(in oklab, var(--accent) 10%, rgba(0,0,0,0.20));
+}
+
+.broadcast-text {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.18;
+  letter-spacing: 0.01em;
+  font-weight: 800;
+}
+
+.broadcast-subtext {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.22;
+}
+
+/* ------- Wide action buttons (bottom) ------- */
+
+.options {
+  display: grid;
+  /*
+    The wide-button sprite includes vertical transparent glow padding.
+    When we scale buttons taller, that transparent area can *look* like huge spacing.
+    We keep layout gap at 0 and slightly overlap successive buttons to visually tighten.
+  */
+  gap: 0;
+  padding-top: 0;
+  /* Bring choices closer to the broadcast card */
+  margin-top: -10px;
+  --btn-overlap: clamp(22px, 4.5vh, 34px);
+}
+
+.options > .wide-btn + .wide-btn {
+  margin-top: calc(-1 * var(--btn-overlap));
+}
+
+/* ------- Divider + mode buttons (non-tribute controls) ------- */
+
+.h-divider {
+  height: 2px;
+  width: 85%;
+  margin: 8px auto 6px;
+  /*
+    Elegant, noticeable divider:
+    - Uses the currently selected type color via --accent.
+    - Soft neon glow + subtle white core.
+  */
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in oklab, var(--accent) 45%, transparent) 18%,
+      color-mix(in oklab, var(--accent) 85%, white) 50%,
+      color-mix(in oklab, var(--accent) 45%, transparent) 82%,
+      transparent 100%
+    );
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--accent) 22%, transparent),
+    0 0 18px color-mix(in oklab, var(--accent) 28%, transparent);
+  opacity: 0.98;
+}
+
+.modebar {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 44px;
+  gap: 10px;
+  align-items: stretch;
+  width: 80%;
+  margin-inline: auto;
+}
+
+.mode-btn {
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(235, 246, 255, 0.16);
+  background: rgba(0, 0, 0, 0.22);
+  color: rgba(235, 246, 255, 0.82);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 11px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  display: grid;
+  place-items: center;
+}
+
+.mode-btn:active { transform: translateY(1px); }
+.mode-btn:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent) 60%, rgba(235, 246, 255, 0.85));
+  outline-offset: 2px;
+}
+
+.mode-btn--icon {
+  padding: 0;
+}
+
+.mode-btn--icon svg {
+  width: 18px;
+  height: 18px;
+  opacity: 0.9;
+}
+
+.wide-btn {
+  position: relative;
+  /* Tribute response buttons: +50% taller (again) and ~10% narrower */
+  width: 90%;
+  margin-inline: auto;
+  min-height: clamp(104px, 14vh, 131px);
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  padding: 0;
+}
+
+/*
+  The sprite provides the button shell; text is layered on top.
+  - Sprite rows: default / hover / pressed (see apps/assets/README.md).
+*/
+.wide-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../assets/bq-ui-wide-button-states.png");
+  background-repeat: no-repeat;
+  background-size: 100% 300%;
+  background-position: 50% 0%;
+  filter: hue-rotate(var(--sprite-hue)) saturate(1.15);
+  opacity: 0.98;
+  pointer-events: none;
+}
+
+/* Use color overlays for states (do not swap sprite rows). */
+.wide-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: transparent;
+  pointer-events: none;
+  transition: background 120ms ease-out;
+}
+
+.wide-btn:hover::after,
+.wide-btn:focus-visible::after {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--accent) 12%, transparent),
+    color-mix(in oklab, var(--accent) 4%, transparent)
+  );
+}
+
+.wide-btn:active::after {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--accent) 22%, transparent),
+    color-mix(in oklab, var(--accent) 8%, transparent)
+  );
+}
+
+.wide-btn:active {
+  transform: translateY(1px);
+}
+
+.wide-btn:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent) 70%, white);
+  outline-offset: 3px;
+  border-radius: 14px;
+}
+
+.wide-btn-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 2px;
+  /* A couple extra pixels above the text, per UX request */
+  padding: clamp(16px, 2.2vh, 19px) 18px clamp(12px, 1.6vh, 14px);
+  text-align: center;
+}
+
+.wide-btn-title {
+  font-size: clamp(13.5px, 1.8vh, 15.5px);
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  line-height: 1.1;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.45);
+}
+
+.wide-btn-sub {
+  font-size: clamp(11px, 1.5vh, 12.25px);
+  color: var(--muted);
+  line-height: 1.12;
+}
+
+/* ------- Banner ad stub (bottom) ------- */
+
+.ad-banner {
+  /*
+    Banner Ad Placeholder
+    - This is a UI stub ONLY (no network calls, no SDK).
+    - Real implementation should use the app's ad component + safe area handling.
+  */
+  /* AdMob standard banner height is 50dp. We use 50px for the mock. */
+  height: 50px;
+  width: 100%;
+  margin-top: auto; /* pinned to bottom of the screen */
+  border-radius: 0;
+  border: 0;
+  background: #ffffff; /* closer to real ad creative backgrounds */
+  box-shadow: 0 -6px 18px rgba(0,0,0,0.25);
+  display: grid;
+  place-items: center;
+  color: rgba(0, 0, 0, 0.70);
+  font-size: 11px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.ad-banner strong {
+  color: rgba(0, 0, 0, 0.88);
+  font-weight: 900;
+}
+
+/* Small devices: tighten spacing a bit to stay single-screen */
+@media (max-height: 740px) {
+  .panel { gap: 12px; }
+  .type-card { padding: 11px 11px 9px; }
+  .arena-card { grid-template-columns: 112px 1fr; }
+  .mini-map { height: 66px; } /* keep ~20% shorter feel on small screens */
+  .ad-banner { height: 50px; }
+}
