@@ -14,7 +14,7 @@ info:
 servers:
   - url: http://localhost:9001
     description: Local AskAI mock server
-  - url: http://localhost:9000
+  - url: http://localhost:9002
     description: Local KVS mock server
   - url: https://{askaiEndpoint}
     description: Production AskAI endpoint
