@@ -90,7 +90,7 @@ import * as lambdaNodejs from 'aws-cdk-lib/aws-lambda-nodejs';
 
 new lambdaNodejs.NodejsFunction(this, 'ApiHandler', {
   runtime: lambda.Runtime.NODEJS_20_X,
-  entry: path.join(__dirname, '../../services/api/src/handler.ts'),
+  # SAM uses esbuild metadata in template, not CDK bundling
   handler: 'handler',
   bundling: {
     minify: true,

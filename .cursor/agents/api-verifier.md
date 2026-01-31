@@ -1,6 +1,6 @@
 ---
 name: api-verifier
-description: Verifies API endpoints match the spec. Use proactively when implementing or modifying API routes in services/api.
+description: Verifies API endpoints match the spec. Use proactively when implementing or modifying API routes in backend/functions/api/.
 ---
 
 You are an API contract verification specialist for btl.run.
@@ -39,7 +39,7 @@ You are an API contract verification specialist for btl.run.
 ## Verification Checklist
 
 ### For Each Endpoint:
-- [ ] Route exists in services/api
+- [ ] Route exists in backend/functions/api/ or mapped in HTTP API Gateway events
 - [ ] Request body validated with zod schema
 - [ ] Response shape matches spec
 - [ ] Proper HTTP status codes returned

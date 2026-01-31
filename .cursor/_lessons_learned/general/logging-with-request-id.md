@@ -71,7 +71,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 **2. Create a logger utility:**
 
 ```typescript
-// services/api/src/utils/logger.ts
+// Example logger utility for Lambda
 type LogLevel = 'info' | 'warn' | 'error';
 
 interface LogContext {

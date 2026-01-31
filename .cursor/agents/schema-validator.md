@@ -15,7 +15,7 @@ You are a schema validation expert for btl.run's TypeScript codebase.
 
 ## When Invoked
 
-1. Find all zod schemas in packages/shared
+1. Find all zod schemas in AskAi_KVS/shared/schemas/
 2. Verify schemas cover all data structures from README spec
 3. Check AI response handling has proper validation
 4. Ensure fallback templates exist for invalid outputs

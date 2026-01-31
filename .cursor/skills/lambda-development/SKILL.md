@@ -227,25 +227,29 @@ async function getOpenAIKey(): Promise<string> {
 
 ## Local Testing
 
-**Use `esbuild` for fast local testing:**
+**Test TypeScript Lambda locally:**
 
 ```typescript
-// services/api/src/local.ts
+// AskAi_KVS/services/askai/src/local.ts (example)
 import { handler } from './index';
 
 const mockEvent = {
-  body: JSON.stringify({ matchId: 'test123' }),
-  requestContext: { requestId: 'local-test' },
-  // ... other required fields
+  httpMethod: 'POST',
+  body: JSON.stringify({
+    systemPrompt: "You are a test.",
+    input: "Say hello",
+    maxTokens: 20
+  }),
+  headers: {},
 } as any;
 
 handler(mockEvent).then(console.log).catch(console.error);
 ```
 
 **Run locally:**
-```bash
-cd services/api
-tsx src/local.ts  # or ts-node
+```powershell
+cd AskAi_KVS/services/askai
+npx tsx src/local.ts
 ```
 
 ## Request ID Correlation
