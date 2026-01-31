@@ -79,19 +79,10 @@ Resources:
   # AskAI Lambda - OpenAI wrapper
   AskAiFunction:
     Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        EntryPoints:
-          - src/index.ts
-        External:
-          - '@aws-sdk/*'
-        Target: node20
-        Format: esm
     Properties:
       FunctionName: !Sub "btl-run-askai-${Environment}"
       Description: OpenAI API wrapper with retry logic
-      CodeUri: ../../AskAi_KVS/services/askai
+      CodeUri: ../../AskAi_KVS/services/askai/dist
       Handler: index.handler
       Environment:
         Variables:
@@ -127,19 +118,10 @@ Resources:
   # KVS Lambda - Key-Value Storage
   KVSFunction:
     Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        EntryPoints:
-          - src/index.ts
-        External:
-          - '@aws-sdk/*'
-        Target: node20
-        Format: esm
     Properties:
       FunctionName: !Sub "btl-run-kvs-${Environment}"
       Description: DynamoDB-backed key-value storage
-      CodeUri: ../../AskAi_KVS/services/kvs
+      CodeUri: ../../AskAi_KVS/services/kvs/dist
       Handler: index.handler
       Environment:
         Variables:
