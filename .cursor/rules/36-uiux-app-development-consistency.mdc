@@ -1,0 +1,84 @@
+---
+description: UI/UX app development rules to match uiux_mockups style exactly (tokens, layout primitives, reusable components).
+alwaysApply: true
+---
+
+# Cursor Rule: btl.run UI/UX App Development Consistency (Mockup-Driven)
+
+The **canonical visual spec** for the btl.run UI is `uiux_mockups/*`. When implementing app UI in `frontend/` (Preact)
+
+## Non-negotiables (shared across ALL screens)
+
+- **Phone canvas + frame**: every screen is a centered “phone canvas” with:
+  - `Stage`: full viewport background using `bq-background-grid-map.png`
+  - `Screen`: `width: min(100vw, 520px)` and `height: 100svh`
+  - `Frame overlay`: `bq-ui-panel-frame-vertical.png` stretched `100% 100%`, `pointer-events: none`
+  - `Panel`: safe-area aware padding using:
+    - `--frame-pad-x: 22px`, `--frame-pad-top: 10px`, `--frame-pad-bottom: 24–34px` (screen-tuned)
+    - `padding: calc(env(safe-area-inset-*) + var(--frame-pad-*)))`
+- **Type drives accent**: UI theme is driven by a `type` state with these exact accents:
+  - `classic`: `--accent: #28f2d3` (teal)
+  - `spicy`: `--accent: #ff7a2f` (orange)
+  - `funny`: `--accent: #ff4dd8` (magenta)
+  - Also maintain: `--accent2` (low-alpha glow) and `--sprite-hue` (for wide-button sprite tinting)
+- **Text + chrome**: dark, high-contrast HUD feel:
+  - Base text: `rgba(235, 246, 255, 0.95)`, muted/dim variants, subtle borders, soft shadows
+  - Labels/pills: **uppercase**, heavy weight, letter-spacing \(\~0.08–0.12em\)
+- **Motion**: keep the same quick page feel:
+  - `fadeSlideIn/fadeSlideOut` \(\~200–400ms\) and optional View Transitions API support
+- **Ad banner stub**: when present, it’s **anchored to the bottom**:
+  - `height: 50px`, `margin-top: auto`, white background to mimic real ad creative
+
+## Shared components you should build FIRST (and reuse everywhere)
+
+Implement these once in `frontend/` and reuse per screen; do not copy/paste screen CSS:
+
+- `Stage` (grid-map background layers)
+- `Screen` (phone canvas, `data-type` or `type` prop to set CSS vars)
+- `FrameOverlay` (vertical frame artwork)
+- `Panel` (safe-area padding + column layout)
+- `Header` (back button optional + centered title + `TypeBadge`)
+- `Pill` / `TypeBadge` (used by status/map/alive pills and type badge)
+- `Card` (base “glass HUD” card style; variants can extend)
+- `WideButton` (sprite-based action/CTA button)
+- `LeftRailStats` (for `02`/`025`) and `BackRail` (for `03`)
+- `AdBannerStub`
+- `SegmentedTabs` (for `03` Status/Map)
+
+## Wide buttons (sprite-based) — don’t drift
+
+- Use `bq-ui-wide-button-states.png` as the shell and layer text above it.
+- Tint by `type` using `filter: hue-rotate(var(--sprite-hue)) saturate(1.15)`.
+- **Do not** swap sprite rows for hover/pressed; overlays provide state.
+- Stacked choices use **negative overlap** because the sprite has transparent glow padding:
+  - `--btn-overlap: clamp(22px, 4.5vh, 34px)` and next button `margin-top: -var(--btn-overlap)`
+
+## Left rail / back rail (critical overlap behavior across screens)
+
+This is the biggest cross-screen consistency requirement.
+
+- **02-game-turn + 025-waiting-for-players**:
+  - Rail is **flush-left**, vertically centered, with a **30px hit target** and ~**14px visible rail**
+  - It contains **3 stacked mini-bars** (HP green, Stamina accent, Hunger yellow) filling from bottom
+  - Rail container must not block scrolling: outer rail `pointer-events: none`, inner hit area `pointer-events: auto`
+  - Main content is shifted right: commonly `width: calc(100% - 50px)` + `margin-left: 35px`
+- **03-status-inventory-map**:
+  - Rail becomes a **stronger “back rail”** in the theme accent (still flush-left, vertically centered)
+  - Tapping rail navigates back to `02` (preserve params/state)
+
+## Screen-by-screen “overlap contract”
+
+- **00-start-screen**: type carousel, arena preview, broadcast, 3 wide action choices, divider, modebar (Solo/Party/Friends + gear), anchored ad.
+- **01-tribute-setup**: header + type badge, map pack carousel, tribute count row, roster scroll, **Begin** wide button, anchored ad.
+- **02-game-turn**: left rail stats (tap → `03`), header + turn status pills, AI processing animation → narrative → collapsible event log → next question + 3 wide buttons, anchored ad.
+- **025-waiting-for-players**: same left rail as `02`, “Your choice” card (green-highlight), waiting progress + player list, cutoff timer, notification prompt, anchored ad.
+- **03-status-inventory-map**: stronger accent back rail (tap → `02`), header + context pills, segmented tabs:
+  - **Status tab**: vitals card + inventory card with its own scroll container
+  - **Map tab**: fog-of-war tile map (grid via CSS vars), legend, map scroll as needed
+
+## Implementation checklist (use for EVERY new UI screen)
+
+- Start from an existing mock screen pattern (00/01/02/025/03) rather than inventing layout.
+- Use shared components above; only create new variants when truly needed.
+- Add any new colors/spacings as **named tokens**, not ad-hoc values.
+- Verify: phone canvas width cap, frame overlay alignment, safe-area padding, rail offsets (if applicable), wide-button overlap, and anchored ad behavior.

@@ -36,7 +36,7 @@ if (-not (Test-Path (Join-Path $AskAiKvsRoot "node_modules"))) {
 }
 
 # Build each service
-$services = @("askai", "kvs")
+$services = @("askai", "kvs", "push-notifications")
 
 foreach ($service in $services) {
     $serviceDir = Join-Path $ServicesDir $service
@@ -82,7 +82,14 @@ foreach ($service in $services) {
         }
 
         $sizeKB = [math]::Round((Get-Item "dist/index.js").Length / 1KB, 2)
-        Write-Host "  [OK] $service built (${sizeKB}KB)" -ForegroundColor Green
+        
+        # Check for additional outputs (e.g., push-notifications has dispatcher.js)
+        if (Test-Path "dist/dispatcher.js") {
+            $dispatcherKB = [math]::Round((Get-Item "dist/dispatcher.js").Length / 1KB, 2)
+            Write-Host "  [OK] $service built (index: ${sizeKB}KB, dispatcher: ${dispatcherKB}KB)" -ForegroundColor Green
+        } else {
+            Write-Host "  [OK] $service built (${sizeKB}KB)" -ForegroundColor Green
+        }
     } finally {
         Pop-Location
     }

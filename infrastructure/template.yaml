@@ -96,6 +96,22 @@ Resources:
         - Key: Environment
           Value: !Ref Environment
 
+  # Notifications Stack - SNS and push notification handling
+  NotificationsStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: ServicesStack
+    Properties:
+      TemplateURL: stacks/notifications.yaml
+      Parameters:
+        Environment: !Ref Environment
+        KVSTableName: !GetAtt ServicesStack.Outputs.KVSTableName
+        KVSTableArn: !GetAtt ServicesStack.Outputs.KVSTableArn
+      Tags:
+        - Key: Project
+          Value: btl-run
+        - Key: Environment
+          Value: !Ref Environment
+
   # CDN Stack - CloudFront distribution
   CdnStack:
     Type: AWS::CloudFormation::Stack
@@ -151,3 +167,15 @@ Outputs:
   KVSTableName:
     Description: DynamoDB table for KVS
     Value: !GetAtt ServicesStack.Outputs.KVSTableName
+
+  PushNotificationsFunctionUrl:
+    Description: Push notifications API endpoint
+    Value: !GetAtt NotificationsStack.Outputs.PushNotificationsFunctionUrl
+
+  GameNotificationsTopicArn:
+    Description: SNS Topic ARN for game notifications
+    Value: !GetAtt NotificationsStack.Outputs.GameNotificationsTopicArn
+
+  AnnouncementsTopicArn:
+    Description: SNS Topic ARN for announcements
+    Value: !GetAtt NotificationsStack.Outputs.AnnouncementsTopicArn

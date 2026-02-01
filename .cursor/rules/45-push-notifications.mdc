@@ -1,0 +1,128 @@
+---
+description: Push notification integration guide for btl.run
+alwaysApply: true
+---
+
+# Push Notifications
+
+btl.run uses web push notifications via AWS SNS and VAPID authentication.
+
+## Quick Start
+
+```typescript
+import { PushNotifications } from '@/lib/push-notifications';
+
+// Initialize on app start
+await PushNotifications.init();
+
+// Subscribe user (after login)
+const result = await PushNotifications.subscribe(userId);
+if (result.success) {
+  console.log('User subscribed to notifications');
+}
+
+// Check status
+PushNotifications.isSupported();   // Browser support
+PushNotifications.isSubscribed();  // Current subscription
+PushNotifications.getPermission(); // 'granted' | 'denied' | 'default'
+
+// Unsubscribe
+await PushNotifications.unsubscribe(userId);
+```
+
+## Architecture
+
+```
+Frontend (PWA)              Backend (AWS)
+─────────────────────────   ─────────────────────────────────
+sw.js (Service Worker)      push-notifications Lambda
+  ↓ receives push             ↓ stores subscriptions in DynamoDB
+  ↓ shows notification        ↓ publishes to SNS topics
+                            
+PushNotifications helper    notification-dispatcher Lambda
+  ↓ manages subscription      ↓ triggered by SNS
+  ↓ calls backend API         ↓ sends web push via VAPID
+```
+
+## Environment Variables
+
+**Frontend** (`frontend/.env.local`):
+```
+VITE_PUSH_NOTIFICATIONS_ENDPOINT=https://...lambda-url.on.aws
+VITE_VAPID_PUBLIC_KEY=BBFj0OnAHfT...
+```
+
+**Backend** (`.env` or Secrets Manager):
+```
+VAPID_PUBLIC_KEY=BBFj0OnAHfT...
+VAPID_PRIVATE_KEY=eUTpTcN...  # SECRET
+VAPID_SUBJECT=mailto:admin@btl.run
+```
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/vapid-public-key` | Get public key for subscription |
+| POST | `/subscribe` | Register push subscription |
+| DELETE | `/subscribe` | Unsubscribe |
+| POST | `/notify` | Send to specific users |
+| POST | `/broadcast` | Send to all users |
+
+## Sending Notifications
+
+From backend code:
+
+```typescript
+// Targeted notification
+await fetch(`${PUSH_ENDPOINT}/notify`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    userIds: ['user-123', 'user-456'],
+    title: "It's your turn!",
+    body: 'Make your move in Battle Quest',
+    data: { type: 'turn-reminder', matchId: 'match-789' }
+  })
+});
+
+// Broadcast to all
+await fetch(`${PUSH_ENDPOINT}/broadcast`, {
+  method: 'POST',
+  body: JSON.stringify({
+    title: 'New Season Started!',
+    body: 'Season 2 is now live'
+  })
+});
+```
+
+## Notification Types
+
+Use `data.type` to customize notification behavior:
+
+| Type | Actions | Use Case |
+|------|---------|----------|
+| `turn-reminder` | View Game, Dismiss | Player's turn in match |
+| `match-update` | View Game, Dismiss | Match state changed |
+| `match-ended` | See Results | Game over |
+
+## Service Worker
+
+The service worker at `frontend/public/sw.js`:
+- Receives push events and shows notifications
+- Handles notification click (opens app to relevant page)
+- Cleans up expired subscriptions automatically
+
+## Deployment
+
+1. Generate VAPID keys: `.\scripts\setup-vapid-keys.ps1 -Generate`
+2. Deploy stack: `.\scripts\deploy.ps1 -Environment dev`
+3. Update frontend `.env.local` with `VITE_VAPID_PUBLIC_KEY`
+
+## Best Practices
+
+- Call `PushNotifications.init()` early in app lifecycle
+- Request permission at a natural point (not immediately on load)
+- Handle permission denial gracefully with UI feedback
+- Use appropriate notification types for action buttons
+- Include `matchId` or `url` in data for deep linking

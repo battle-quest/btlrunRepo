@@ -51,6 +51,8 @@ The left edge of the screen has a slim, vertically centered rail containing **th
 
 - **From**: `01-tribute-setup/index.html` (Begin button)
 - **To (next turn)**: `02-game-turn/index.html?...` (loops to self with new choice)
+- **To (battle)**: `021-encounter-battle/index.html` (if combat occurs)
+- **To (event)**: `022-encounter-event/index.html` (if special event occurs)
 - **To (status screen)**: `03-status-inventory-map/index.html?...` (tap left rail)
 
 ## Animation Sequence

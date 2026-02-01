@@ -157,6 +157,8 @@ btlrunRepo/
 │   ├── 012-join-waiting/          # Join waiting room (pre-game)
 │   ├── 015-host-lobby/            # Host lobby (friends)
 │   ├── 02-game-turn/              # Main gameplay screen
+│   ├── 021-encounter-battle/      # Battle encounter screen
+│   ├── 022-encounter-event/       # Event encounter screen
 │   ├── 025-waiting-for-players/   # Turn waiting (Long Play)
 │   └── 03-status-inventory-map/   # Status screens
 │

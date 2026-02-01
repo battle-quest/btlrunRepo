@@ -1,0 +1,125 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 022: Event Encounter)
+
+  PURPOSE
+  - Shows a non-combat event (discovery, trap, social interaction)
+  - Displays event visual/icon
+  - Presents event-specific choices
+
+  URL PARAMS
+  - type: classic|spicy|funny
+  - event: event type
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/022-encounter-event/index.html?type=classic&event=Loot
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Discovery</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run event encounter">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <!-- Left rail: tap to open Status/Inventory/Map -->
+        <aside class="left-rail" aria-label="Quick stats rail">
+          <a
+            class="left-rail-hit"
+            id="leftRail"
+            href="../03-status-inventory-map/index.html"
+            aria-label="Open status, inventory, and map"
+          >
+            <span class="left-rail-visual" aria-hidden="true">
+              <span class="left-rail-bars" aria-hidden="true">
+                <span class="attr-bar attr-bar--hp"></span>
+                <span class="attr-bar attr-bar--stam"></span>
+                <span class="attr-bar attr-bar--hung"></span>
+              </span>
+            </span>
+          </a>
+        </aside>
+
+        <main class="panel" aria-label="Event panel">
+          <!-- Header -->
+          <header class="header">
+            <a href="../02-game-turn/index.html" class="back-btn" aria-label="Back">←</a>
+            <h1 class="header-title header-title--event">Discovery</h1>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Turn Status Bar -->
+          <div class="turn-status" aria-label="Turn status">
+            <div class="status-pill status-pill--event">
+              <span class="status-icon">🎁</span>
+              <span class="status-text">Supply Drop</span>
+            </div>
+          </div>
+
+          <!-- Event Visuals -->
+          <section class="event-display" aria-label="Event details">
+            <div class="event-card">
+              <div class="event-icon-large">📦</div>
+              <div class="event-title">Cornucopia Crate</div>
+              <div class="event-meta">Rare · Trapped?</div>
+            </div>
+          </section>
+
+          <!-- Narrative / Action Log -->
+          <section class="narrative" aria-label="Event narrative">
+            <div class="narrative-card">
+              <div class="narrative-header">
+                <span class="narrative-icon">👁️</span>
+                <span class="narrative-label">Observation</span>
+              </div>
+              <div class="narrative-text">
+                <p>You stumble upon a sealed crate from the Cornucopia. It looks untouched, but the ground around it is disturbed. A tripwire glistens faintly in the sunlight.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Event Choices -->
+          <section class="event-choices" aria-label="Event options">
+            <button class="wide-btn" type="button">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Inspect & Disarm</span>
+                <span class="wide-btn-sub">Try to make it safe (Intel check)</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Smash Open</span>
+                <span class="wide-btn-sub">Grab what you can and run</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Leave It</span>
+                <span class="wide-btn-sub">Not worth the risk</span>
+              </span>
+            </button>
+          </section>
+
+        </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,218 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  btl.run Notifications Stack
+  SNS Topics and Lambda functions for push notifications
+
+Parameters:
+  Environment:
+    Type: String
+    Description: Deployment environment
+
+  KVSTableName:
+    Type: String
+    Description: KVS DynamoDB table name for storing push subscriptions
+
+  KVSTableArn:
+    Type: String
+    Description: KVS DynamoDB table ARN
+
+Conditions:
+  IsProd: !Equals [!Ref Environment, "prod"]
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Architectures:
+      - arm64
+    Timeout: 30
+    MemorySize: 256
+    Environment:
+      Variables:
+        NODE_ENV: !If [IsProd, "production", "development"]
+        ALLOWED_ORIGINS: "*"
+
+Resources:
+  # VAPID Keys Secret for Web Push authentication
+  # After deployment, update with: aws secretsmanager put-secret-value ...
+  VapidKeysSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub "btl-run/${Environment}/vapid-keys"
+      Description: VAPID keys for web push notifications (generate with web-push library)
+      SecretString: !Sub |
+        {
+          "publicKey": "PLACEHOLDER-GENERATE-WITH-WEB-PUSH-LIBRARY",
+          "privateKey": "PLACEHOLDER-GENERATE-WITH-WEB-PUSH-LIBRARY",
+          "subject": "mailto:admin@btl.run"
+        }
+      Tags:
+        - Key: Project
+          Value: btl-run
+        - Key: Environment
+          Value: !Ref Environment
+
+  # SNS Topic for game event notifications
+  GameNotificationsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "btl-run-game-notifications-${Environment}"
+      DisplayName: btl.run Game Notifications
+      Tags:
+        - Key: Project
+          Value: btl-run
+        - Key: Environment
+          Value: !Ref Environment
+
+  # SNS Topic for system announcements (broadcasts to all users)
+  AnnouncementsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "btl-run-announcements-${Environment}"
+      DisplayName: btl.run Announcements
+      Tags:
+        - Key: Project
+          Value: btl-run
+        - Key: Environment
+          Value: !Ref Environment
+
+  # Push Notifications Lambda - handles subscription management and sending
+  PushNotificationsFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        EntryPoints:
+          - src/index.ts
+        External:
+          - '@aws-sdk/*'
+        Target: node20
+        Format: esm
+    Properties:
+      FunctionName: !Sub "btl-run-push-notifications-${Environment}"
+      Description: Manages push subscriptions and sends notifications
+      CodeUri: ../../AskAi_KVS/services/push-notifications
+      Handler: index.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref KVSTableName
+          VAPID_KEYS_SECRET_ARN: !Ref VapidKeysSecret
+          GAME_NOTIFICATIONS_TOPIC_ARN: !Ref GameNotificationsTopic
+          ANNOUNCEMENTS_TOPIC_ARN: !Ref AnnouncementsTopic
+      Policies:
+        # DynamoDB access for subscription storage
+        - DynamoDBCrudPolicy:
+            TableName: !Ref KVSTableName
+        # Secrets Manager access for VAPID keys
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Ref VapidKeysSecret
+        # SNS publish permissions
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - sns:Publish
+              Resource:
+                - !Ref GameNotificationsTopic
+                - !Ref AnnouncementsTopic
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowHeaders:
+            - "*"
+          AllowMethods:
+            - GET
+            - POST
+            - DELETE
+          AllowOrigins:
+            - "*"
+      Tags:
+        Project: btl-run
+        Environment: !Ref Environment
+
+  # Lambda to process SNS messages and send web push
+  NotificationDispatcherFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        EntryPoints:
+          - src/dispatcher.ts
+        External:
+          - '@aws-sdk/*'
+        Target: node20
+        Format: esm
+    Properties:
+      FunctionName: !Sub "btl-run-notification-dispatcher-${Environment}"
+      Description: Processes SNS messages and sends web push notifications
+      CodeUri: ../../AskAi_KVS/services/push-notifications
+      Handler: dispatcher.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref KVSTableName
+          VAPID_KEYS_SECRET_ARN: !Ref VapidKeysSecret
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref KVSTableName
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Ref VapidKeysSecret
+      Events:
+        GameNotificationEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref GameNotificationsTopic
+        AnnouncementEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref AnnouncementsTopic
+      Tags:
+        Project: btl-run
+        Environment: !Ref Environment
+
+  # CloudWatch Log Groups
+  PushNotificationsFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${PushNotificationsFunction}"
+      RetentionInDays: 14
+
+  NotificationDispatcherFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${NotificationDispatcherFunction}"
+      RetentionInDays: 14
+
+Outputs:
+  PushNotificationsFunctionUrl:
+    Description: Push notifications API endpoint
+    Value: !GetAtt PushNotificationsFunctionUrl.FunctionUrl
+    Export:
+      Name: !Sub "${AWS::StackName}-PushNotificationsUrl"
+
+  GameNotificationsTopicArn:
+    Description: SNS Topic ARN for game notifications
+    Value: !Ref GameNotificationsTopic
+    Export:
+      Name: !Sub "${AWS::StackName}-GameNotificationsTopicArn"
+
+  AnnouncementsTopicArn:
+    Description: SNS Topic ARN for announcements
+    Value: !Ref AnnouncementsTopic
+    Export:
+      Name: !Sub "${AWS::StackName}-AnnouncementsTopicArn"
+
+  VapidKeysSecretArn:
+    Description: VAPID keys secret ARN (update after deployment)
+    Value: !Ref VapidKeysSecret

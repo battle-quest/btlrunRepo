@@ -188,6 +188,8 @@ The game is designed around a small set of screens:
 - **Join Waiting (012)**: pre-game lobby for players joining via code/link; choose first move if deferred; wait for host to start.
 - **Host Lobby (015)**: empty roster + invite code; add AI one-at-a-time or wait for humans; tap Begin when ready.
 - **Game Turn (02)**: AI tributes "choose", the turn resolves into narrative + key events, then you pick your next move.
+- **Battle Encounter (021)**: Special turn resolution for combat (shows opponent + choices).
+- **Event Encounter (022)**: Special turn resolution for discoveries/traps (shows event + choices).
 - **Waiting for Players (025)**: (Long Play) you've submitted; see who's waiting; cutoff timer; notifications prompt.
 - **Status / Inventory / Map (03)**: tap the left rail to view vitals, gear, and explored territory.
 

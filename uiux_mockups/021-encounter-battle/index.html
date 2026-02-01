@@ -1,0 +1,157 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 021: Battle Encounter)
+
+  PURPOSE
+  - Shows a combat encounter resolution
+  - Displays enemy status vs player status
+  - Presents combat-specific choices
+
+  URL PARAMS
+  - type: classic|spicy|funny
+  - enemy: name of enemy (e.g. "Cato")
+  - hp: current player hp
+  - enemy_hp: current enemy hp
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/021-encounter-battle/index.html?type=classic&enemy=Cato
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Battle</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run battle encounter">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <!-- Left rail: tap to open Status/Inventory/Map -->
+        <aside class="left-rail" aria-label="Quick stats rail">
+          <a
+            class="left-rail-hit"
+            id="leftRail"
+            href="../03-status-inventory-map/index.html"
+            aria-label="Open status, inventory, and map"
+          >
+            <span class="left-rail-visual" aria-hidden="true">
+              <span class="left-rail-bars" aria-hidden="true">
+                <span class="attr-bar attr-bar--hp"></span>
+                <span class="attr-bar attr-bar--stam"></span>
+                <span class="attr-bar attr-bar--hung"></span>
+              </span>
+            </span>
+          </a>
+        </aside>
+
+        <main class="panel" aria-label="Battle panel">
+          <!-- Header -->
+          <header class="header">
+            <a href="../02-game-turn/index.html" class="back-btn" aria-label="Back">←</a>
+            <h1 class="header-title header-title--danger">Battle!</h1>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Turn Status Bar -->
+          <div class="turn-status" aria-label="Turn status">
+            <div class="status-pill status-pill--danger">
+              <span class="status-icon">⚔️</span>
+              <span class="status-text">Combat Encouter</span>
+            </div>
+          </div>
+
+          <!-- Battle Visuals -->
+          <section class="battle-display" aria-label="Combatants">
+            <div class="battle-card">
+              <!-- Enemy Side -->
+              <div class="combatant enemy">
+                <div class="combatant-avatar">
+                  <span class="avatar-emoji">👿</span>
+                </div>
+                <div class="combatant-info">
+                  <div class="combatant-top-row">
+                    <div class="combatant-name">Cato</div>
+                    <div class="combatant-status">Healthy</div>
+                  </div>
+                  <div class="hp-bar-container">
+                    <div class="hp-bar" style="width: 80%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="vs-badge">VS</div>
+
+              <!-- Player Side -->
+              <div class="combatant player">
+                <div class="combatant-avatar">
+                  <span class="avatar-emoji">👤</span>
+                </div>
+                <div class="combatant-info">
+                  <div class="combatant-top-row">
+                    <div class="combatant-name">You</div>
+                    <div class="combatant-status">Wounded</div>
+                  </div>
+                  <div class="hp-bar-container">
+                    <div class="hp-bar player-hp" style="width: 65%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Narrative / Action Log -->
+          <section class="narrative" aria-label="Battle narrative">
+            <div class="narrative-card">
+              <div class="narrative-header">
+                <span class="narrative-icon">⚡</span>
+                <span class="narrative-label">Action</span>
+              </div>
+              <div class="narrative-text">
+                <p>Cato lunges from the bushes with a makeshift spear! You barely dodge, but he grazes your arm. He's preparing for another strike.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Combat Choices -->
+          <section class="combat-choices" aria-label="Combat options">
+            <button class="wide-btn" type="button">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Counter-Attack</span>
+                <span class="wide-btn-sub">Strike back while he recovers</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Defend</span>
+                <span class="wide-btn-sub">Block the next hit and wait</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Flee</span>
+                <span class="wide-btn-sub">Run into the forest (Risk: High)</span>
+              </span>
+            </button>
+          </section>
+
+        </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

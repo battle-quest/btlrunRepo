@@ -182,3 +182,9 @@ Outputs:
       - UseExistingSecret
       - !Ref OpenAiApiKeySecretArn
       - !Ref OpenAiApiKeySecret
+
+  KVSTableArn:
+    Description: DynamoDB table ARN for KVS
+    Value: !GetAtt KVSTable.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-KvsTableArn"
