@@ -96,6 +96,12 @@ Once the match begins:
 - **Positioning**: the map isn't flavor—getting boxed in is how matches end.
 - **Social play**: alliances can save you or get you betrayed. Choose carefully.
 
+### Social Play
+
+- **Alliances**: Can be formed through in-game events (`024`). Accepting an alliance unlocks private messaging and sharing of resources.
+- **Messaging**: Use the **Alliance Message (`032`)** screen to coordinate with allies.
+- **Betrayal**: Alliances are not binding. You can choose to betray an ally at any time during an event or via the messaging interface options.
+
 ### Inviting Friends
 
 When hosting a game, you receive a **temporary invite code** (6 characters).
@@ -187,11 +193,27 @@ The game is designed around a small set of screens:
 - **Tribute Setup (01)**: pick map, tribute count, roster; tap Begin (for solo/quick play).
 - **Join Waiting (012)**: pre-game lobby for players joining via code/link; choose first move if deferred; wait for host to start.
 - **Host Lobby (015)**: empty roster + invite code; add AI one-at-a-time or wait for humans; tap Begin when ready.
+- **Join Profile (011)**: Identity customization (Avatar, Name, Tagline) before joining a lobby.
 - **Game Turn (02)**: AI tributes "choose", the turn resolves into narrative + key events, then you pick your next move.
+- **Tribute Details (031)**: Inspect another tribute's status, HP estimates, and known history.
 - **Battle Encounter (021)**: Special turn resolution for combat (shows opponent + choices).
 - **Event Encounter (022)**: Special turn resolution for discoveries/traps (shows event + choices).
+- **Scout Encounter (023)**: Exploration resolution with clickable map card.
+- **Alliance Encounter (024)**: Social interaction resolution (proposals, betrayals).
 - **Waiting for Players (025)**: (Long Play) you've submitted; see who's waiting; cutoff timer; notifications prompt.
-- **Status / Inventory / Map (03)**: tap the left rail to view vitals, gear, and explored territory.
+- **Eliminated (04)**: Game over screen with cause of death, shareable story, and replay options.
+- **Victory (05)**: Win screen with stats, shareable story, and host-next-game flow.
+- **Story Log (06)**: Scrollable history of the full narrative (AI prose + events).
+- **Shared Story (07)**: Read-only view for viral sharing; includes "Start Your Own" CTA.
+- **Spectator (08)**: Read-only live feed for watching games in progress.
+- **Status / Inventory / Map (03)**: Accessed via the **Left Rail**. View vitals, gear, map, and tribute roster.
+- **Tribute Details (031)**: Inspect another tribute's stats and history.
+- **Alliance Message (032)**: Private chat with allies.
+
+### Controls
+
+- **Left Rail (Status Bar)**: Tap the colored bars on the left edge of the screen at any time to open the **Status/Inventory/Map** overlay. This is your dashboard for health, supplies, and navigation.
+- **Back Button**: Navigate up the stack (e.g., from Status back to Game Turn).
 
 ---
 

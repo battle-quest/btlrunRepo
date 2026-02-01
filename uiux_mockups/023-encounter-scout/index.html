@@ -1,0 +1,130 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 023: Scout Encounter)
+
+  PURPOSE
+  - Shows an exploration/scouting result (new area found, safe path, etc.)
+  - Displays a map-focused visual card
+  - Presents movement/investigation choices
+  - Tapping the map card opens the full map view (03)
+
+  URL PARAMS
+  - type: classic|spicy|funny
+  - location: name of location found
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/023-encounter-scout/index.html?type=classic&location=Riverbank
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Scout</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run scout encounter">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <!-- Left rail: tap to open Status/Inventory/Map -->
+        <aside class="left-rail" aria-label="Quick stats rail">
+          <a
+            class="left-rail-hit"
+            id="leftRail"
+            href="../03-status-inventory-map/index.html"
+            aria-label="Open status, inventory, and map"
+          >
+            <span class="left-rail-visual" aria-hidden="true">
+              <span class="left-rail-bars" aria-hidden="true">
+                <span class="attr-bar attr-bar--hp"></span>
+                <span class="attr-bar attr-bar--stam"></span>
+                <span class="attr-bar attr-bar--hung"></span>
+              </span>
+            </span>
+          </a>
+        </aside>
+
+        <main class="panel" aria-label="Scout panel">
+          <!-- Header -->
+          <header class="header">
+            <a href="../02-game-turn/index.html" class="back-btn" aria-label="Back">←</a>
+            <h1 class="header-title header-title--scout">Scouting</h1>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Turn Status Bar -->
+          <div class="turn-status" aria-label="Turn status">
+            <div class="status-pill status-pill--scout">
+              <span class="status-icon">🧭</span>
+              <span class="status-text">Area Discovered</span>
+            </div>
+          </div>
+
+          <!-- Scout Visuals (Clickable Map) -->
+          <section class="scout-display" aria-label="Location details">
+            <button class="scout-card" id="mapCard" aria-label="View full map">
+              <div class="scout-map-preview" aria-hidden="true"></div>
+              <div class="scout-overlay">
+                <div class="scout-icon">📍</div>
+                <div class="scout-title">The Riverbank</div>
+                <div class="scout-meta">Water Source · Low Cover</div>
+                <div class="scout-hint">Tap to view map</div>
+              </div>
+            </button>
+          </section>
+
+          <!-- Narrative / Action Log -->
+          <section class="narrative" aria-label="Scout narrative">
+            <div class="narrative-card">
+              <div class="narrative-header">
+                <span class="narrative-icon">👀</span>
+                <span class="narrative-label">Survey</span>
+              </div>
+              <div class="narrative-text">
+                <p>You push through the dense foliage and find the riverbank. The water is clear, but the open space leaves you exposed. You spot tracks in the mud—someone was here recently.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Scout Choices -->
+          <section class="scout-choices" aria-label="Scout options">
+            <button class="wide-btn" type="button">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Fill Water Bottles</span>
+                <span class="wide-btn-sub">Gather resources quickly</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Follow Tracks</span>
+                <span class="wide-btn-sub">Hunt down the other tribute</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Retreat to Cover</span>
+                <span class="wide-btn-sub">Too dangerous to stay</span>
+              </span>
+            </button>
+          </section>
+
+        </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

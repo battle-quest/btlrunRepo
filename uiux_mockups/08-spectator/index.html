@@ -1,0 +1,127 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 08: Spectator)
+
+  PURPOSE
+  - Watch a game in progress (read-only)
+  - Shows narrative stream and event log
+  - No interactive choices (except leaving)
+  - Updates automatically as turns resolve
+
+  URL PARAMS
+  - type: classic|spicy|funny
+  - map: arena-prime|inferno-pit|chaos-carnival
+  - count: total tributes
+  - alive: living tributes count
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/08-spectator/index.html?type=classic
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Spectating</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run spectator mode">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <main class="panel" aria-label="Spectator panel">
+          <!-- Header -->
+          <header class="header">
+            <a href="../00-start-screen/index.html" class="home-btn" aria-label="Home">⌂</a>
+            <h1 class="header-title">Spectating</h1>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Turn Status Bar -->
+          <div class="turn-status" aria-label="Turn status">
+            <div class="status-pill">
+              <span class="status-day">Day 2</span>
+              <span class="status-divider">·</span>
+              <span class="status-alive">4 alive</span>
+            </div>
+            <div class="map-pill">Inferno Pit</div>
+          </div>
+
+          <!-- Spectator Content (Scrollable Narrative) -->
+          <section class="spectator-feed" aria-label="Game feed">
+            <div class="feed-card">
+              <div class="feed-header">
+                <span class="feed-icon">👁️</span>
+                <span class="feed-label">Live Feed</span>
+                <span class="feed-status">Waiting for Turn 3...</span>
+              </div>
+              
+              <div class="feed-content">
+                <article class="feed-entry">
+                  <div class="entry-meta">
+                    <span class="entry-time">Turn 2</span>
+                    <span class="entry-tag entry-tag--danger">Combat</span>
+                  </div>
+                  <p class="entry-text">
+                    <strong>Cato</strong> eliminated <strong>Foxface</strong> near the Cornucopia. A cannon fired, echoing across the valley.
+                  </p>
+                </article>
+
+                <article class="feed-entry">
+                  <div class="entry-meta">
+                    <span class="entry-time">Turn 2</span>
+                    <span class="entry-tag">Movement</span>
+                  </div>
+                  <p class="entry-text">
+                    <strong>Thresh</strong> moved to the High Ground, securing a vantage point against the approaching acid fog.
+                  </p>
+                </article>
+
+                <article class="feed-entry">
+                  <div class="entry-meta">
+                    <span class="entry-time">Turn 1</span>
+                    <span class="entry-tag">Event</span>
+                  </div>
+                  <p class="entry-text">
+                    The games began! 6 tributes fled the bloodbath, scattering into the wilderness.
+                  </p>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- Host CTA (Viral) -->
+          <section class="spectator-actions">
+            <p class="cta-text">Next time, be the victor.</p>
+            <button class="wide-btn wide-btn--primary" type="button" id="hostBtn">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Host a Game</span>
+                <span class="wide-btn-sub">Start your own lobby</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button" id="playBtn">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Try Again</span>
+                <span class="wide-btn-sub">Start a new solo run</span>
+              </span>
+            </button>
+          </section>
+
+        </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

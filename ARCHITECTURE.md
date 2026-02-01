@@ -154,13 +154,23 @@ btlrunRepo/
 ├── uiux_mockups/                  # HTML/CSS/JS prototypes
 │   ├── 00-start-screen/           # Landing page mockup
 │   ├── 01-tribute-setup/          # Tribute setup (solo/quick play)
+│   ├── 011-join-profile/          # Join profile setup
 │   ├── 012-join-waiting/          # Join waiting room (pre-game)
 │   ├── 015-host-lobby/            # Host lobby (friends)
 │   ├── 02-game-turn/              # Main gameplay screen
 │   ├── 021-encounter-battle/      # Battle encounter screen
 │   ├── 022-encounter-event/       # Event encounter screen
+│   ├── 023-encounter-scout/       # Scout/Map encounter screen
+│   ├── 024-encounter-alliance/    # Alliance encounter screen
 │   ├── 025-waiting-for-players/   # Turn waiting (Long Play)
-│   └── 03-status-inventory-map/   # Status screens
+│   ├── 03-status-inventory-map/   # Status screens
+│   ├── 031-tribute-details/       # Tribute inspection
+│   ├── 032-alliance-message/      # Alliance chat
+│   ├── 04-eliminated/             # Game over screen
+│   ├── 05-victory/                # Win screen
+│   ├── 06-story-log/              # Narrative history
+│   ├── 07-shared-story/           # Viral sharing view
+│   └── 08-spectator/              # Spectator mode screen
 │
 ├── .cursor/
 │   └── rules/

@@ -1,0 +1,84 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 032: Alliance Message)
+
+  PURPOSE
+  - Messaging interface for communicating with allies
+  - Simple chat history + input
+  - Only accessible if player has an active alliance
+
+  URL PARAMS
+  - ally: name of ally
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/032-alliance-message/index.html?ally=Rue
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Message</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run alliance message">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <main class="panel" aria-label="Message panel">
+          <header class="header">
+            <button class="back-btn" id="backBtn" aria-label="Back">←</button>
+            <div class="header-info">
+              <h1 class="header-title">Rue</h1>
+              <span class="header-status">Online</span>
+            </div>
+            <div class="header-avatar">🌿</div>
+          </header>
+
+          <!-- Chat History -->
+          <section class="chat-history" id="chatHistory" aria-label="Message history">
+            <div class="message message--received">
+              <div class="message-bubble">
+                Found some berries near the river.
+              </div>
+              <span class="message-time">10:42 AM</span>
+            </div>
+
+            <div class="message message--sent">
+              <div class="message-bubble">
+                Are they safe?
+              </div>
+              <span class="message-time">10:43 AM</span>
+            </div>
+
+            <div class="message message--received">
+              <div class="message-bubble">
+                I think so. Nightlock looks different.
+              </div>
+              <span class="message-time">10:44 AM</span>
+            </div>
+          </section>
+
+          <!-- Message Input -->
+          <section class="chat-input-area">
+            <input type="text" class="chat-input" placeholder="Message ally..." />
+            <button class="send-btn" aria-label="Send">➤</button>
+          </section>
+
+        </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

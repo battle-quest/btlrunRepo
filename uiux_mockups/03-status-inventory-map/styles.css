@@ -483,9 +483,99 @@ body { overscroll-behavior: none; }
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Full Map Tab
+   Tributes Tab
    ───────────────────────────────────────────────────────────── */
-.card--fullmap {
+.card--tributes {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tributes-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 0 -4px;
+  padding: 0 4px;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
+.tributes-list::-webkit-scrollbar { width: 4px; }
+.tributes-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+}
+
+.tribute-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.tribute-row.is-dead {
+  background: rgba(0,0,0,0.25);
+  border-color: rgba(255,255,255,0.03);
+  opacity: 0.6;
+}
+
+.tribute-row.is-you {
+  background: rgba(74, 222, 128, 0.08);
+  border-color: rgba(74, 222, 128, 0.25);
+}
+
+.tribute-avatar-mini {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(30,40,55,1), rgba(15,22,32,1));
+  border: 1px solid rgba(255,255,255,0.10);
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+}
+
+.tribute-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tribute-name-mini {
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text);
+}
+
+.tribute-row.is-dead .tribute-name-mini {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.tribute-status {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.tribute-badge {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 99px;
+}
+
+.badge--alive { color: #4ade80; background: rgba(74, 222, 128, 0.12); }
+.badge--dead { color: #ef4444; background: rgba(239, 68, 68, 0.12); }
+.badge--you { color: var(--accent); background: color-mix(in oklab, var(--accent) 15%, transparent); }
   flex: 1;
   min-height: 0;
   display: flex;

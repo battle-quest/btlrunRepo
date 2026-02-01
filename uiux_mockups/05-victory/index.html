@@ -1,0 +1,118 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 05: Victory)
+
+  PURPOSE
+  - Shown when player wins (last survivor)
+  - Celebratory visual style
+  - Stats summary
+  - Encourages hosting next game
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/05-victory/index.html?type=classic
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Victory</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run victory screen">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <main class="panel" aria-label="Victory panel">
+          <header class="header">
+            <a href="../00-start-screen/index.html" class="home-btn" aria-label="Home">⌂</a>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Victory Card -->
+          <section class="victory-display" aria-label="Victory details">
+            <div class="victory-card">
+              <!-- Normal Content -->
+              <div class="card-content" id="cardContent">
+                <button class="share-icon-btn" id="shareBtn" aria-label="Share Victory">🔗</button>
+                <a href="../07-shared-story/index.html" class="story-icon-btn" aria-label="View Story">📖</a>
+                <div class="victory-icon">👑</div>
+                <h1 class="victory-title">Victor</h1>
+                <div class="victory-subtitle">You survived the arena.</div>
+                
+                <div class="stats-grid">
+                  <div class="stat-item">
+                    <span class="stat-val">5</span>
+                    <span class="stat-label">Days</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-val">3</span>
+                    <span class="stat-label">Kills</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-val">12</span>
+                    <span class="stat-label">Events</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Copied Overlay (Hidden by default) -->
+              <div class="card-overlay" id="shareOverlay" hidden>
+                <button class="close-icon-btn" id="closeShareBtn" aria-label="Close">×</button>
+                <div class="overlay-icon">📋</div>
+                <h2 class="overlay-title">Link Copied!</h2>
+                <p class="overlay-text">
+                  "I emerged victorious in btl.run! 👑 Read the legend of my victory..."
+                </p>
+                <div class="overlay-hint">Ready to paste</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Narrative -->
+          <section class="narrative" aria-label="Epilogue">
+            <div class="narrative-card">
+              <div class="narrative-header">
+                <span class="narrative-icon">📜</span>
+                <span class="narrative-label">Epilogue</span>
+              </div>
+              <div class="narrative-text">
+                <p>The hovercraft descends. You look back at the arena one last time—scarred, quiet, empty. You are the champion.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Action Buttons -->
+          <section class="victory-actions" aria-label="Post-game options">
+            <button class="wide-btn wide-btn--primary" type="button" id="hostBtn">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Host the Next Games</span>
+                <span class="wide-btn-sub">Challenge your friends</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button" id="playBtn">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Play Again</span>
+                <span class="wide-btn-sub">New map, new tributes</span>
+              </span>
+            </button>
+          </section>
+
+        </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,373 @@
+/**
+ * btl.run PWA — UI/UX Mock (Screen 024: Alliance Encounter)
+ */
+
+:root {
+  --bg0: #060a0f;
+  --bg1: #0b1220;
+  --panel: rgba(8, 14, 22, 0.84);
+  --text: rgba(235, 246, 255, 0.95);
+  --muted: rgba(235, 246, 255, 0.72);
+  --dim: rgba(235, 246, 255, 0.55);
+
+  --teal: #28f2d3;
+  --teal2: rgba(40, 242, 211, 0.18);
+  --magenta: #ff4dd8;
+  --magenta2: rgba(255, 77, 216, 0.2);
+  --purple: #a855f7;
+  --purple2: rgba(168, 85, 247, 0.2);
+
+  --r: 16px;
+  --r-sm: 10px;
+  --tap: 48px;
+
+  --frame-pad-x: 22px;
+  --frame-pad-top: 10px;
+  --frame-pad-bottom: 24px;
+  --screen-max-w: 520px;
+
+  /* Accent defaults */
+  --accent: var(--magenta); /* Alliance defaults to magenta/social theme */
+  --accent2: var(--magenta2);
+  --sprite-hue: 290deg; /* Purple/Magenta range */
+}
+
+* { box-sizing: border-box; }
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: radial-gradient(120% 120% at 50% 10%, var(--bg1) 0%, var(--bg0) 55%, #020409 100%);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body { overscroll-behavior: none; }
+
+.stage {
+  position: relative;
+  height: 100svh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(110% 90% at 50% 0%, rgba(255, 77, 216, 0.15), transparent 55%),
+    url("../assets/bq-background-grid-map.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.screen {
+  position: relative;
+  width: min(100vw, var(--screen-max-w));
+  height: 100svh;
+  overflow: hidden;
+}
+
+.screen[data-type="classic"] { --accent: #ff4dd8; }
+
+.frame {
+  position: absolute;
+  inset: 0;
+  background-image: url("../assets/bq-ui-panel-frame-vertical.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: center;
+  pointer-events: none;
+  filter: drop-shadow(0 18px 42px rgba(0,0,0,0.65));
+}
+
+.panel {
+  position: relative;
+  width: 100%;
+  animation: fadeSlideIn 250ms ease-out forwards;
+  padding:
+    calc(env(safe-area-inset-top) + var(--frame-pad-top))
+    calc(env(safe-area-inset-right) + var(--frame-pad-x))
+    calc(env(safe-area-inset-bottom) + var(--frame-pad-bottom))
+    calc(env(safe-area-inset-left) + var(--frame-pad-x));
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  margin: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ------- Left Rail (copied) ------- */
+.left-rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  z-index: 3;
+  pointer-events: none;
+}
+.left-rail-hit {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+}
+.left-rail-visual {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: clamp(190px, 52svh, 320px);
+  border-radius: 0 14px 14px 0;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-left: 0;
+  display: grid;
+  place-items: center;
+}
+.left-rail-bars {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  padding: 12px 0;
+  gap: 8px;
+  justify-items: center;
+}
+.attr-bar {
+  width: 6px;
+  height: 100%;
+  background: rgba(255,255,255,0.1);
+  border-radius: 99px;
+  position: relative;
+}
+.attr-bar--hp { background: #22c55e; height: 70%; align-self: end; }
+.attr-bar--stam { background: var(--teal); height: 50%; align-self: end; }
+.attr-bar--hung { background: #fbbf24; height: 90%; align-self: end; }
+
+
+/* ------- Header ------- */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 15px;
+  width: 75%;
+  margin-inline: auto;
+}
+.back-btn {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.3);
+  color: var(--muted);
+  font-size: 18px;
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+}
+.header-title {
+  flex: 1;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--magenta);
+  text-shadow: 0 0 10px rgba(255, 77, 216, 0.5);
+}
+.type-badge {
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.1);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* ------- Turn Status ------- */
+.turn-status {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.08);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.status-pill--alliance {
+  border-color: var(--magenta);
+  color: var(--magenta);
+  background: rgba(255, 77, 216, 0.1);
+}
+
+/* ------- Alliance Display ------- */
+.alliance-display {
+  width: calc(100% - 50px);
+  margin-left: 35px;
+}
+.alliance-card {
+  background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.3));
+  border: 1px solid var(--magenta);
+  border-radius: var(--r);
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 0 20px rgba(255, 77, 216, 0.15);
+}
+
+.tribute-avatar {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+}
+
+.tribute-info {
+  display: grid;
+  gap: 2px;
+}
+
+.tribute-name {
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.tribute-meta {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.alliance-badge {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--magenta);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 14px;
+  box-shadow: 0 0 10px var(--magenta);
+}
+
+/* ------- Narrative ------- */
+.narrative {
+  width: calc(100% - 50px);
+  margin-left: 35px;
+}
+.narrative-card {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--r);
+  padding: 10px 12px;
+}
+.narrative-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  color: var(--dim);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.narrative-text {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* ------- Choices ------- */
+.alliance-choices {
+  display: grid;
+  gap: 0;
+  margin-top: 4px;
+}
+.wide-btn {
+  position: relative;
+  width: 90%;
+  margin-inline: auto;
+  margin-left: 20px;
+  min-height: clamp(80px, 10vh, 100px);
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0;
+}
+.wide-btn + .wide-btn {
+  margin-top: clamp(-28px, -4vh, -20px);
+}
+.wide-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../assets/bq-ui-wide-button-states.png");
+  background-repeat: no-repeat;
+  background-size: 100% 300%;
+  filter: hue-rotate(var(--sprite-hue)) saturate(1.15);
+  opacity: 0.98;
+}
+.wide-btn-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 16px;
+}
+.wide-btn-title {
+  font-weight: 900;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+.wide-btn-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Ad Banner */
+.ad-banner {
+  height: 50px;
+  margin-top: auto;
+  background: white;
+  display: grid;
+  place-items: center;
+  color: black;
+  font-weight: 900;
+  font-size: 11px;
+}
+
+@media (max-height: 740px) {
+  .panel { gap: 8px; }
+  .alliance-card { padding: 8px 12px; gap: 8px; }
+  .tribute-avatar { width: 36px; height: 36px; font-size: 18px; }
+  .wide-btn { min-height: clamp(70px, 9vh, 85px); }
+  .wide-btn + .wide-btn { margin-top: -20px; }
+}

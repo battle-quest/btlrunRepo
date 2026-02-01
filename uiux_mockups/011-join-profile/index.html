@@ -1,0 +1,95 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 011: Join Profile)
+
+  PURPOSE
+  - Allows user to customize their identity before fully joining
+  - Pre-filled defaults for zero-friction entry
+  - Avatar, Name, Tagline selection
+
+  URL PARAMS
+  - type: classic|spicy|funny
+  - code: join code
+  - map: map name
+  - count: player count
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/011-join-profile/index.html?type=classic&code=ABC123
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Profile</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run profile setup">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <main class="panel" aria-label="Profile panel">
+          <header class="header">
+            <a href="../00-start-screen/index.html" class="back-btn" aria-label="Back">←</a>
+            <h1 class="header-title">Your Tribute</h1>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Avatar Selection -->
+          <section class="avatar-section" aria-label="Choose avatar">
+            <div class="avatar-preview">
+              <div class="avatar-large" id="avatarPreview">🏹</div>
+              <button class="shuffle-btn" id="shuffleAvatar" aria-label="Randomize avatar">🎲</button>
+            </div>
+            <div class="avatar-scroll">
+              <button class="avatar-option selected" data-emoji="🏹">🏹</button>
+              <button class="avatar-option" data-emoji="⚔️">⚔️</button>
+              <button class="avatar-option" data-emoji="🛡️">🛡️</button>
+              <button class="avatar-option" data-emoji="🌿">🌿</button>
+              <button class="avatar-option" data-emoji="⚡">⚡</button>
+              <button class="avatar-option" data-emoji="🔥">🔥</button>
+              <button class="avatar-option" data-emoji="💀">💀</button>
+              <button class="avatar-option" data-emoji="👁️">👁️</button>
+            </div>
+          </section>
+
+          <!-- Identity Inputs -->
+          <section class="identity-form" aria-label="Identity details">
+            <div class="form-group">
+              <label for="inputName" class="form-label">Name</label>
+              <input type="text" id="inputName" class="form-input" value="District 12 Hero" placeholder="Enter name" maxlength="16" />
+            </div>
+
+            <div class="form-group">
+              <label for="inputTagline" class="form-label">Tagline (Optional)</label>
+              <textarea id="inputTagline" class="form-input form-textarea" placeholder="Enter tagline" maxlength="64" rows="2">I volunteer!</textarea>
+            </div>
+          </section>
+
+          <!-- Join Action -->
+          <section class="join-action">
+            <button class="wide-btn" type="button" id="joinBtn">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Join Game</span>
+                <span class="wide-btn-sub">Ready to enter the arena</span>
+              </span>
+            </button>
+          </section>
+
+        </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

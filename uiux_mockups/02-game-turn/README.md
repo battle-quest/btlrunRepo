@@ -53,6 +53,7 @@ The left edge of the screen has a slim, vertically centered rail containing **th
 - **To (next turn)**: `02-game-turn/index.html?...` (loops to self with new choice)
 - **To (battle)**: `021-encounter-battle/index.html` (if combat occurs)
 - **To (event)**: `022-encounter-event/index.html` (if special event occurs)
+- **To (scout)**: `023-encounter-scout/index.html` (if exploring/scouting)
 - **To (status screen)**: `03-status-inventory-map/index.html?...` (tap left rail)
 
 ## Animation Sequence

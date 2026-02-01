@@ -1,0 +1,119 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 04: Eliminated)
+
+  PURPOSE
+  - Shown when player dies
+  - Displays "Cause of Death" narrative
+  - Encourages replay (Solo) or hosting (Viral loop)
+  - Option to spectate remaining tributes
+
+  URL PARAMS
+  - type: classic|spicy|funny
+  - cause: text description of death (optional)
+  - rank: placement (e.g. 5th place)
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/04-eliminated/index.html?type=classic&rank=5
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Eliminated</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run eliminated screen">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <main class="panel" aria-label="Eliminated panel">
+          <!-- Header (Hidden or minimal) -->
+          <header class="header">
+            <a href="../00-start-screen/index.html" class="home-btn" aria-label="Home">⌂</a>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Death Card -->
+          <section class="death-display" aria-label="Elimination details">
+            <div class="death-card" id="deathCard">
+              <!-- Normal Content -->
+              <div class="card-content" id="cardContent">
+                <button class="share-icon-btn" id="shareBtn" aria-label="Share Result">🔗</button>
+                <a href="../07-shared-story/index.html" class="story-icon-btn" aria-label="View Story">📖</a>
+                <div class="death-icon">💀</div>
+                <h1 class="death-title">Eliminated</h1>
+                <div class="death-rank" id="deathRank">5th Place</div>
+                <div class="death-cause" id="deathCause">
+                  You were caught in the open during the acid rain storm.
+                </div>
+              </div>
+
+              <!-- Copied Overlay (Hidden by default) -->
+              <div class="card-overlay" id="shareOverlay" hidden>
+                <button class="close-icon-btn" id="closeShareBtn" aria-label="Close">×</button>
+                <div class="overlay-icon">📋</div>
+                <h2 class="overlay-title">Link Copied!</h2>
+                <p class="overlay-text">
+                  "I just got eliminated in btl.run! 💀 Read my tragic story..."
+                </p>
+                <div class="overlay-hint">Ready to paste</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Narrative / Recap -->
+          <section class="narrative" aria-label="Final moments">
+            <div class="narrative-card">
+              <div class="narrative-header">
+                <span class="narrative-icon">📜</span>
+                <span class="narrative-label">Final Moments</span>
+              </div>
+              <div class="narrative-text">
+                <p>The cannon fires. Your portrait appears in the sky. The game continues for the others, but your story ends here.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Action Buttons (Viral/Replay loop) -->
+          <section class="death-actions" aria-label="Post-game options">
+            <button class="wide-btn wide-btn--primary" type="button" id="hostBtn">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Host a Game</span>
+                <span class="wide-btn-sub">Invite friends & get revenge</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button" id="playBtn">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Try Again</span>
+                <span class="wide-btn-sub">Start a new solo run</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button" id="spectateBtn">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Spectate</span>
+                <span class="wide-btn-sub">Watch the remaining tributes</span>
+              </span>
+            </button>
+          </section>
+
+        </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

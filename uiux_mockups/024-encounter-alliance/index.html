@@ -1,0 +1,128 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 024: Alliance Encounter)
+
+  PURPOSE
+  - Shows an alliance proposal or social interaction
+  - Displays the other tribute's profile card
+  - Presents social choices (Accept, Betray, Ignore)
+
+  URL PARAMS
+  - type: classic|spicy|funny
+  - tribute: name of tribute offering alliance
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/024-encounter-alliance/index.html?type=classic&tribute=Rue
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Alliance</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run alliance encounter">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <!-- Left rail: tap to open Status/Inventory/Map -->
+        <aside class="left-rail" aria-label="Quick stats rail">
+          <a
+            class="left-rail-hit"
+            id="leftRail"
+            href="../03-status-inventory-map/index.html"
+            aria-label="Open status, inventory, and map"
+          >
+            <span class="left-rail-visual" aria-hidden="true">
+              <span class="left-rail-bars" aria-hidden="true">
+                <span class="attr-bar attr-bar--hp"></span>
+                <span class="attr-bar attr-bar--stam"></span>
+                <span class="attr-bar attr-bar--hung"></span>
+              </span>
+            </span>
+          </a>
+        </aside>
+
+        <main class="panel" aria-label="Alliance panel">
+          <!-- Header -->
+          <header class="header">
+            <a href="../02-game-turn/index.html" class="back-btn" aria-label="Back">←</a>
+            <h1 class="header-title header-title--alliance">Proposal</h1>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Turn Status Bar -->
+          <div class="turn-status" aria-label="Turn status">
+            <div class="status-pill status-pill--alliance">
+              <span class="status-icon">🤝</span>
+              <span class="status-text">Alliance Offer</span>
+            </div>
+          </div>
+
+          <!-- Tribute Visuals -->
+          <section class="alliance-display" aria-label="Tribute details">
+            <div class="alliance-card">
+              <div class="tribute-avatar">🌿</div>
+              <div class="tribute-info">
+                <div class="tribute-name">Rue</div>
+                <div class="tribute-meta">Trustworthy · Injured</div>
+              </div>
+              <div class="alliance-badge">?</div>
+            </div>
+          </section>
+
+          <!-- Narrative -->
+          <section class="narrative" aria-label="Alliance narrative">
+            <div class="narrative-card">
+              <div class="narrative-header">
+                <span class="narrative-icon">💬</span>
+                <span class="narrative-label">Interaction</span>
+              </div>
+              <div class="narrative-text">
+                <p>Rue steps out from the shadows, hands raised. She looks hurt but determined. "I know where the food cache is," she whispers. "Help me get there, and we split it."</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Alliance Choices -->
+          <section class="alliance-choices" aria-label="Alliance options">
+            <button class="wide-btn" type="button">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Accept Alliance</span>
+                <span class="wide-btn-sub">Team up and share resources</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Refuse & Leave</span>
+                <span class="wide-btn-sub">Trust no one. Walk away.</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Betray</span>
+                <span class="wide-btn-sub">Attack while her guard is down</span>
+              </span>
+            </button>
+          </section>
+
+        </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

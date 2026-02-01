@@ -1,0 +1,108 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 031: Tribute Details)
+
+  PURPOSE
+  - Detailed view of another tribute
+  - Accessed by tapping a name in Roster or Event Log
+  - Shows public info (Status, HP estimates) and interactions
+
+  URL PARAMS
+  - name: tribute name
+  - status: alive|dead
+  - hp: estimated HP percentage
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/031-tribute-details/index.html?name=Cato&status=alive&hp=80
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Tribute</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run tribute details">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <main class="panel" aria-label="Tribute panel">
+          <header class="header">
+            <button class="close-btn" id="closeBtn" aria-label="Close">×</button>
+            <h1 class="header-title">Tribute Intel</h1>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Tribute Profile Card -->
+          <section class="profile-display" aria-label="Tribute stats">
+            <div class="profile-card">
+              <div class="profile-avatar">🏹</div>
+              <h2 class="profile-name" id="tributeName">Cato</h2>
+              <div class="profile-status status-alive" id="tributeStatus">Alive</div>
+              <div class="profile-tagline">"I was born for this."</div>
+
+              <div class="stats-bars">
+                <div class="stat-row">
+                  <span class="stat-label">Health (Est.)</span>
+                  <div class="stat-track">
+                    <div class="stat-fill stat-fill--hp" style="width: 80%"></div>
+                  </div>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Threat</span>
+                  <div class="stat-track">
+                    <div class="stat-fill stat-fill--threat" style="width: 90%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Known History / Log -->
+          <section class="intel-log" aria-label="Known history">
+            <div class="intel-card">
+              <div class="intel-header">
+                <span class="intel-icon">👁️</span>
+                <span class="intel-label">Last Sighting</span>
+              </div>
+              <p class="intel-text">
+                Spotted near the <strong>Cornucopia</strong> on Day 1. Engaged in combat with <strong>Glimmer</strong>.
+              </p>
+            </div>
+          </section>
+
+          <!-- Actions -->
+          <section class="interact-actions" aria-label="Interactions">
+            <button class="wide-btn" type="button">
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Track</span>
+                <span class="wide-btn-sub">Attempt to find their location</span>
+              </span>
+            </button>
+
+            <button class="wide-btn" type="button" disabled>
+              <span class="wide-btn-content">
+                <span class="wide-btn-title">Message</span>
+                <span class="wide-btn-sub">Locked (requires Alliance)</span>
+              </span>
+            </button>
+          </section>
+
+        </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

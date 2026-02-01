@@ -285,7 +285,7 @@ body {
   margin-right: auto;
 }
 
-.back-btn {
+.back-btn, .story-btn {
   width: 36px;
   height: 36px;
   border-radius: 10px;
@@ -300,7 +300,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-.back-btn:active { transform: translateY(1px); }
+.back-btn:active, .story-btn:active { transform: translateY(1px); }
 
 .header-title {
   flex: 1;

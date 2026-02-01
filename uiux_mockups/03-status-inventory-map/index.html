@@ -64,6 +64,13 @@
               aria-selected="false"
               aria-controls="panelMap"
             >Map</button>
+            <button
+              class="tab-btn"
+              id="tabTributes"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panelTributes"
+            >Tributes</button>
           </nav>
 
           <!-- Tab content wrapper -->
@@ -132,6 +139,22 @@
                   <span class="legend-item"><span class="legend-swatch legend-swatch--path"></span>Path</span>
                   <span class="legend-item"><span class="legend-swatch legend-swatch--explored"></span>Visible</span>
                   <span class="legend-item"><span class="legend-swatch legend-swatch--fog"></span>Unknown</span>
+                </div>
+              </section>
+            </section>
+
+            <!-- Tributes Tab Panel -->
+            <section
+              class="tab-panel"
+              id="panelTributes"
+              role="tabpanel"
+              aria-labelledby="tabTributes"
+              hidden
+            >
+              <section class="card card--tributes" aria-label="Roster">
+                <div class="card-title">Tribute Roster</div>
+                <div class="tributes-list" id="tributesList">
+                  <!-- Rendered by JS -->
                 </div>
               </section>
             </section>
