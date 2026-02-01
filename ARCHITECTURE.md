@@ -145,7 +145,7 @@ btlrunRepo/
 ├── assets/                        # Game UI assets
 │   ├── bq-background-grid-map.png # Seamless tileable background (2048×2048 px)
 │   ├── bq-icons-set.png           # Icon sprite sheet (4×3 grid, 12 icons)
-│   ├── bq-ui-gear-icon.svg        # Settings/gear icon (vector, teal neon glow)
+│   ├── bq-ui-gear-icon.svg        # (Optional/legacy) settings icon (not currently used in start flow)
 │   ├── bq-ui-panel-frame.png      # Horizontal UI panel frame
 │   ├── bq-ui-panel-frame-vertical.png # Vertical HUD/panel frame (1344×2531 px)
 │   ├── bq-ui-wide-button-states.png   # Button sprite (3 states: default/hover/pressed)
@@ -153,9 +153,11 @@ btlrunRepo/
 │
 ├── uiux_mockups/                  # HTML/CSS/JS prototypes
 │   ├── 00-start-screen/           # Landing page mockup
-│   ├── 01-tribute-setup/          # Character creation
+│   ├── 01-tribute-setup/          # Tribute setup (solo/quick play)
+│   ├── 012-join-waiting/          # Join waiting room (pre-game)
+│   ├── 015-host-lobby/            # Host lobby (friends)
 │   ├── 02-game-turn/              # Main gameplay screen
-│   ├── 025-waiting-for-players/   # Lobby screen
+│   ├── 025-waiting-for-players/   # Turn waiting (Long Play)
 │   └── 03-status-inventory-map/   # Status screens
 │
 ├── .cursor/

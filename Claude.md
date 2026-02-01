@@ -8,7 +8,7 @@ You are implementing a rpg, modern, readable, text-driven battle-royale game.
 - Persistence: TypeScript KVS Lambda → DynamoDB
 - AI narration/actions: TypeScript AskAI Lambda → OpenAI
 - Infrastructure: AWS SAM with nested CloudFormation stacks
-- Game modes: Solo (AI or Human Game Master with AI tributes) + Party (mix of human and AI, days exist in customizable minutes) + Long Play (1 real day = 1 game day customizable)
+- Game modes: Play (solo with AI tributes, deferred first choice) + Host (multiplayer lobby with invite code) + Quick Play (fast turns) + Long Play (1 real day = 1 game day, customizable cutoff)
 - Prevent infinite games: max days + escalating hazards + sudden death
 - Monetization: banner ad placeholder; GM enable hook reserved (free for now)
 - Export: PDF recap at end (Lambda preferred)

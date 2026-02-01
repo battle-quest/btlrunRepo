@@ -30,6 +30,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>btl.run — Setup</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
   </head>
   <body>
     <div class="stage" role="application" aria-label="btl.run tribute setup">
@@ -64,15 +65,30 @@
             </div>
           </section>
 
-          <!-- Tribute Count -->
-          <section class="section-card" aria-label="Tribute count">
-            <p class="section-label">Tributes</p>
-            <div class="count-row" role="listbox" aria-label="Number of tributes">
-              <button class="count-btn" role="option" data-count="6" aria-selected="true">6</button>
-              <button class="count-btn" role="option" data-count="8" aria-selected="false">8</button>
-              <button class="count-btn" role="option" data-count="12" aria-selected="false">12</button>
-              <button class="count-btn" role="option" data-count="16" aria-selected="false">16</button>
-              <button class="count-btn" role="option" data-count="24" aria-selected="false">24</button>
+          <!-- Tribute Settings (Count + Response Timer) -->
+          <section class="section-card" aria-label="Tribute settings">
+            <div class="tribute-settings-row">
+              <div class="tribute-setting">
+                <p class="section-label section-label--inline">Tributes</p>
+                <div class="count-row" role="listbox" aria-label="Number of tributes">
+                  <button class="count-btn" role="option" data-count="6" aria-selected="true">6</button>
+                  <button class="count-btn" role="option" data-count="8" aria-selected="false">8</button>
+                  <button class="count-btn" role="option" data-count="12" aria-selected="false">12</button>
+                  <button class="count-btn" role="option" data-count="16" aria-selected="false">16</button>
+                  <button class="count-btn" role="option" data-count="24" aria-selected="false">24</button>
+                </div>
+              </div>
+              <div class="tribute-setting tribute-setting--timer">
+                <p class="section-label section-label--inline">Response</p>
+                <div class="timer-strip" role="listbox" aria-label="Response time limit">
+                  <button class="timer-btn" role="option" data-timer="30" aria-selected="true">30s</button>
+                  <button class="timer-btn" role="option" data-timer="60" aria-selected="false">1m</button>
+                  <button class="timer-btn" role="option" data-timer="300" aria-selected="false">5m</button>
+                  <button class="timer-btn" role="option" data-timer="1800" aria-selected="false">30m</button>
+                  <button class="timer-btn" role="option" data-timer="3600" aria-selected="false">1hr</button>
+                  <button class="timer-btn" role="option" data-timer="86400" aria-selected="false">1d</button>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -81,6 +97,35 @@
             <p class="section-label section-label--roster">Roster</p>
             <div class="roster" id="roster" role="list" aria-label="Tribute roster">
               <!-- Tributes rendered by script.js -->
+            </div>
+          </section>
+
+          <!-- Choice Status (shows pre-selected choice or deferred indicator) -->
+          <section class="choice-section" id="choiceSection" aria-label="Your choice" hidden>
+            <div class="choice-card">
+              <div class="choice-header">
+                <span class="choice-icon" id="choiceIcon">🎯</span>
+                <span class="choice-title" id="choiceTitle">Your Choice</span>
+              </div>
+              <p class="choice-text" id="choiceText">You'll choose after the game begins</p>
+            </div>
+          </section>
+
+          <!-- Invite Code -->
+          <section class="invite-section" aria-label="Invite players">
+            <div class="invite-card">
+              <div class="invite-header">
+                <span class="invite-icon">👥</span>
+                <span class="invite-title">Invite Human Players</span>
+              </div>
+              <p class="invite-desc">Share this code so friends can join and replace an AI tribute</p>
+              <div class="invite-code-row">
+                <code class="invite-code" id="inviteCode">------</code>
+                <button class="invite-copy-btn" id="copyCodeBtn" aria-label="Copy invite code" title="Copy to clipboard">
+                  <span class="copy-icon">📋</span>
+                </button>
+              </div>
+              <p class="invite-expires" id="inviteExpires">Code expires when game starts</p>
             </div>
           </section>
 
@@ -94,11 +139,15 @@
             </button>
           </section>
 
-          <!-- Ad Banner -->
-          <footer class="ad-banner" aria-label="Banner ad placeholder">
-            <span><strong>Ad</strong> · banner placeholder</span>
-          </footer>
         </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
       </div>
     </div>
 

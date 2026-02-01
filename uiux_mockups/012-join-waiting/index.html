@@ -1,0 +1,154 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 012: Join Waiting)
+
+  PURPOSE
+  - Pre-game waiting room for players joining via code or shared link
+  - Shows host's game setup (type, map, tribute count)
+  - Displays first-turn choice options (if joined via code) OR locked-in choice (if via link)
+  - Shows other players who have joined
+  - Waits for host to start the game
+
+  URL PARAMS
+  - type: classic|spicy|funny (game type)
+  - map: arena-prime|inferno-pit|chaos-carnival
+  - count: number of tributes
+  - timer: response timer in seconds
+  - code: join code (e.g., ABC123)
+  - choice: 1|2|3 (optional - if present, shows locked-in choice)
+
+  FOLDER STRUCTURE
+  - Each screen lives in its own folder: /uiux/{screen-name}/
+  - Files: index.html, styles.css, script.js, README.md
+  - Shared assets: /uiux/assets/
+  - Links MUST use explicit filenames for CloudFront/S3 compatibility
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Deferred choice: /uiux/012-join-waiting/index.html?type=classic&map=inferno-pit&count=6&code=ABC123
+  - Pre-selected: /uiux/012-join-waiting/index.html?type=classic&map=inferno-pit&count=6&code=ABC123&choice=1
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Joining Game</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run join waiting">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <main class="panel" aria-label="Join waiting panel">
+          <!-- Header -->
+          <header class="header">
+            <a href="../00-start-screen/index.html" class="back-btn" aria-label="Leave game">←</a>
+            <h1 class="header-title">Joining Game</h1>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Game Info -->
+          <section class="game-info" aria-label="Game information">
+            <div class="info-card">
+              <div class="info-row">
+                <span class="info-label">Code</span>
+                <code class="info-code" id="gameCode">------</code>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Map</span>
+                <span class="info-value" id="mapName">Inferno Pit</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Players</span>
+                <span class="info-value" id="playerCount">1 / 6</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Choice Section (dual mode: deferred OR locked-in) -->
+          <section class="choice-section" id="choiceSection" aria-label="Your first turn choice">
+            <!-- Mode 1: Deferred choice (show 3 options) -->
+            <div class="choice-prompt" id="choicePrompt" hidden>
+              <div class="broadcast-card" aria-label="Opening prompt">
+                <div class="broadcast-top">
+                  <p class="broadcast-label">Choose Your Opening Move</p>
+                  <span class="broadcast-pill">Turn 1</span>
+                </div>
+                <p class="broadcast-subtext" id="choiceSubtitle">
+                  You wake to distant horns and a glowing perimeter.
+                </p>
+              </div>
+
+              <button class="wide-btn" type="button" data-choice="1" id="choice1">
+                <span class="wide-btn-content">
+                  <span class="wide-btn-title" id="choice1Title">Grab supplies</span>
+                  <span class="wide-btn-sub" id="choice1Sub">Risk the center for better gear</span>
+                </span>
+              </button>
+
+              <button class="wide-btn" type="button" data-choice="2" id="choice2">
+                <span class="wide-btn-content">
+                  <span class="wide-btn-title" id="choice2Title">Run for cover</span>
+                  <span class="wide-btn-sub" id="choice2Sub">Survive now, loot later</span>
+                </span>
+              </button>
+
+              <button class="wide-btn" type="button" data-choice="3" id="choice3">
+                <span class="wide-btn-content">
+                  <span class="wide-btn-title" id="choice3Title">Make a friend</span>
+                  <span class="wide-btn-sub" id="choice3Sub">Wave like you totally won't betray them</span>
+                </span>
+              </button>
+            </div>
+
+            <!-- Mode 2: Locked-in choice (show confirmation) -->
+            <div class="choice-locked" id="choiceLocked" hidden>
+              <div class="locked-card" id="lockedCard">
+                <div class="locked-header">
+                  <span class="locked-icon">✓</span>
+                  <span class="locked-label">Your Opening Move</span>
+                  <span class="locked-hint" id="lockedHint">Tap to change</span>
+                </div>
+                <p class="locked-text">
+                  <strong id="lockedTitle">Grab supplies</strong>
+                  <span id="lockedSub">Risk the center for better gear</span>
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Players List (hidden until choice made) -->
+          <section class="players-section" aria-label="Players in game" hidden>
+            <p class="section-label">Players Joined</p>
+            <div class="players-list" id="playersList" role="list">
+              <!-- Players rendered by script.js -->
+            </div>
+          </section>
+
+          <!-- Waiting Status -->
+          <section class="waiting-section" aria-label="Waiting status">
+            <div class="waiting-card">
+              <div class="waiting-spinner" aria-hidden="true">
+                <span class="spinner"></span>
+              </div>
+              <p class="waiting-text">Waiting for host to start the game...</p>
+            </div>
+          </section>
+
+        </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

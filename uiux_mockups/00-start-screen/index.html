@@ -32,6 +32,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>btl.run — Start</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
   </head>
   <body>
     <!--
@@ -49,121 +50,141 @@
         <div class="frame" aria-hidden="true"></div>
 
         <main class="panel" aria-label="Start panel">
-          <!-- Top: swipeable Type selector (Classic / Spicy / Funny) -->
-          <section class="typebar" aria-label="Game type">
-            <div class="typebar-header">
-              <!-- Centered, slightly higher "Day • Turn" status line -->
-              <p class="brand-subtitle turnline">
-                <span>Day 1 • Turn 1</span>
-              </p>
-            </div>
+          <div class="panel-scroll" aria-label="Start content">
+            <!-- Top: swipeable Type selector (Classic / Spicy / Funny) -->
+            <section class="typebar" aria-label="Game type">
+              <div class="typebar-header">
+                <!-- Centered, slightly higher "Day • Turn" status line -->
+                <p class="brand-subtitle turnline">
+                  <span>Day 1 • Turn 1</span>
+                </p>
+              </div>
 
+              <!--
+                Scroll-snap carousel.
+                - We also attach a small JS observer so the selected type can tint the UI + copy.
+                - In real app: `selectedType` lives in state and drives the initial prompt payload.
+              -->
+              <div class="type-picker" aria-label="Type picker">
+                <div class="type-strip" role="list" aria-label="Type selector" id="typeStrip">
+                  <article class="type-card" role="listitem" tabindex="0" data-type="spicy" aria-selected="false">
+                    <p class="type-row">Spicy</p>
+                  </article>
+
+                  <article class="type-card" role="listitem" tabindex="0" data-type="classic" aria-selected="true">
+                    <p class="type-row">Classic</p>
+                  </article>
+
+                  <article class="type-card" role="listitem" tabindex="0" data-type="funny" aria-selected="false">
+                    <p class="type-row">Funny</p>
+                  </article>
+                </div>
+              </div>
+            </section>
+
+            <!-- Middle: arena preview + GM broadcast (game feels already started) -->
+            <section class="turn" aria-label="Turn 1 briefing">
+              <div class="arena-card" aria-label="Arena preview">
+                <div class="mini-map" aria-hidden="true"></div>
+                <div class="arena-meta">
+                  <p class="arena-text" id="arenaText">You wake to distant horns and a glowing perimeter.</p>
+                </div>
+              </div>
+
+            </section>
+
+            <!-- Bottom: the tribute's three choices (wide button sprite) -->
+            <section class="options" aria-label="Your choices">
+              <div class="broadcast-card" aria-label="GM broadcast">
+                <div class="broadcast-top">
+                  <p class="broadcast-label">Game Master Broadcast</p>
+                  <span class="broadcast-pill">AI GM</span>
+                </div>
+                <p class="broadcast-subtext" id="broadcastSubtext">
+                  You have 30 seconds before the drones start "encouraging" movement.
+                </p>
+              </div>
+              <!--
+                FUTURE: these buttons will route to tribute setup and game start.
+                - In a real implementation: persist `selectedType` + selected choice.
+                - Then: screen for editing human/AI tributes -> start game -> show Turn Hub.
+              -->
+              <button class="wide-btn" type="button" id="opt1">
+                <span class="wide-btn-content">
+                  <span class="wide-btn-title" id="opt1Title">Grab supplies</span>
+                  <span class="wide-btn-sub" id="opt1Sub">Risk the center for better gear</span>
+                </span>
+              </button>
+
+              <button class="wide-btn" type="button" id="opt2">
+                <span class="wide-btn-content">
+                  <span class="wide-btn-title" id="opt2Title">Run for cover</span>
+                  <span class="wide-btn-sub" id="opt2Sub">Survive now, loot later</span>
+                </span>
+              </button>
+
+              <button class="wide-btn" type="button" id="opt3">
+                <span class="wide-btn-content">
+                  <span class="wide-btn-title" id="opt3Title">Make a friend</span>
+                  <span class="wide-btn-sub" id="opt3Sub">Wave like you totally won't betray them</span>
+                </span>
+              </button>
+            </section>
+          </div>
+
+          <div class="bottom-dock" aria-label="Start actions">
             <!--
-              Scroll-snap carousel.
-              - We also attach a small JS observer so the selected type can tint the UI + copy.
-              - In real app: `selectedType` lives in state and drives the initial prompt payload.
+              Anchored actions:
+              - Join code input for joining existing games
+              - Play/Host buttons for starting games
+              - Settings gear icon
             -->
-            <div class="type-picker" aria-label="Type picker">
-              <div class="type-strip" role="list" aria-label="Type selector" id="typeStrip">
-                <article class="type-card" role="listitem" tabindex="0" data-type="spicy" aria-selected="false">
-                  <p class="type-row">Spicy</p>
-                </article>
+            <div class="h-divider" role="separator" aria-label="Actions divider"></div>
 
-                <article class="type-card" role="listitem" tabindex="0" data-type="classic" aria-selected="true">
-                  <p class="type-row">Classic</p>
-                </article>
-
-                <article class="type-card" role="listitem" tabindex="0" data-type="funny" aria-selected="false">
-                  <p class="type-row">Funny</p>
-                </article>
+            <!-- Join Game Section -->
+            <section class="join-section" aria-label="Join a game">
+              <div class="join-row">
+                <label class="join-label" for="joinCode">Have a code?</label>
+                <div class="join-input-group">
+                  <input
+                    type="text"
+                    id="joinCode"
+                    class="join-input"
+                    placeholder="XXXXXX"
+                    maxlength="6"
+                    autocomplete="off"
+                    autocapitalize="characters"
+                    spellcheck="false"
+                    aria-label="Enter 6-character game code"
+                  />
+                  <button class="join-btn" type="button" id="joinBtn" aria-label="Join game">
+                    Join
+                  </button>
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
 
-          <!-- Middle: arena preview + GM broadcast (game feels already started) -->
-          <section class="turn" aria-label="Turn 1 briefing">
-            <div class="arena-card" aria-label="Arena preview">
-              <div class="mini-map" aria-hidden="true"></div>
-              <div class="arena-meta">
-                <p class="arena-text" id="arenaText">You wake to distant horns and a glowing perimeter.</p>
-              </div>
-            </div>
-
-          </section>
-
-          <!-- Bottom: the tribute's three choices (wide button sprite) -->
-          <section class="options" aria-label="Your choices">
-            <div class="broadcast-card" aria-label="GM broadcast">
-              <div class="broadcast-top">
-                <p class="broadcast-label">Game Master Broadcast</p>
-                <span class="broadcast-pill">AI GM</span>
-              </div>
-  
-              <p class="broadcast-text" id="broadcastText">
-                Tributes. The arena is live. Choose quickly.
-              </p>
-              <p class="broadcast-subtext" id="broadcastSubtext">
-                You have 30 seconds before the drones start "encouraging" movement.
-              </p>
-            </div>
-            <!--
-              FUTURE: these buttons will route to tribute setup and game start.
-              - In a real implementation: persist `selectedType` + selected choice.
-              - Then: screen for editing human/AI tributes -> start game -> show Turn Hub.
-            -->
-            <button class="wide-btn" type="button" id="opt1">
-              <span class="wide-btn-content">
-                <span class="wide-btn-title" id="opt1Title">Grab supplies</span>
-                <span class="wide-btn-sub" id="opt1Sub">Risk the center for better gear</span>
-              </span>
-            </button>
-
-            <button class="wide-btn" type="button" id="opt2">
-              <span class="wide-btn-content">
-                <span class="wide-btn-title" id="opt2Title">Run for cover</span>
-                <span class="wide-btn-sub" id="opt2Sub">Survive now, loot later</span>
-              </span>
-            </button>
-
-            <button class="wide-btn" type="button" id="opt3">
-              <span class="wide-btn-content">
-                <span class="wide-btn-title" id="opt3Title">Make a friend</span>
-                <span class="wide-btn-sub" id="opt3Sub">Wave like you totally won't betray them</span>
-              </span>
-            </button>
-          </section>
-
-          <!--
-            Below the tribute answers:
-            - Divider + lightweight mode buttons (NOT using the tribute sprite).
-            - These represent navigation/flow choices (solo/party/friends/settings).
-          -->
-          <div class="h-divider" role="separator" aria-label="Modes divider"></div>
-
-          <nav class="modebar" aria-label="Modes and settings">
-            <button class="mode-btn" type="button">Solo</button>
-            <button class="mode-btn" type="button">Party</button>
-            <button class="mode-btn" type="button">Friends</button>
-            <button class="mode-btn mode-btn--icon" type="button" aria-label="Settings">
-              <!-- Inline SVG so the mock is self-contained -->
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path
-                  fill="currentColor"
-                  d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.1 7.1 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 13.9 1h-3.8a.5.5 0 0 0-.49.42l-.36 2.54c-.58.23-1.13.54-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 7.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.83 14.52a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.31.6.22l2.39-.96c.5.4 1.05.71 1.63.94l.36 2.54c.04.24.25.42.49.42h3.8c.24 0 .45-.18.49-.42l.36-2.54c.58-.23 1.13-.54 1.63-.94l2.39.96c.22.09.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"
-                />
-              </svg>
-            </button>
-          </nav>
-
-          <!--
-            Banner ad placeholder (stub)
-            - In production: this becomes the real banner ad component.
-            - Keep it inside the frame and above safe-area insets.
-          -->
-          <footer class="ad-banner" aria-label="Banner ad placeholder">
-            <span><strong>Ad</strong> · banner placeholder</span>
-          </footer>
+            <!-- Action Buttons -->
+            <nav class="actionbar" aria-label="Start game options">
+              <button class="action-btn action-btn--primary" type="button" id="playSoloBtn">
+                <span class="action-btn-icon">⚔️</span>
+                <span class="action-btn-text">Play</span>
+              </button>
+              <button class="action-btn action-btn--secondary" type="button" id="hostBtn">
+                <span class="action-btn-icon">👥</span>
+                <span class="action-btn-text">Host</span>
+              </button>
+            </nav>
+          </div>
         </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
       </div>
     </div>
 

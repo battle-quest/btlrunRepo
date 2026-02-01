@@ -1,8 +1,8 @@
 /**
- * btl.run PWA — UI/UX Mock (Screen 01: Tribute Setup)
+ * btl.run PWA — UI/UX Mock (Screen 015: Host Lobby)
  *
- * Quick setup screen: map pack, tribute count, roster preview.
- * Defaults are prepopulated so user can begin in 2 taps.
+ * Host-initiated game setup for playing with friends.
+ * Starts with empty roster, invite code prominent.
  */
 
 :root {
@@ -145,7 +145,6 @@ body {
 .panel {
   position: relative;
   width: 100%;
-  /* Fade in on page load */
   animation: fadeSlideIn 250ms ease-out forwards;
   padding:
     calc(env(safe-area-inset-top) + var(--frame-pad-top))
@@ -155,7 +154,7 @@ body {
 
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   height: 100%;
   margin: 0;
   overflow-y: auto;
@@ -188,6 +187,7 @@ body {
   display: grid;
   place-items: center;
   -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
 }
 
 .back-btn:active { transform: translateY(1px); }
@@ -215,6 +215,123 @@ body {
   color: color-mix(in oklab, var(--accent) 75%, white);
 }
 
+/* ------- Invite Code Section (Prominent) ------- */
+
+.invite-section--prominent {
+  margin-top: 4px;
+  padding: 0 8px;
+  margin-left: 35px;
+  width: calc(100% - 43px);
+}
+
+.invite-card--large {
+  border-radius: var(--r);
+  border: 1px solid color-mix(in oklab, var(--accent) 35%, rgba(255,255,255,0.12));
+  background: linear-gradient(180deg, 
+    color-mix(in oklab, var(--accent) 8%, rgba(0,0,0,0.40)),
+    rgba(0,0,0,0.25)
+  );
+  box-shadow: 
+    0 10px 24px rgba(0,0,0,0.35),
+    0 0 30px color-mix(in oklab, var(--accent) 12%, transparent);
+  padding: 12px 14px;
+  text-align: center;
+}
+
+.invite-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.invite-icon {
+  font-size: 18px;
+}
+
+.invite-title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--accent) 75%, white);
+}
+
+.invite-desc {
+  margin: 0 0 10px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.invite-code-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.invite-code--large {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 0.20em;
+  color: var(--text);
+  background: rgba(0,0,0,0.50);
+  border: 2px solid color-mix(in oklab, var(--accent) 45%, rgba(255,255,255,0.15));
+  border-radius: 10px;
+  padding: 10px 20px;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.50);
+}
+
+.invite-copy-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.35);
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 120ms ease;
+}
+
+.invite-copy-btn:hover,
+.invite-copy-btn:focus-visible {
+  border-color: color-mix(in oklab, var(--accent) 55%, rgba(255,255,255,0.18));
+  background: color-mix(in oklab, var(--accent) 15%, rgba(0,0,0,0.35));
+}
+
+.invite-copy-btn:active {
+  transform: translateY(1px);
+}
+
+.invite-copy-btn.copied {
+  border-color: #4ade80;
+  background: rgba(74, 222, 128, 0.18);
+}
+
+.invite-status {
+  margin: 0;
+  font-size: 10px;
+  color: var(--dim);
+  font-style: italic;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.invite-status--waiting {
+  animation: pulse 2s ease-in-out infinite;
+}
+
 /* ------- Section cards ------- */
 
 .section-card {
@@ -222,19 +339,66 @@ body {
   border: 1px solid rgba(255,255,255,0.10);
   background: linear-gradient(180deg, rgba(0,0,0,0.40), rgba(0,0,0,0.18));
   box-shadow: 0 10px 24px rgba(0,0,0,0.35);
-  padding: 6px 10px;
-  width: calc(100% - 30px);
-  margin-left: 15px;
+  padding: 8px 12px;
+  width: calc(100% - 43px);
+  margin-left: 35px;
+}
+
+.section-card--collapsed {
+  padding: 0;
+  overflow: hidden;
 }
 
 .section-label {
-  margin: 0 0 4px;
-  margin-left: 15px;
+  margin: 0 0 6px;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--dim);
+}
+
+/* ------- Settings Toggle ------- */
+
+.settings-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.settings-toggle:hover {
+  color: var(--text);
+}
+
+.settings-toggle-icon {
+  font-size: 10px;
+  transition: transform 200ms ease;
+}
+
+.settings-toggle[aria-expanded="true"] .settings-toggle-icon {
+  transform: rotate(180deg);
+}
+
+.settings-content {
+  padding: 6px 14px 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.setting-group {
+  display: grid;
+  gap: 4px;
 }
 
 /* ------- Map Pack selector ------- */
@@ -246,8 +410,8 @@ body {
 .map-strip {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 76%;
-  gap: 12px;
+  grid-auto-columns: 70%;
+  gap: 10px;
 
   overflow-x: auto;
   overscroll-behavior-x: contain;
@@ -255,7 +419,7 @@ body {
   scroll-padding: 2px;
   -webkit-overflow-scrolling: touch;
 
-  padding-inline: 16px;
+  padding-inline: 10px;
 }
 
 .map-strip::-webkit-scrollbar { height: 0; }
@@ -266,8 +430,8 @@ body {
   border-radius: var(--r-sm);
   border: 1px solid color-mix(in oklab, var(--accent) 30%, rgba(255,255,255,0.10));
   background: linear-gradient(180deg, rgba(8, 14, 22, 0.86), rgba(8, 14, 22, 0.58));
-  box-shadow: 0 10px 24px var(--shadow);
-  padding: 6px 12px;
+  box-shadow: 0 8px 20px var(--shadow);
+  padding: 6px 10px;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -289,7 +453,7 @@ body {
 
 .map-card[aria-selected="true"] {
   border-color: color-mix(in oklab, var(--accent) 60%, rgba(255,255,255,0.15));
-  box-shadow: 0 12px 28px rgba(0,0,0,0.50);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.50);
 }
 
 .map-card[aria-selected="true"]::before {
@@ -298,7 +462,7 @@ body {
 
 .map-row {
   margin: 0;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -318,63 +482,11 @@ body {
   text-transform: none;
 }
 
-/* ------- Tribute Settings (Count + Timer) ------- */
-
-.tribute-settings-row {
-  display: flex;
-  gap: 18px;
-  align-items: flex-start;
-}
-
-.tribute-setting {
-  flex: 1;
-  min-width: 0;
-}
-
-.tribute-setting--timer {
-  flex: 1;
-  min-width: 0;
-  max-width: 54%;
-}
-
-.section-label--inline {
-  margin-left: 4px;
-  margin-bottom: 4px;
-}
-
-.count-row {
-  display: flex;
-  gap: 0px;
-  justify-content: flex-start;
-}
-
-.count-btn {
-  min-width: 32px;
-  height: 28px;
-  padding: 0 6px;
-  border-radius: 6px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(0,0,0,0.25);
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 800;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: all 120ms ease;
-}
-
-.count-btn:active { transform: translateY(1px); }
-
-.count-btn[aria-selected="true"] {
-  border-color: var(--accent);
-  background: color-mix(in oklab, var(--accent) 18%, rgba(0,0,0,0.30));
-  color: color-mix(in oklab, var(--accent) 80%, white);
-  box-shadow: 0 0 12px color-mix(in oklab, var(--accent) 25%, transparent);
-}
+/* ------- Timer Strip ------- */
 
 .timer-strip {
   display: flex;
-  gap: 2px;
+  gap: 4px;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
@@ -387,9 +499,9 @@ body {
 
 .timer-btn {
   flex: 0 0 auto;
-  min-width: 32px;
-  height: 28px;
-  padding: 0 8px;
+  min-width: 36px;
+  height: 30px;
+  padding: 0 10px;
   border-radius: 6px;
   border: 1px solid rgba(255,255,255,0.12);
   background: rgba(0,0,0,0.25);
@@ -411,17 +523,62 @@ body {
   box-shadow: 0 0 12px color-mix(in oklab, var(--accent) 25%, transparent);
 }
 
-/* ------- Tribute Roster ------- */
+/* ------- Roster Section ------- */
 
-/* Roster section gets extra 15px left margin on container */
 .section-card--roster {
   margin-left: 30px;
   width: calc(100% - 45px);
 }
 
-/* Label and content stay aligned by removing their internal margin */
+.roster-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
 .section-label--roster {
-  margin-left: 0;
+  margin: 0;
+}
+
+.player-count {
+  font-size: 9px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.add-ai-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in oklab, var(--accent) 35%, rgba(255,255,255,0.12));
+  background: color-mix(in oklab, var(--accent) 12%, rgba(0,0,0,0.25));
+  color: color-mix(in oklab, var(--accent) 75%, white);
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 120ms ease;
+}
+
+.add-ai-btn:hover,
+.add-ai-btn:focus-visible {
+  background: color-mix(in oklab, var(--accent) 20%, rgba(0,0,0,0.30));
+  border-color: color-mix(in oklab, var(--accent) 50%, rgba(255,255,255,0.15));
+}
+
+.add-ai-btn:active {
+  transform: translateY(1px);
+}
+
+.add-ai-icon {
+  font-size: 12px;
+}
+
+.add-ai-text {
+  letter-spacing: 0.04em;
 }
 
 .roster {
@@ -441,12 +598,22 @@ body {
   border-radius: 2px;
 }
 
+.roster-hint {
+  margin: 8px 0 0;
+  font-size: 10px;
+  color: var(--dim);
+  font-style: italic;
+  text-align: center;
+}
+
+/* ------- Player/Tribute Card ------- */
+
 .tribute-card {
   display: grid;
   grid-template-columns: 36px 1fr auto;
   gap: 8px;
   align-items: center;
-  padding: 5px 8px;
+  padding: 6px 8px;
   border-radius: var(--r-sm);
   border: 1px solid rgba(255,255,255,0.08);
   background: rgba(0,0,0,0.22);
@@ -509,200 +676,46 @@ body {
   background: rgba(74, 222, 128, 0.12);
 }
 
-/* ------- Choice Status Section ------- */
-
-.choice-section {
-  margin-top: 2px;
-  margin-bottom: 0;
-  padding: 0 8px 0 0;
-  margin-left: 35px;
-  width: calc(100% - 43px);
+.tribute-type--human {
+  color: #60a5fa;
+  background: rgba(96, 165, 250, 0.12);
 }
 
-.choice-card {
-  border-radius: var(--r);
-  border: 1px solid color-mix(in oklab, var(--accent) 30%, rgba(255,255,255,0.10));
-  background: linear-gradient(180deg, 
-    color-mix(in oklab, var(--accent) 10%, rgba(0,0,0,0.35)),
-    rgba(0,0,0,0.22)
-  );
-  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-  padding: 8px 12px;
-  text-align: center;
-}
-
-.choice-card--deferred {
-  border-color: rgba(255, 200, 100, 0.25);
-  background: linear-gradient(180deg, 
-    rgba(255, 200, 100, 0.08),
-    rgba(0,0,0,0.22)
-  );
-}
-
-.choice-card--preselected {
-  border-color: color-mix(in oklab, var(--accent) 45%, rgba(255,255,255,0.12));
-  background: linear-gradient(180deg, 
-    color-mix(in oklab, var(--accent) 15%, rgba(0,0,0,0.35)),
-    rgba(0,0,0,0.22)
-  );
-}
-
-.choice-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-
-.choice-icon {
-  font-size: 14px;
-}
-
-.choice-title {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--accent) 70%, white);
-}
-
-.choice-card--deferred .choice-title {
-  color: rgba(255, 200, 100, 0.85);
-}
-
-.choice-text {
-  margin: 0;
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.35;
-}
-
-.choice-text strong {
-  color: var(--text);
-  font-weight: 800;
-}
-
-/* ------- Invite Code Section ------- */
-
-.invite-section {
-  margin-top: 2px;
-  margin-bottom: -12px;
-  padding: 0 8px 0 0;
-  margin-left: 35px;
-  width: calc(100% - 43px);
-}
-
-.invite-card {
-  border-radius: var(--r);
-  border: 1px solid color-mix(in oklab, var(--accent) 25%, rgba(255,255,255,0.10));
-  background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.20));
-  box-shadow: 0 8px 20px rgba(0,0,0,0.30);
-  padding: 6px 8px;
-  text-align: center;
-}
-
-.invite-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.invite-icon {
-  font-size: 16px;
-}
-
-.invite-title {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--accent) 70%, white);
-}
-
-.invite-desc {
-  margin: 0 0 8px;
-  font-size: 10px;
-  color: var(--muted);
-  line-height: 1.4;
-}
-
-.invite-code-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-
-.invite-code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 20px;
-  font-weight: 900;
-  letter-spacing: 0.18em;
-  color: var(--text);
-  background: rgba(0,0,0,0.40);
-  border: 1px solid color-mix(in oklab, var(--accent) 35%, rgba(255,255,255,0.12));
-  border-radius: 8px;
-  padding: 8px 16px;
-  text-shadow: 0 1px 0 rgba(0,0,0,0.40);
-}
-
-.invite-copy-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(0,0,0,0.30);
-  color: var(--muted);
-  font-size: 16px;
+/* Remove button for AI tributes */
+.tribute-remove {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,100,100,0.10);
+  color: rgba(255,150,150,0.70);
+  font-size: 12px;
   cursor: pointer;
   display: grid;
   place-items: center;
+  margin-left: 4px;
   -webkit-tap-highlight-color: transparent;
   transition: all 120ms ease;
 }
 
-.invite-copy-btn:hover,
-.invite-copy-btn:focus-visible {
-  border-color: color-mix(in oklab, var(--accent) 50%, rgba(255,255,255,0.15));
-  background: color-mix(in oklab, var(--accent) 12%, rgba(0,0,0,0.30));
-}
-
-.invite-copy-btn:active {
-  transform: translateY(1px);
-}
-
-.invite-copy-btn.copied {
-  border-color: #4ade80;
-  background: rgba(74, 222, 128, 0.15);
-}
-
-.invite-copy-btn.copied .copy-icon::after {
-  content: '✓';
-}
-
-.invite-expires {
-  margin: 0;
-  font-size: 9px;
-  color: var(--dim);
-  font-style: italic;
+.tribute-remove:hover {
+  background: rgba(255,100,100,0.20);
+  border-color: rgba(255,150,150,0.25);
+  color: rgba(255,180,180,0.90);
 }
 
 /* ------- Begin Button ------- */
 
 .begin-section {
-  margin-top: -8px;
-  padding-top: 0;
+  margin-top: auto;
+  padding-top: 4px;
 }
 
 .begin-btn {
   position: relative;
   width: 100%;
-  min-height: clamp(104px, 14vh, 131px);
-  margin-bottom: -35px;
+  min-height: clamp(90px, 12vh, 115px);
+  margin-bottom: -30px;
   border: 0;
   background: transparent;
   color: var(--text);
@@ -710,6 +723,12 @@ body {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   padding: 0;
+  transition: opacity 120ms ease;
+}
+
+.begin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .begin-btn::before {
@@ -725,6 +744,10 @@ body {
   pointer-events: none;
 }
 
+.begin-btn:disabled::before {
+  filter: hue-rotate(var(--sprite-hue)) saturate(0.5) brightness(0.7);
+}
+
 .begin-btn::after {
   content: "";
   position: absolute;
@@ -735,8 +758,8 @@ body {
   transition: background 120ms ease-out;
 }
 
-.begin-btn:hover::after,
-.begin-btn:focus-visible::after {
+.begin-btn:not(:disabled):hover::after,
+.begin-btn:not(:disabled):focus-visible::after {
   background: linear-gradient(
     180deg,
     color-mix(in oklab, var(--accent) 12%, transparent),
@@ -744,7 +767,7 @@ body {
   );
 }
 
-.begin-btn:active::after {
+.begin-btn:not(:disabled):active::after {
   background: linear-gradient(
     180deg,
     color-mix(in oklab, var(--accent) 22%, transparent),
@@ -752,7 +775,7 @@ body {
   );
 }
 
-.begin-btn:active {
+.begin-btn:not(:disabled):active {
   transform: translateY(1px);
 }
 
@@ -763,12 +786,12 @@ body {
   align-content: center;
   justify-items: center;
   gap: 2px;
-  padding: clamp(14px, 2vh, 18px) 18px clamp(10px, 1.4vh, 14px);
+  padding: clamp(12px, 1.8vh, 16px) 18px clamp(8px, 1.2vh, 12px);
   text-align: center;
 }
 
 .begin-btn-title {
-  font-size: clamp(16px, 2.2vh, 20px);
+  font-size: clamp(15px, 2vh, 18px);
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -776,7 +799,7 @@ body {
 }
 
 .begin-btn-sub {
-  font-size: clamp(11px, 1.5vh, 13px);
+  font-size: clamp(10px, 1.4vh, 12px);
   color: var(--muted);
 }
 
@@ -806,19 +829,17 @@ body {
 
 /* Small screens */
 @media (max-height: 700px) {
-  .panel { gap: 6px; }
+  .panel { gap: 8px; }
+  
+  .invite-card--large { padding: 8px 10px; }
+  .invite-header { margin-bottom: 4px; }
+  .invite-icon { font-size: 16px; }
+  .invite-title { font-size: 11px; }
+  .invite-desc { margin-bottom: 6px; font-size: 10px; }
+  .invite-code--large { font-size: 22px; padding: 8px 16px; }
+  .invite-copy-btn { width: 38px; height: 38px; font-size: 16px; }
+  
   .tribute-avatar { width: 32px; height: 32px; font-size: 15px; }
   .tribute-card { padding: 4px 6px; gap: 6px; }
   .roster { gap: 4px; }
-
-  .invite-section { margin-top: 2px; }
-  .invite-card { padding: 4px 6px; }
-  .invite-header { margin-bottom: 2px; gap: 6px; }
-  .invite-icon { font-size: 14px; }
-  .invite-title { font-size: 10px; }
-  .invite-desc { margin-bottom: 4px; font-size: 9px; }
-  .invite-code-row { gap: 6px; margin-bottom: 4px; }
-  .invite-code { font-size: 16px; padding: 5px 12px; }
-  .invite-copy-btn { width: 32px; height: 32px; font-size: 14px; }
-  .invite-expires { font-size: 8px; }
 }

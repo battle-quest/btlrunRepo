@@ -1,0 +1,147 @@
+<!doctype html>
+<!--
+  btl.run PWA — UI/UX Mock (Screen 015: Host Lobby)
+
+  PURPOSE
+  - Host-initiated game setup for playing with friends
+  - Starts with empty roster (no AI tributes pre-added)
+  - Host can add AI tributes one at a time
+  - Friends join via invite code or shared link
+  - Game starts when host is ready
+
+  IMPLEMENTATION NOTES (for the future React screen)
+  - Read `type` from URL or app state
+  - Start with empty roster (only host's "You" slot)
+  - Allow adding AI tributes with a button
+  - Poll for joined players and update roster in real-time
+  - "Begin" only enabled when roster has minimum tributes
+
+  FOLDER STRUCTURE
+  - Each screen lives in its own folder: /uiux/{screen-name}/
+  - Files: index.html, styles.css, script.js, README.md
+  - Shared assets: /uiux/assets/
+  - Links to other pages MUST use explicit filenames for CloudFront/S3 compatibility:
+    href="../{other-screen}/index.html" (NOT href="../{other-screen}/")
+
+  VIEWING
+  - Start dev server: `pnpm dev:pwa`
+  - Open: /uiux/015-host-lobby/index.html?type=classic
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>btl.run — Host Lobby</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../shared/ad-banner.css" />
+  </head>
+  <body>
+    <div class="stage" role="application" aria-label="btl.run host lobby">
+      <div class="screen" data-type="classic">
+        <div class="frame" aria-hidden="true"></div>
+
+        <main class="panel" aria-label="Host lobby panel">
+          <!-- Header with back button and type badge -->
+          <header class="header">
+            <a href="../00-start-screen/index.html" class="back-btn" aria-label="Go back">←</a>
+            <h1 class="header-title">Host Lobby</h1>
+            <span class="type-badge" id="typeBadge">Classic</span>
+          </header>
+
+          <!-- Invite Code (prominent) -->
+          <section class="invite-section invite-section--prominent" aria-label="Invite friends">
+            <div class="invite-card invite-card--large">
+              <div class="invite-header">
+                <span class="invite-icon">🎮</span>
+                <span class="invite-title">Share to Invite Friends</span>
+              </div>
+              <p class="invite-desc">Friends can join with this code or tap a link you share</p>
+              <div class="invite-code-row">
+                <code class="invite-code invite-code--large" id="inviteCode">------</code>
+                <button class="invite-copy-btn" id="copyCodeBtn" aria-label="Copy invite link" title="Copy to clipboard">
+                  <span class="copy-icon">📋</span>
+                </button>
+              </div>
+              <p class="invite-status" id="inviteStatus">Waiting for players to join...</p>
+            </div>
+          </section>
+
+          <!-- Game Settings (collapsed) -->
+          <section class="section-card section-card--collapsed" aria-label="Game settings">
+            <button class="settings-toggle" type="button" id="settingsToggle" aria-expanded="false">
+              <span class="settings-toggle-text">Game Settings</span>
+              <span class="settings-toggle-icon">▼</span>
+            </button>
+            <div class="settings-content" id="settingsContent" hidden>
+              <!-- Map Pack Selection -->
+              <div class="setting-group">
+                <p class="section-label">Map Pack</p>
+                <div class="map-picker">
+                  <div class="map-strip" role="listbox" aria-label="Choose a map" id="mapStrip">
+                    <article class="map-card" role="option" tabindex="0" data-map="arena-prime" aria-selected="false">
+                      <p class="map-row">Arena Prime<span class="map-tag">Balanced</span></p>
+                    </article>
+                    <article class="map-card" role="option" tabindex="0" data-map="inferno-pit" aria-selected="true">
+                      <p class="map-row">Inferno Pit<span class="map-tag">Aggressive</span></p>
+                    </article>
+                    <article class="map-card" role="option" tabindex="0" data-map="chaos-carnival" aria-selected="false">
+                      <p class="map-row">Chaos Carnival<span class="map-tag">Random</span></p>
+                    </article>
+                  </div>
+                </div>
+              </div>
+              <!-- Response Timer -->
+              <div class="setting-group">
+                <p class="section-label">Response Time</p>
+                <div class="timer-strip" role="listbox" aria-label="Response time limit">
+                  <button class="timer-btn" role="option" data-timer="30" aria-selected="true">30s</button>
+                  <button class="timer-btn" role="option" data-timer="60" aria-selected="false">1m</button>
+                  <button class="timer-btn" role="option" data-timer="300" aria-selected="false">5m</button>
+                  <button class="timer-btn" role="option" data-timer="1800" aria-selected="false">30m</button>
+                  <button class="timer-btn" role="option" data-timer="3600" aria-selected="false">1hr</button>
+                  <button class="timer-btn" role="option" data-timer="86400" aria-selected="false">1d</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Tribute Roster -->
+          <section class="section-card section-card--roster" style="flex: 1; min-height: 0; display: flex; flex-direction: column;">
+            <div class="roster-header">
+              <p class="section-label section-label--roster">Players <span class="player-count" id="playerCount">(1)</span></p>
+              <button class="add-ai-btn" type="button" id="addAiBtn">
+                <span class="add-ai-icon">🤖</span>
+                <span class="add-ai-text">+ Add AI</span>
+              </button>
+            </div>
+            <div class="roster" id="roster" role="list" aria-label="Player roster">
+              <!-- Players rendered by script.js -->
+            </div>
+            <p class="roster-hint" id="rosterHint">Add AI tributes or wait for friends to join</p>
+          </section>
+
+          <!-- Begin Button -->
+          <section class="begin-section">
+            <button class="begin-btn" type="button" id="beginBtn" disabled>
+              <span class="begin-btn-content">
+                <span class="begin-btn-title">Begin</span>
+                <span class="begin-btn-sub" id="beginSubtext">Need at least 4 players</span>
+              </span>
+            </button>
+          </section>
+
+        </main>
+
+        <footer class="ad-banner" aria-label="Advertisement">
+          <div class="ad-banner__slot" aria-hidden="true">
+            <div class="ad-banner__badge">Ad</div>
+            <div class="ad-banner__creative">Banner placeholder</div>
+            <div class="ad-banner__size">320×50</div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

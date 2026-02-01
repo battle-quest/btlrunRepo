@@ -8,7 +8,7 @@ This folder contains **shared visual assets** used across apps in this monorepo.
 - **`bq-background-grid-map.png`** (2048×2048 px): Seamless/tileable background texture (grid + topo lines + subtle ASCII marks). Use behind layouts.
 - **`bq-icons-set.png`** (2816×1536 px): Icon sprite sheet (4×3 grid) of flat pixel-inspired UI icons.
 - **`bq-ui-wide-button-states.png`** (3008×1408 px): Wide “pointed-ends” button **sprite** (3 states stacked vertically). Designed to visually match the teal neon + dark glass style of the panel frames.
-- **`bq-ui-gear-icon.svg`** (256×256, vector): Settings/gear icon with teal neon glow + magenta bolt accents to match the panel frame motif.
+- **`bq-ui-gear-icon.svg`** (256×256, vector): (Optional/legacy) settings/gear icon. Not currently used in the Start screen flow.
 
 ## Icon sprite details (`bq-icons-set.png`)
 

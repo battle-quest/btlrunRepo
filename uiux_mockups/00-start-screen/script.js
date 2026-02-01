@@ -21,8 +21,6 @@
   /** @type {HTMLElement | null} */
   const arenaText = document.getElementById('arenaText');
   /** @type {HTMLElement | null} */
-  const broadcastText = document.getElementById('broadcastText');
-  /** @type {HTMLElement | null} */
   const broadcastSubtext = document.getElementById('broadcastSubtext');
 
   /** @type {HTMLElement | null} */
@@ -86,7 +84,6 @@
     if (!cfg) return;
 
     if (arenaText) arenaText.textContent = cfg.arena;
-    if (broadcastText) broadcastText.textContent = cfg.broadcast;
     if (broadcastSubtext) broadcastSubtext.textContent = cfg.sub;
 
     if (opt1Title) opt1Title.textContent = cfg.options[0][0];
@@ -222,7 +219,8 @@
     }
   }
 
-  // When user clicks any action button, navigate to tribute setup with selected type and choice.
+  // When user clicks any action button (wide buttons), navigate to tribute setup with choice pre-selected.
+  // This flow is for users who want to make their choice immediately (e.g., from a shared link).
   const wideBtns = document.querySelectorAll('.wide-btn');
   wideBtns.forEach((btn, idx) => {
     btn.addEventListener('click', () => {
@@ -231,4 +229,65 @@
       navigateTo('../01-tribute-setup/index.html?type=' + encodeURIComponent(currentType) + '&choice=' + choice);
     });
   });
+
+  // ========== Join Game (code input) ==========
+  const joinInput = document.getElementById('joinCode');
+  const joinBtn = document.getElementById('joinBtn');
+
+  // Auto-uppercase and validate input
+  if (joinInput) {
+    joinInput.addEventListener('input', () => {
+      // Convert to uppercase and remove invalid characters
+      joinInput.value = joinInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      
+      // Enable/disable join button based on code length
+      if (joinBtn) {
+        joinBtn.disabled = joinInput.value.length !== 6;
+      }
+    });
+
+    // Handle Enter key in input
+    joinInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && joinInput.value.length === 6) {
+        joinBtn?.click();
+      }
+    });
+  }
+
+  // Initially disable join button
+  if (joinBtn) {
+    joinBtn.disabled = true;
+    
+    joinBtn.addEventListener('click', () => {
+      const code = joinInput?.value || '';
+      if (code.length !== 6) return;
+      
+      const currentType = screen?.dataset.type || 'classic';
+      // Navigate to join waiting room (deferred choice)
+      // In the real app, this would validate the code first
+      navigateTo('../012-join-waiting/index.html?type=' + encodeURIComponent(currentType) + '&code=' + encodeURIComponent(code) + '&map=inferno-pit&count=6&timer=30');
+    });
+  }
+
+  // ========== Play Solo Button ==========
+  const playSoloBtn = document.getElementById('playSoloBtn');
+  if (playSoloBtn) {
+    playSoloBtn.addEventListener('click', () => {
+      const currentType = screen?.dataset.type || 'classic';
+      // Navigate to tribute setup without a pre-selected choice (choice deferred until game starts)
+      navigateTo('../01-tribute-setup/index.html?type=' + encodeURIComponent(currentType) + '&mode=solo');
+    });
+  }
+
+  // ========== Host Button (Friends Mode) ==========
+  const hostBtn = document.getElementById('hostBtn');
+  if (hostBtn) {
+    hostBtn.addEventListener('click', () => {
+      const currentType = screen?.dataset.type || 'classic';
+      // Navigate to host lobby (empty roster, add AI or wait for friends)
+      navigateTo('../015-host-lobby/index.html?type=' + encodeURIComponent(currentType));
+    });
+  }
+
+  // Settings button removed (intentionally).
 })();

@@ -84,7 +84,8 @@ Create historical notes when:
 **Purpose:** Game rules, mechanics, and design decisions
 
 Document:
-- Game modes (Solo, Party, Long Play)
+- Game modes (Play, Host, Quick Play, Long Play)
+- Entry flows (choice timing: deferred vs pre-selected)
 - Combat/event mechanics
 - Tribute stats and abilities
 - Win/loss conditions

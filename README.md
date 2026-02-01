@@ -1,288 +1,204 @@
 # btl.run
 
-A hyper-efficient PWA game built with Preact, Rust Lambda, and AWS infrastructure.
+An **AI-narrated, turn-based survival battle royale** you play in **short, high-impact choices**—built for mobile, designed to be fast to start and easy to come back to.
 
-## Architecture
+If you've ever liked the *"Hunger Games"* fantasy of tributes + an arena + a Game Master voice, btl.run is that vibe—adapted into a **clean, modern PWA** with an **AI GM**.
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        CloudFront CDN                           │
-│  ┌─────────────────┐              ┌─────────────────────────┐   │
-│  │  Static Assets  │──── S3 ─────│    Route 53 (DNS)       │   │
-│  │  (Preact PWA)   │              └─────────────────────────┘   │
-│  └─────────────────┘                                            │
-│  ┌─────────────────┐                                            │
-│  │   /api/*        │──── API Gateway ──── Rust Lambda           │
-│  └─────────────────┘                                            │
-└─────────────────────────────────────────────────────────────────┘
-```
+## What btl.run is (and isn't)
 
-## Tech Stack
+- **What it is**: interactive storytelling + strategy + social pressure, resolved in turns. You pick one action; the arena reacts.
+- **What it isn't**: a freeform group chat roleplay. btl.run is a game with a UI, turns, state, and resolution.
 
-| Component      | Technology                          |
-|----------------|-------------------------------------|
-| Frontend       | Preact + Vite (PWA)                 |
-| Game API       | Rust + Lambda (ARM64)               |
-| AI Service     | Node.js Lambda + OpenAI             |
-| KVS Service    | Node.js Lambda + DynamoDB           |
-| Infrastructure | AWS SAM (CloudFormation)            |
-| CDN            | CloudFront                          |
-| DNS            | Route 53                            |
-| Storage        | S3 + DynamoDB                       |
+---
 
-## Prerequisites
+## How to Play
 
-1. **AWS CLI** - Configured with appropriate credentials
-   ```powershell
-   aws configure
-   ```
+### Starting a Game
 
-2. **SAM CLI** - For deploying infrastructure
-   ```powershell
-   winget install Amazon.SAM-CLI
-   ```
+Open btl.run and you'll see **Day 1, Turn 1** already in progress. Pick a game type by swiping (Classic, Spicy, or Funny), then choose how to play:
 
-3. **Rust** - With cargo-lambda for Lambda builds
-   ```powershell
-   # Install Rust
-   winget install Rustlang.Rustup
+#### Option 1: Play Solo
+1. Tap **"Play"**
+2. Quick Setup screen opens with 6 AI tributes pre-populated
+3. Customize map/settings or tap **"Begin"** to start immediately
+4. **Your first move**: Choose when the game begins
 
-   # Install cargo-lambda
-   cargo install cargo-lambda
-   ```
+#### Option 2: Host for Friends
+1. Tap **"Host"**
+2. Host Lobby opens with just you in the roster
+3. **Add AI tributes** one-at-a-time with **"+ Add AI"** button
+4. **Share your invite** by tapping the copy button (creates a shareable message)
+5. Wait for friends to join (they replace AI tributes)
+6. Tap **"Begin"** when you have 4+ players
+7. **Your first move**: Choose when the game begins
 
-4. **Node.js 20+** - For frontend development
-   ```powershell
-   winget install OpenJS.NodeJS.LTS
-   ```
+#### Option 3: Join a Friend's Game
 
-5. **pnpm** (recommended) - Fast package manager
-   ```powershell
-   npm install -g pnpm
-   ```
+**Via Code:**
+1. Get the 6-character code from your friend
+2. Enter it in **"Have a code?"** on the Start screen
+3. Tap **"Join"**
+4. **Choose your opening move** from 3 options in the waiting room
+5. Wait for the host to start
 
-## Project Structure
+**Via Shared Link:**
+1. Friend sends you a message with 3 choice links
+2. Tap the option you want (e.g., "Grab supplies")
+3. **Your choice is locked in** — ready to go
+4. Wait for the host to start
 
-```
-btlrunRepo/
-├── .cursor/             # Cursor AI configuration
-│   ├── agents/          # Specialized task agents
-│   ├── skills/          # Reusable how-to guides
-│   ├── rules/           # Coding standards
-│   └── _lessons_learned/ # Technical patterns
-├── frontend/            # Preact PWA
-│   ├── src/             # Source code
-│   ├── public/          # Static assets
-│   └── dist/            # Build output (gitignored)
-├── backend/             # Rust Lambda workspace
-│   ├── functions/api/   # Game API Lambda handler
-│   └── shared/          # Shared Rust library
-├── AskAi_KVS/           # TypeScript Lambda services
-│   ├── services/askai/  # OpenAI wrapper service
-│   ├── services/kvs/    # Key-value storage service
-│   ├── shared/          # Shared clients & schemas
-│   ├── mocks/           # Local dev mock servers
-│   └── examples/        # Usage examples
-├── infrastructure/      # AWS SAM templates
-│   ├── template.yaml    # Root orchestrator
-│   ├── stacks/          # Nested CloudFormation stacks
-│   │   ├── services.yaml # AskAI + KVS + DynamoDB
-│   │   ├── api.yaml     # Rust game API + HTTP API Gateway
-│   │   ├── storage.yaml # S3 buckets
-│   │   └── cdn.yaml     # CloudFront + Route 53
-│   └── parameters/      # Environment configs (dev, prod)
-├── scripts/             # PowerShell deployment automation
-├── uiux_mockups/        # HTML/CSS/JS UI prototypes
-│   ├── assets/          # Shared images for mockups
-│   ├── 00-start-screen/
-│   ├── 01-tribute-setup/
-│   ├── 02-game-turn/
-│   ├── 025-waiting-for-players/
-│   └── 03-status-inventory-map/
-├── assets/              # Game UI assets (images, icons)
-├── docs/                # Project documentation
-│   ├── guides/          # Living how-to guides
-│   ├── history/         # Dated session summaries
-│   └── spec/            # Game specification (future)
-└── Documentation files  # README, ARCHITECTURE, SETUP, etc.
-```
+### First Turn Choice Timing
 
-## Quick Start
+| How You Enter | When You Choose Turn 1 |
+|---------------|------------------------|
+| Tap "Play" | After game starts (deferred) |
+| Tap "Host" | After game starts (deferred) |
+| Enter join code | In waiting room (before start) |
+| Click choice link | Already chosen (instant) |
 
-### Setup OpenAI API Key
+### During the Game
 
-Before deploying, you need to configure the OpenAI API key:
+Once the match begins:
 
-**Option 1: Use existing secret (recommended for prod):**
-The existing secret ARN is already configured in `infrastructure/parameters/prod.json`.
+1. **Read the situation** — AI GM narrates what happened + shows your status (HP, stamina, hunger, gear)
+2. **Choose one action** — Pick from 3 options tailored to your current state
+3. **Watch it resolve** — All tributes act simultaneously; AI narrates the outcomes
+4. **Repeat** until one survivor remains or the arena forces an ending
 
-**Option 2: Create new secret for dev:**
-```powershell
-# Create the secret
-aws secretsmanager create-secret `
-    --name "btl-run/dev/openai-api-key" `
-    --secret-string "YOUR_OPENAI_API_KEY"
+---
 
-# Update infrastructure/parameters/dev.json with the ARN
-```
+## Game Modes
 
-### Local Development
+### Quick Play
 
-**Frontend:**
-```powershell
-cd frontend
-pnpm install
-pnpm dev
-```
+- **Pace**: choose actions and resolve turns immediately.
+- **Goal**: finish a match in one sitting.
 
-**TypeScript Services (local):**
-```powershell
-cd AskAi_KVS
-pnpm install
+### Long Play
 
-# Terminal 1: KVS Mock Server
-npx tsx mocks/kvs-server.ts
+- **Pace**: you submit **one choice per real-world day** (a daily cutoff).
+- **Resolution**: the turn resolves when everyone submits, or at cutoff (late/non-responsive players get an AI choice).
+- **Goal**: async play with friends + daily recap.
 
-# Terminal 2: AskAI Mock Server  
-npx tsx mocks/askai-server.ts
-```
+---
 
-**Rust API (local Lambda):**
-```powershell
-cd backend
-cargo lambda watch
-```
+## Key Concepts
 
-### Deployment
+### Roles
 
-**Deploy everything:**
-```powershell
-.\scripts\deploy.ps1 -Environment dev
-```
+- **Tributes**: players in the arena. A match has a roster of tributes (some may be AI).
+- **Game Master**: an **AI or human GM** voice that drives the narrative and prompts.
 
-**Deploy specific stack:**
-```powershell
-# Deploy only API (Lambda + API Gateway)
-.\scripts\deploy-stack.ps1 -Stack api -Environment dev
+### What matters (most)
 
-# Deploy only storage (S3 buckets)
-.\scripts\deploy-stack.ps1 -Stack storage -Environment dev
+- **Information**: knowing when to fight vs disappear is everything.
+- **Resources**: HP, stamina, hunger, and inventory determine what options are actually safe.
+- **Positioning**: the map isn't flavor—getting boxed in is how matches end.
+- **Social play**: alliances can save you or get you betrayed. Choose carefully.
 
-# Deploy only CDN (CloudFront)
-.\scripts\deploy-stack.ps1 -Stack cdn -Environment dev
-```
+### Inviting Friends
 
-## Deployment Workflows
+When hosting a game, you receive a **temporary invite code** (6 characters).
 
-### Full Deployment
-```powershell
-.\scripts\deploy.ps1 -Environment dev
-```
+- **Share the code** — friends enter it on the Start screen to join
+- **Share choice links** — friends tap a link to join with their first move pre-selected
 
-This will:
-1. Build the frontend (Vite production build)
-2. Build the backend (cargo-lambda ARM64)
-3. Deploy all infrastructure via SAM
-4. Upload frontend to S3
-5. Invalidate CloudFront cache
+The code expires when the game begins.
 
-### Partial Deployments
+---
 
-For faster iteration, deploy individual stacks:
+## "Hunger Games text game" inspiration (kid-friendly framing)
 
-| Command | What it does |
-|---------|--------------|
-| `deploy-stack.ps1 -Stack services` | Updates AskAI & KVS Lambda functions |
-| `deploy-stack.ps1 -Stack api` | Updates Rust game API Lambda |
-| `deploy-stack.ps1 -Stack storage` | Updates S3 bucket configuration |
-| `deploy-stack.ps1 -Stack cdn` | Updates CloudFront settings |
+You can explain btl.run as:
 
-### Frontend-Only Update
-```powershell
-.\scripts\build-frontend.ps1
-# Then sync to S3 manually or use deploy.ps1 -SkipBuild
-```
+- A **text survival game**, but inside a polished mobile UI.
+- A **Game Master-led** elimination story where players make choices one message at a time.
+- Like D&D / Mafia / Werewolf energy, but without dice and without long rulebooks.
 
-## Environment Configuration
+### Content / parental note
 
-Edit parameter files in `infrastructure/parameters/`:
+btl.run is designed to support imaginative, drama-forward play. Tone depends on the selected Type and the GM configuration.
 
-- `dev.json` - Development environment (no custom domain)
-- `prod.json` - Production environment (configured with btl.run domain)
+---
 
-**Production is pre-configured with:**
-- Domain: btl.run
-- Hosted Zone: Z064967319BVY1CFQ2IZX
-- ACM Certificate: arn:aws:acm:...:79e671d3-7e77-4114-9edb-00530b310414
-- OpenAI Secret: Existing secret ARN
+## Example GM prompts (useful patterns)
 
-Deploy with:
-```powershell
-.\scripts\deploy.ps1 -Environment prod
-```
+The "GM" style is: **one prompt at a time**, 2–3 options, consequences that carry forward.
 
-After deployment, access at: **https://btl.run**
+### Opening / Day 1 starters
 
-## Service Endpoints
+1. **You wake up in an unfamiliar place.** Do you:
+   - A) Explore
+   - B) Hide and observe
+   - C) Call out for others
+2. **You see two other tributes nearby.** Do you:
+   - A) Approach peacefully
+   - B) Avoid them
+   - C) Follow from a distance
+3. **You find a backpack on the ground.** Do you:
+   - A) Take it
+   - B) Inspect it first
+   - C) Leave it (could be a trap)
 
-### Game API (Rust Lambda)
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/health` | GET | Health check |
-| `/api/health` | GET | API health check |
-| `/api/*` | ANY | Game API routes |
+### Social / alliance starters
 
-### AskAI Service (OpenAI Wrapper)
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | POST | Send prompt to OpenAI |
+4. **You can form ONE alliance right now. Who do you choose and why?**
+5. **Someone offers supplies later if you protect them now. Do you accept? (Yes / No)**
+6. **A rumor spreads that one tribute is lying about supplies. Do you:**
+   - A) Confront them
+   - B) Ignore it
+   - C) Spread it further
 
-**Request:**
-```json
-{
-  "systemPrompt": "You are a game narrator.",
-  "input": "Describe a mysterious cave.",
-  "maxTokens": 500,
-  "model": "gpt-5-nano"
-}
-```
+### Strategy prompts (low-violence, high thinking)
 
-### KVS Service (Key-Value Storage)
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/{key}` | GET | Get value |
-| `/{key}` | PUT | Set value (create/replace) |
-| `/{key}` | POST | Create only (fail if exists) |
-| `/{key}` | PATCH | Partial update (merge) |
-| `/{key}` | DELETE | Delete key |
+7. **You can only carry ONE item. Choose:**
+   - A) Food
+   - B) Water
+   - C) Map
+   - D) Tool
+8. **Night is coming. Do you:**
+   - A) Build shelter
+   - B) Keep moving
+   - C) Stay awake and watch
 
-## Cursor Cloud Agents
+### Twist prompts (use sparingly)
 
-This project is configured for Cursor cloud agents. Rules in `.cursor/rules/` provide context:
+9. **An announcement says: "The environment will change in 10 minutes." Do you prepare for:**
+   - A) Weather
+   - B) Scarcity
+   - C) Social chaos
+10. **You may save ONE other tribute from elimination. Who do you choose?**
 
-- `general.mdc` - Project structure and conventions
-- `rust-lambda.mdc` - Rust Lambda patterns
+### GM move (how to respond)
 
-## Infrastructure Stacks
+When players answer, reinforce continuity:
 
-The infrastructure uses SAM nested stacks for modularity:
+> "Your choice changes the game…"  
+> "Others notice what you did."  
+> "This will matter later."
 
-```
-template.yaml (root)
-├── stacks/storage.yaml  → S3 buckets
-├── stacks/api.yaml      → API Gateway + Lambda
-└── stacks/cdn.yaml      → CloudFront + Route53
-```
+---
 
-## Cost Optimization
+## Screens
 
-This architecture is designed for minimal cost:
+The game is designed around a small set of screens:
 
-- **Lambda ARM64** - Cheaper than x86
-- **CloudFront** - PriceClass_100 (cheapest regions)
-- **S3** - Standard storage with lifecycle rules
-- **API Gateway** - HTTP API (cheaper than REST API)
+- **Start (00)**: feels like Day 1 already started; swipe Type; (optional) tap a move; or Play/Host/Join with a code.
+- **Tribute Setup (01)**: pick map, tribute count, roster; tap Begin (for solo/quick play).
+- **Join Waiting (012)**: pre-game lobby for players joining via code/link; choose first move if deferred; wait for host to start.
+- **Host Lobby (015)**: empty roster + invite code; add AI one-at-a-time or wait for humans; tap Begin when ready.
+- **Game Turn (02)**: AI tributes "choose", the turn resolves into narrative + key events, then you pick your next move.
+- **Waiting for Players (025)**: (Long Play) you've submitted; see who's waiting; cutoff timer; notifications prompt.
+- **Status / Inventory / Map (03)**: tap the left rail to view vitals, gear, and explored territory.
 
-## License
+---
 
-MIT
+## FAQ
+
+### Is the narration "the rules"?
+
+No. Narration is presentation. The underlying engine determines what can happen, what it costs, and what consequences persist.
+
+### Can I get unlucky?
+
+Yes—but the game is designed so that **good choices reduce your exposure to bad variance**. Risk is a tool; don't let the arena choose for you.
